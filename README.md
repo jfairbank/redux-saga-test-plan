@@ -8,6 +8,10 @@ Test helpers for redux-saga.
 
 # Usage
 
+Redux Saga Test Plan is inspired by
+[redux-saga-test](https://github.com/stoeffel/redux-saga-test) with a slightly
+different API.
+
 Redux Saga Test Plan exports a `testSaga` function that creates a mock saga for
 you to assert effects on. `testSaga` is agnostic about your testing framework,
 so it simply throws if the sequence of yielded effects don't match your
@@ -71,7 +75,7 @@ const action = { type: 'TEST' };
 
 let saga = testSaga(mainSaga, 40, 2, 20);
 
-// Error free path
+// try path
 saga.next().take('HELLO');
 saga.next(action).put({ type: 'ADD', payload: 42 });
 saga.next().call(identity, action);
@@ -87,7 +91,7 @@ saga
   .next().fork(otherSaga)
   .next().isDone();
 
-// Error path
+// catch path
 const error = new Error('My Error');
 saga = testSaga(mainSaga, 40, 2, 20);
 saga
@@ -100,10 +104,16 @@ As mentioned if what's really yielded and what's asserted don't match, then the
 mock saga will throw an error.
 
 ```js
-const saga = testSaga(mainSaga, 40, 2, 20);
+let saga = testSaga(mainSaga, 40, 2, 20);
 
+saga.next().take('HI'); // throws
+
+saga = testSaga(mainSaga, 40, 2, 20);
 saga
-  .next().take('HI'); // throws
+  .next().take('HELLO')
+  .next(action).put({ type: 'ADD', payload: 43 }); // throws
+
+// etc.
 ```
 
 The mock saga also includes `back` and `restart` methods which allow you to back
