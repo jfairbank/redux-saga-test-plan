@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "Test helpers for redux-saga",
   "main": "lib/index.js",
+  "files": [
+    "src",
+    "lib"
+  ],
   "scripts": {
     "build": "babel src --out-dir lib",
     "clean": "rm -rf lib",
