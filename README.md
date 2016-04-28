@@ -18,7 +18,8 @@ so it simply throws if the sequence of yielded effects don't match your
 assertion effects.
 
 You pass in your generator function as the first argument. You can pass in
-additional arguments which be the arguments passed on to the generator function.
+additional arguments which will be the arguments passed on to the generator
+function.
 
 ```js
 // ES2015
