@@ -88,6 +88,16 @@ export default function testSaga(
 
       return api;
     },
+
+    yields: (value) => (fun) => {
+      if (typeof fun !== 'function') {
+        throw new Error('must pass a function to yields');
+      }
+
+      fun(value);
+
+      return api
+    }
   };
 
   function createIterator(): Generator {
@@ -115,7 +125,8 @@ export default function testSaga(
       take: effectsTestersCreators.take(value),
       takem: effectsTestersCreators.takem(value),
       is: effectsTestersCreators.is(value),
-      isDone: effectsTestersCreators.isDone(done),
+      yields: effectsTestersCreators.yields(value),
+      isDone: effectsTestersCreators.isDone(done)
     };
   }
 

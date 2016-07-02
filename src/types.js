@@ -30,6 +30,7 @@ export type ApiWithEffectsTesters = {
   take: EffectTester;
   takem: EffectTester;
   is: EffectTester;
+  yields: EffectTester;
   isDone: EffectTester;
 };
 
@@ -75,5 +76,6 @@ export type EffectTestersCreator = {
   take: EffectTesterCreator;
   takem: EffectTesterCreator;
   is: EffectTesterCreator;
+  yields: EffectTesterCreator;
   isDone: EffectTesterCreator;
 };
