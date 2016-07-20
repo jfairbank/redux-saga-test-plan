@@ -1,6 +1,6 @@
 {
   "name": "redux-saga-test-plan",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Test helpers for redux-saga",
   "main": "lib/index.js",
   "files": [
