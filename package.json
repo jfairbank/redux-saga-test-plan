@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/jfairbank/redux-saga-test-plan#readme",
   "devDependencies": {
-    "ava": "^0.14.0",
+    "ava": "^0.16.0",
     "babel-cli": "^6.7.7",
     "babel-core": "^6.7.7",
     "babel-eslint": "^6.0.4",
@@ -75,7 +75,10 @@
     "rules": {
       "no-unused-vars": [
         "error",
-        {"args": "after-used", "argsIgnorePattern": "^_"}
+        {
+          "args": "after-used",
+          "argsIgnorePattern": "^_"
+        }
       ],
       "no-use-before-define": [
         "error",
@@ -90,6 +93,10 @@
     }
   },
   "ava": {
-    "require": "babel-register"
+    "require": "babel-register",
+    "source": [
+      "**/*.js",
+      "!**/*.swp"
+    ]
   }
 }
