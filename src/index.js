@@ -180,7 +180,7 @@ export default function testSaga(
 
     isDone: (done) => () => {
       if (!done) {
-        throw new Error('saga not done');
+        throw new SagaTestError('saga not done');
       }
 
       return api;
@@ -188,7 +188,13 @@ export default function testSaga(
 
     is: (value) => (arg) => {
       if (!isEqual(arg, value)) {
-        throw new Error('yielded values do not match');
+        const errorMessage = createErrorMessage(
+          'yielded values do not match',
+          value,
+          arg
+        );
+
+        throw new SagaTestError(errorMessage);
       }
 
       return api;
