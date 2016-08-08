@@ -8,6 +8,7 @@ import type {
 } from './types';
 
 import isEqual from 'lodash.isequal';
+import inspect from 'util-inspect';
 
 import {
   take,
@@ -32,6 +33,114 @@ const ARGUMENT = 'ARGUMENT';
 const ERROR = 'ERROR';
 const NONE = 'NONE';
 
+class SagaTestError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'SagaTestError';
+  }
+}
+
+function serializeEffect(
+  effect: Object | Array<Object>,
+  effectKey: ?string
+): string {
+  if (!effect || Array.isArray(effect) || !effectKey || !effect[effectKey]) {
+    return inspect(effect, { depth: 3 });
+  }
+
+  return inspect(effect[effectKey], { depth: 3 });
+}
+
+function createErrorMessage(
+  header: string,
+  actual: Object | Array<Object>,
+  expected: Object | Array<Object>,
+  effectKey?: ?string
+): string {
+  const serializedExpected = serializeEffect(expected, effectKey);
+  const serializedActual = serializeEffect(actual, effectKey);
+
+  const errorMessage = `\n${header}\n\n`
+                     + `Expected\n--------\n${serializedExpected}\n\n`
+                     + `Actual\n------\n${serializedActual}\n`;
+
+  return errorMessage;
+}
+
+function validateEffects(
+  effectName: string,
+  effectKey: ?string,
+  actual: Object | Array<Object>,
+  expected: Object | Array<Object>
+): ?string {
+  if (actual == null) {
+    return createErrorMessage(
+      `Expected ${effectName} effect, but the saga yielded nothing`,
+      actual,
+      expected,
+      effectKey
+    );
+  }
+
+  if (Array.isArray(actual) && !Array.isArray(expected)) {
+    return createErrorMessage(
+      `Expected ${effectName} effect, but the saga yielded parallel effects`,
+      actual,
+      expected,
+      effectKey
+    );
+  }
+
+  if (!Array.isArray(actual) && Array.isArray(expected)) {
+    return createErrorMessage(
+      'Expected parallel effects, but the saga yielded a single effect',
+      actual,
+      expected,
+      effectKey
+    );
+  }
+
+  if (
+    (!Array.isArray(actual) && !actual[effectKey]) ||
+    (!Array.isArray(expected) && !expected[effectKey])
+  ) {
+    return createErrorMessage(
+      `Expected ${effectName} effect, but the saga yielded a different effect`,
+      actual,
+      expected
+    );
+  }
+
+  if (!isEqual(actual, expected)) {
+    return createErrorMessage(
+      `${effectName} effects do not match`,
+      actual,
+      expected,
+      effectKey
+    );
+  }
+
+  return null;
+}
+
+function assertSameEffect(
+  effectName: string,
+  effectKey: ?string,
+  actual: Object,
+  expected: Object
+): void {
+  const errorMessage = validateEffects(
+    effectName,
+    effectKey,
+    actual,
+    expected
+  );
+
+  if (errorMessage) {
+    throw new SagaTestError(errorMessage);
+  }
+}
+
 export default function testSaga(
   saga: Function,
   ...sagaArgs: Array<any>
@@ -43,35 +152,31 @@ export default function testSaga(
 
   function createEffectTester(
     name: string,
+    key?: string,
     effect: Function = identity
   ): EffectTesterCreator {
-    const error = new Error(`${name} effects do not match`);
-
-    return (value) => (...args) => {
-      if (!isEqual(effect(...args), value)) {
-        throw error;
-      }
-
+    return (yieldedValue) => (...args) => {
+      assertSameEffect(name, key, yieldedValue, effect(...args));
       return api;
     };
   }
 
   const effectsTestersCreators: EffectTestersCreator = {
-    actionChannel: createEffectTester('actionChannel', actionChannel),
-    apply: createEffectTester('apply', apply),
-    call: createEffectTester('call', call),
-    cancel: createEffectTester('cancel', cancel),
-    cancelled: createEffectTester('cancelled', cancelled),
-    cps: createEffectTester('cps', cps),
-    fork: createEffectTester('fork', fork),
-    join: createEffectTester('join', join),
+    actionChannel: createEffectTester('actionChannel', 'ACTION_CHANNEL', actionChannel),
+    apply: createEffectTester('apply', 'CALL', apply),
+    call: createEffectTester('call', 'CALL', call),
+    cancel: createEffectTester('cancel', 'CANCEL', cancel),
+    cancelled: createEffectTester('cancelled', 'CANCELLED', cancelled),
+    cps: createEffectTester('cps', 'CPS', cps),
+    fork: createEffectTester('fork', 'FORK', fork),
+    join: createEffectTester('join', 'JOIN', join),
     parallel: createEffectTester('parallel'),
-    put: createEffectTester('put', put),
-    race: createEffectTester('race', race),
-    select: createEffectTester('select', select),
-    spawn: createEffectTester('spawn', spawn),
-    take: createEffectTester('take', take),
-    takem: createEffectTester('takem', takem),
+    put: createEffectTester('put', 'PUT', put),
+    race: createEffectTester('race', 'RACE', race),
+    select: createEffectTester('select', 'SELECT', select),
+    spawn: createEffectTester('spawn', 'FORK', spawn),
+    take: createEffectTester('take', 'TAKE', take),
+    takem: createEffectTester('takem', 'TAKE', takem),
 
     isDone: (done) => () => {
       if (!done) {

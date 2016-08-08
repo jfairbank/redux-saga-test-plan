@@ -48,7 +48,8 @@
     "redux-saga": "^0.11.0"
   },
   "dependencies": {
-    "lodash.isequal": "^4.1.4"
+    "lodash.isequal": "^4.1.4",
+    "util-inspect": "^0.1.8"
   },
   "peerDependencies": {
     "redux-saga": "^0.10.0 || ^0.11.0"

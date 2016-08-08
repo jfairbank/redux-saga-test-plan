@@ -14,6 +14,12 @@ function* mainSaga(x, y, z) {
     const action = yield take('HELLO');
     yield put({ type: 'ADD', payload: x + y });
     yield call(identity, action);
+
+    yield [
+      call(identity, 'parallel call'),
+      put({ type: 'PARALLEL_PUT' }),
+    ];
+
     yield fork(otherSaga, z);
   } catch (e) {
     yield put({ type: 'ERROR', payload: e });
@@ -36,32 +42,30 @@ test.beforeEach(_ => {
   saga = createSaga();
 });
 
-test('follows the saga', t => {
-  t.notThrows(_ => {
-    saga
-      .next().take('HELLO')
-      .next(action).put({ type: 'ADD', payload: x + y })
-      .next().call(identity, action)
-      .next().fork(otherSaga, z)
-      .next().isDone();
-  });
+test('follows the saga', () => {
+  saga
+    .next().take('HELLO')
+    .next(action).put({ type: 'ADD', payload: x + y })
+    .next().call(identity, action)
+    .next().parallel([
+      call(identity, 'parallel call'),
+      put({ type: 'PARALLEL_PUT' }),
+    ])
+    .next().fork(otherSaga, z)
+    .next().isDone();
 });
 
-test('can back up', t => {
-  t.notThrows(_ => {
-    saga
-      .next().take('HELLO')
-      .back().next().take('HELLO');
-  });
+test('can back up', () => {
+  saga
+    .next().take('HELLO')
+    .back().next().take('HELLO');
 });
 
-test('can back up multiple steps', t => {
-  t.notThrows(_ => {
-    saga
-      .next().take('HELLO')
-      .next().put({ type: 'ADD', payload: x + y })
-      .back(2).next().take('HELLO');
-  });
+test('can back up multiple steps', () => {
+  saga
+    .next().take('HELLO')
+    .next().put({ type: 'ADD', payload: x + y })
+    .back(2).next().take('HELLO');
 });
 
 test('cannot back up at start', t => {
@@ -138,47 +142,53 @@ test('throws for an incorrect sequence', t => {
   });
 });
 
-test('follows catch block when throwing', t => {
+test('follows catch block when throwing', () => {
   const error = new Error('My Error');
 
-  t.notThrows(_ => {
-    saga
-      .next()
-      .throw(error).put({ type: 'ERROR', payload: error })
-      .next().isDone();
-  });
+  saga
+    .next()
+    .throw(error).put({ type: 'ERROR', payload: error })
+    .next().isDone();
 });
 
-test('restarts when done', t => {
-  t.notThrows(_ => {
-    saga
-      .next().take('HELLO')
-      .next(action).put({ type: 'ADD', payload: x + y })
-      .next().call(identity, action)
-      .next().fork(otherSaga, z)
-      .next().isDone()
-      .restart()
+test('restarts when done', () => {
+  saga
+    .next().take('HELLO')
+    .next(action).put({ type: 'ADD', payload: x + y })
+    .next().call(identity, action)
+    .next().parallel([
+      call(identity, 'parallel call'),
+      put({ type: 'PARALLEL_PUT' }),
+    ])
+    .next().fork(otherSaga, z)
+    .next().isDone()
+    .restart()
 
-      .next().take('HELLO')
-      .next(action).put({ type: 'ADD', payload: x + y })
-      .next().call(identity, action)
-      .next().fork(otherSaga, z)
-      .next().isDone();
-  });
+    .next().take('HELLO')
+    .next(action).put({ type: 'ADD', payload: x + y })
+    .next().call(identity, action)
+    .next().parallel([
+      call(identity, 'parallel call'),
+      put({ type: 'PARALLEL_PUT' }),
+    ])
+    .next().fork(otherSaga, z)
+    .next().isDone();
 });
 
-test('restarts before done', t => {
-  t.notThrows(_ => {
-    saga
-      .next().take('HELLO')
-      .next(action).put({ type: 'ADD', payload: x + y })
-      .next().call(identity, action)
-      .restart()
+test('restarts before done', () => {
+  saga
+    .next().take('HELLO')
+    .next(action).put({ type: 'ADD', payload: x + y })
+    .next().call(identity, action)
+    .restart()
 
-      .next().take('HELLO')
-      .next(action).put({ type: 'ADD', payload: x + y })
-      .next().call(identity, action)
-      .next().fork(otherSaga, z)
-      .next().isDone();
-  });
+    .next().take('HELLO')
+    .next(action).put({ type: 'ADD', payload: x + y })
+    .next().call(identity, action)
+    .next().parallel([
+      call(identity, 'parallel call'),
+      put({ type: 'PARALLEL_PUT' }),
+    ])
+    .next().fork(otherSaga, z)
+    .next().isDone();
 });
