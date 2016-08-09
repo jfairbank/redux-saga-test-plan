@@ -44,28 +44,49 @@ test.beforeEach(_ => {
 
 test('follows the saga', () => {
   saga
-    .next().take('HELLO')
-    .next(action).put({ type: 'ADD', payload: x + y })
-    .next().call(identity, action)
-    .next().parallel([
+    .next()
+    .take('HELLO')
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .next()
+    .call(identity, action)
+
+    .next()
+    .parallel([
       call(identity, 'parallel call'),
       put({ type: 'PARALLEL_PUT' }),
     ])
-    .next().fork(otherSaga, z)
-    .next().isDone();
+
+    .next()
+    .fork(otherSaga, z)
+
+    .next()
+    .isDone();
 });
 
 test('can back up', () => {
   saga
-    .next().take('HELLO')
-    .back().next().take('HELLO');
+    .next()
+    .take('HELLO')
+
+    .back()
+    .next()
+    .take('HELLO');
 });
 
 test('can back up multiple steps', () => {
   saga
-    .next().take('HELLO')
-    .next().put({ type: 'ADD', payload: x + y })
-    .back(2).next().take('HELLO');
+    .next()
+    .take('HELLO')
+
+    .next()
+    .put({ type: 'ADD', payload: x + y })
+
+    .back(2)
+    .next()
+    .take('HELLO');
 });
 
 test('cannot back up at start', t => {
@@ -77,7 +98,8 @@ test('cannot back up at start', t => {
 test('cannot back up past beginning', t => {
   t.throws(_ => {
     saga
-      .next().take('HELLO')
+      .next()
+      .take('HELLO')
       .back(2);
   });
 });
@@ -91,48 +113,78 @@ test('throws for an incorrect take', t => {
 test('throws for an incorrect put', t => {
   t.throws(_ => {
     saga
-      .next().take('HELLO')
-      .next().put({ type: 'ADD', payload: x + y + 1 });
+      .next()
+      .take('HELLO')
+
+      .next()
+      .put({ type: 'ADD', payload: x + y + 1 });
   });
 
   t.throws(_ => {
     saga
-      .next().take('HELLO')
-      .next().put({ type: 'SUBTRACT', payload: x + y });
+      .next()
+      .take('HELLO')
+
+      .next()
+      .put({ type: 'SUBTRACT', payload: x + y });
   });
 });
 
 test('throws for an incorrect call', t => {
   t.throws(_ => {
     saga
-      .next().take('HELLO')
-      .next().put({ type: 'ADD', payload: x + y })
-      .next().call(identity, y - 1);
+      .next()
+      .take('HELLO')
+
+      .next()
+      .put({ type: 'ADD', payload: x + y })
+
+      .next()
+      .call(identity, y - 1);
   });
 
   t.throws(_ => {
     saga
-      .next().take('HELLO')
-      .next().put({ type: 'ADD', payload: x + y })
-      .next().call(__ => {}, y);
+      .next()
+      .take('HELLO')
+
+      .next()
+      .put({ type: 'ADD', payload: x + y })
+
+      .next()
+      .call(__ => {}, y);
   });
 });
 
 test('throws for an incorrect fork', t => {
   t.throws(_ => {
     saga
-      .next().take('HELLO')
-      .next().put({ type: 'ADD', payload: x + y })
-      .next().call(identity, y)
-      .next().fork(otherSaga, z + 1);
+      .next()
+      .take('HELLO')
+
+      .next()
+      .put({ type: 'ADD', payload: x + y })
+
+      .next()
+      .call(identity, y)
+
+      .next()
+      .fork(otherSaga, z + 1);
   });
 
   t.throws(_ => {
     saga
-      .next().take('HELLO')
-      .next().put({ type: 'ADD', payload: x + y })
-      .next().call(identity, y)
-      .next().fork(__ => {}, z);
+      .next()
+      .take('HELLO')
+
+      .next()
+      .put({ type: 'ADD', payload: x + y })
+
+      .next()
+      .call(identity, y)
+
+      .next()
+      .fork(__ => {}, z);
   });
 });
 
@@ -147,48 +199,91 @@ test('follows catch block when throwing', () => {
 
   saga
     .next()
-    .throw(error).put({ type: 'ERROR', payload: error })
-    .next().isDone();
+    .throw(error)
+    .put({ type: 'ERROR', payload: error })
+
+    .next()
+    .isDone();
 });
 
 test('restarts when done', () => {
   saga
-    .next().take('HELLO')
-    .next(action).put({ type: 'ADD', payload: x + y })
-    .next().call(identity, action)
-    .next().parallel([
+    .next()
+    .take('HELLO')
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .next()
+    .call(identity, action)
+
+    .next()
+    .parallel([
       call(identity, 'parallel call'),
       put({ type: 'PARALLEL_PUT' }),
     ])
-    .next().fork(otherSaga, z)
-    .next().isDone()
+
+    .next()
+    .fork(otherSaga, z)
+
+    .next()
+    .isDone()
+
     .restart()
 
-    .next().take('HELLO')
-    .next(action).put({ type: 'ADD', payload: x + y })
-    .next().call(identity, action)
-    .next().parallel([
+    .next()
+    .take('HELLO')
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .next()
+    .call(identity, action)
+
+    .next()
+    .parallel([
       call(identity, 'parallel call'),
       put({ type: 'PARALLEL_PUT' }),
     ])
-    .next().fork(otherSaga, z)
-    .next().isDone();
+
+    .next()
+    .fork(otherSaga, z)
+
+    .next()
+    .isDone();
 });
 
 test('restarts before done', () => {
   saga
-    .next().take('HELLO')
-    .next(action).put({ type: 'ADD', payload: x + y })
-    .next().call(identity, action)
+    .next()
+    .take('HELLO')
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .next()
+    .call(identity, action)
+
     .restart()
 
-    .next().take('HELLO')
-    .next(action).put({ type: 'ADD', payload: x + y })
-    .next().call(identity, action)
-    .next().parallel([
+    .next()
+    .take('HELLO')
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .next()
+    .call(identity, action)
+
+    .next()
+    .parallel([
       call(identity, 'parallel call'),
       put({ type: 'PARALLEL_PUT' }),
     ])
-    .next().fork(otherSaga, z)
-    .next().isDone();
+
+    .next()
+    .fork(otherSaga, z)
+
+    .next()
+    .isDone();
 });
