@@ -1,12 +1,4 @@
 /* @flow */
-import type {
-  Api,
-  ApiWithEffectsTesters,
-  EffectTesterCreator,
-  EffectTestersCreator,
-  Arg,
-} from './types';
-
 import isEqual from 'lodash.isequal';
 import inspect from 'util-inspect';
 
@@ -26,6 +18,14 @@ import {
   actionChannel,
   cancelled,
 } from 'redux-saga/effects';
+
+import type {
+  Api,
+  ApiWithEffectsTesters,
+  EffectTesterCreator,
+  EffectTestersCreator,
+  Arg,
+} from './types';
 
 const identity = value => value;
 
