@@ -287,3 +287,15 @@ test('restarts before done', () => {
     .next()
     .isDone();
 });
+
+test('executes callback passed to yields with actual yielded value', t => {
+  saga
+    .next()
+    .yields((actualValue) => {
+      t.deepEqual(actualValue, take('HELLO'))
+    })
+    .next(action).put({ type: 'ADD', payload: x + y })
+    .next().call(identity, action)
+    .next().fork(otherSaga, z)
+    .next().isDone();
+});
