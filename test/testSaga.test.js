@@ -104,6 +104,16 @@ test('cannot back up past beginning', t => {
   });
 });
 
+test('can finish the generator early', t => {
+  saga
+    .next()
+    .take('HELLO')
+    .next()
+    .finish()
+    .next()
+    .isDone();
+});
+
 test('throws for an incorrect take', t => {
   t.throws(_ => {
     saga.next().take('WORLD');
