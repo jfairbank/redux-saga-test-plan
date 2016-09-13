@@ -98,6 +98,40 @@ test('can back up multiple steps', () => {
     .take('HELLO');
 });
 
+test('can back up to a named mark', () => {
+  saga
+    .next()
+    .take('HELLO')
+
+    .mark('pre put(add)')
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .next()
+    .call(identity, action)
+
+    .back('pre put(add)')
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y });
+});
+
+test('cannot back up to invalid mark', t => {
+  t.throws(_ => {
+    saga
+      .next()
+      .take('HELLO')
+
+      .mark('pre put(add)')
+
+      .next(action)
+      .put({ type: 'ADD', payload: x + y })
+
+      .back('foo bar baz');
+  });
+});
+
 test('cannot back up at start', t => {
   t.throws(_ => {
     saga.back();
