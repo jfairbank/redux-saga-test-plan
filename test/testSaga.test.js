@@ -104,7 +104,7 @@ test('cannot back up past beginning', t => {
   });
 });
 
-test('can finish the generator early', t => {
+test('can finish the generator early', () => {
   saga
     .next()
     .take('HELLO')
