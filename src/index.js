@@ -201,6 +201,24 @@ export default function testSaga(
 
       return api;
     },
+
+    returns: (value, done) => (arg) => {
+      if (!done) {
+        throw new SagaTestError('saga not done');
+      }
+
+      if (!isEqual(arg, value)) {
+        const errorMessage = createErrorMessage(
+          'returned values do not match',
+          value,
+          arg
+        );
+
+        throw new SagaTestError(errorMessage);
+      }
+
+      return api;
+    },
   };
 
   function createIterator(): Generator {
@@ -229,6 +247,7 @@ export default function testSaga(
       takem: effectsTestersCreators.takem(value),
       is: effectsTestersCreators.is(value),
       isDone: effectsTestersCreators.isDone(done),
+      returns: effectsTestersCreators.returns(value, done),
     };
   }
 

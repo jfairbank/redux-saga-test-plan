@@ -5,8 +5,9 @@ import { testSaga } from '../src';
 
 const identity = value => value;
 
-function* otherSaga() {
+function* otherSaga(z) {
   yield put({ type: 'OTHER', payload: 'hi' });
+  return z;
 }
 
 function* mainSaga(x, y, z) {
@@ -317,4 +318,36 @@ test('restarts before done', () => {
 
     .next()
     .isDone();
+});
+
+test('.isDone throws if not done', t => {
+  t.throws(_ => {
+    saga.next().isDone();
+  });
+});
+
+test('.returns if not done', t => {
+  t.throws(_ => {
+    testSaga(otherSaga, 1)
+      .next()
+      .returns(1);
+  });
+});
+
+test('.returns if return value was not as expected', t => {
+  t.throws(_ => {
+    testSaga(otherSaga, 1)
+      .next()
+      .put({ type: 'OTHER', payload: 'hi' })
+      .next()
+      .returns('foobar');
+  });
+});
+
+test('.returns does not throw if finished and return value matches', () => {
+  testSaga(otherSaga, 1)
+    .next()
+    .put({ type: 'OTHER', payload: 'hi' })
+    .next()
+    .returns(1);
 });
