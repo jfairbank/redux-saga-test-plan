@@ -114,7 +114,22 @@ test('can back up to a named mark', () => {
     .gotoMark('pre put(add)')
 
     .next(action)
-    .put({ type: 'ADD', payload: x + y });
+    .put({ type: 'ADD', payload: x + y })
+
+    .mark('post put(add)')
+
+    .back(1)
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .restart()
+    .next()
+    .take('HELLO')
+
+    .gotoMark('post put(add)')
+    .next()
+    .call(identity, action);
 });
 
 test('cannot back up to invalid mark', t => {

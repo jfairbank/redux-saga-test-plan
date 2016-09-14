@@ -254,7 +254,6 @@ export default function testSaga(
 
   function restart(): Api {
     previousArgs = [];
-    marks = {};
     iterator = createIterator();
 
     return api;
@@ -304,7 +303,7 @@ export default function testSaga(
     }
 
     iterator = createIterator();
-
+    previousArgs = marks[name];
     return applyHistory(marks[name]);
   }
 
