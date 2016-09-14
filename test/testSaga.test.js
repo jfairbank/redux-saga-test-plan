@@ -26,6 +26,13 @@ function* mainSaga(x, y, z) {
   }
 }
 
+function* loopingSaga() {
+  while (true) {
+    const action = yield take('HELLO');
+    yield call(identity, action);
+  }
+}
+
 const x = 40;
 const y = 2;
 const z = 20;
@@ -105,10 +112,24 @@ test('cannot back up past beginning', t => {
 });
 
 test('can finish the generator early', () => {
-  saga
+  testSaga(loopingSaga)
     .next()
+
     .take('HELLO')
+    .next(action)
+    .call(identity, action)
     .next()
+
+    .take('HELLO')
+    .next(action)
+    .call(identity, action)
+    .next()
+
+    .take('HELLO')
+    .next(action)
+    .call(identity, action)
+    .next()
+
     .finish()
     .next()
     .isDone();
