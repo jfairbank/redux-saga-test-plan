@@ -147,7 +147,7 @@ export default function testSaga(
   saga: Function,
   ...sagaArgs: Array<any>
 ): Api {
-  const api = { next, back, finish, restart, mark, throw: throwError };
+  const api = { next, back, finish, restart, mark, gotoMark, throw: throwError };
 
   let previousArgs: Array<Arg> = [];
   let marks: Object<String, Number> = {};
@@ -298,20 +298,22 @@ export default function testSaga(
     return apiWithEffectsTesters(result);
   }
 
-  function back(n: string | number = 1): Api {
-    let m = n;
-
-    if (typeof n === 'string') {
-      if (!marks[n]) {
-        throw new Error(`No such mark ${n}`);
-      }
-      m = previousArgs.length - marks[n];
-      delete marks[n];
+  function gotoMark(name: string): Api {
+    if (!marks[name]) {
+      throw new Error(`No such mark ${name}`);
     }
 
+    iterator = createIterator();
+
+    return applyHistory(marks[name]);
+  }
+
+  function back(n: number = 1): Api {
     if (n > previousArgs.length) {
       throw new Error('Cannot go back any further');
     }
+
+    let m = n;
 
     while (m--) {
       previousArgs.pop();
@@ -319,8 +321,17 @@ export default function testSaga(
 
     iterator = createIterator();
 
-    for (let i = 0, l = previousArgs.length; i < l; i++) {
-      const arg = previousArgs[i];
+    return applyHistory(previousArgs);
+  }
+
+  function mark(name: string): Api {
+    marks[name] = previousArgs.slice(0);
+    return api;
+  }
+
+  function applyHistory(history: Array<Arg>): Api {
+    for (let i = 0, l = history.length; i < l; i++) {
+      const arg = history[i];
 
       switch (arg.type) {
         case NONE:
@@ -347,11 +358,6 @@ export default function testSaga(
       }
     }
 
-    return api;
-  }
-
-  function mark(name: string): Api {
-    marks[name] = previousArgs.length;
     return api;
   }
 
