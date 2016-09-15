@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint-disable no-constant-condition */
 import test from 'ava';
 import { call, fork, put, take } from 'redux-saga/effects';
 import { testSaga } from '../src';
@@ -134,6 +135,29 @@ test('can finish the generator early', () => {
     .finish()
     .next()
     .isDone();
+});
+
+test('can finish with an arg', () => {
+  testSaga(loopingSaga)
+    .next()
+
+    .take('HELLO')
+    .next(action)
+    .call(identity, action)
+    .next()
+
+    .take('HELLO')
+    .next(action)
+    .call(identity, action)
+    .next()
+
+    .take('HELLO')
+    .next(action)
+    .call(identity, action)
+    .next()
+
+    .finish(42)
+    .returns(42);
 });
 
 test('throws for an incorrect take', t => {
