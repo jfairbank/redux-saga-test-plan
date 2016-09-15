@@ -9,4 +9,5 @@ branches:
     - /^greenkeeper-.*$/
 script:
   - npm run lint
+  - npm run typecheck
   - npm test

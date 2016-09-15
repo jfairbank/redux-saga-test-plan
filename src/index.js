@@ -22,9 +22,9 @@ import {
 import type {
   Api,
   ApiWithEffectsTesters,
+  Arg,
   EffectTesterCreator,
   EffectTestersCreator,
-  Arg,
 } from './types';
 
 const identity = value => value;
@@ -221,12 +221,12 @@ export default function testSaga(
     },
   };
 
-  function createIterator(): Generator {
+  function createIterator(): Generator<*, *, *> {
     return saga(...sagaArgs);
   }
 
   function apiWithEffectsTesters(
-    { value, done }: IteratorResult
+    { value, done }: IteratorResult<*, *>
   ): ApiWithEffectsTesters {
     return {
       ...api,
@@ -273,14 +273,6 @@ export default function testSaga(
     return apiWithEffectsTesters(result);
   }
 
-  function throwError(error: Error): ApiWithEffectsTesters {
-    previousArgs.push({ type: ERROR, value: error });
-
-    const result = iterator.throw(error);
-
-    return apiWithEffectsTesters(result);
-  }
-
   function finish(...args: Array<any>): ApiWithEffectsTesters {
     const arg = args[0];
     let result;
@@ -292,6 +284,14 @@ export default function testSaga(
       previousArgs.push({ type: FINISH_ARGUMENT, value: arg });
       result = iterator.return(arg);
     }
+
+    return apiWithEffectsTesters(result);
+  }
+
+  function throwError(error: Error): ApiWithEffectsTesters {
+    previousArgs.push({ type: ERROR, value: error });
+
+    const result = iterator.throw(error);
 
     return apiWithEffectsTesters(result);
   }
@@ -312,16 +312,28 @@ export default function testSaga(
     for (let i = 0, l = previousArgs.length; i < l; i++) {
       const arg = previousArgs[i];
 
-      if (arg.type === NONE) {
-        iterator.next();
-      } else if (arg.type === ERROR) {
-        iterator.throw(arg.value);
-      } else if (arg.type === FINISH) {
-        iterator.return();
-      } else if (arg.type === FINISH_ARGUMENT) {
-        iterator.return(arg.value);
-      } else {
-        iterator.next(arg.value);
+      switch (arg.type) {
+        case NONE:
+          iterator.next();
+          break;
+
+        case ARGUMENT:
+          iterator.next(arg.value);
+          break;
+
+        case ERROR:
+          iterator.throw(arg.value);
+          break;
+
+        case FINISH:
+          iterator.return();
+          break;
+
+        case FINISH_ARGUMENT:
+          iterator.return(arg.value);
+          break;
+
+        // no default
       }
     }
 

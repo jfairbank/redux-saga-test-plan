@@ -2,18 +2,14 @@
 /* eslint-disable no-use-before-define */
 
 export type Api = {
-  next: Next;
+  next: Progresser;
+  finish: Progresser;
   back: Back;
   restart: Restart;
   throw: ThrowError;
 };
 
-export type ApiWithEffectsTesters = {
-  next: Next;
-  back: Back;
-  restart: Restart;
-  throw: ThrowError;
-
+export type ApiWithEffectsTesters = Api & {
   actionChannel: EffectTester;
   apply: EffectTester;
   call: EffectTester;
@@ -34,8 +30,8 @@ export type ApiWithEffectsTesters = {
   returns: EffectTester;
 };
 
-export type Next = (...args: Array<any>) => ApiWithEffectsTesters;
-export type Back = (n: number | void) => Api;
+export type Progresser = (...args: Array<any>) => ApiWithEffectsTesters;
+export type Back = (n?: number) => Api;
 export type Restart = () => Api;
 export type ThrowError = (error: Error) => ApiWithEffectsTesters;
 
@@ -53,11 +49,19 @@ export type ArgNone = {
   type: 'NONE';
 };
 
-export type Arg = ArgRegular | ArgError | ArgNone;
+export type ArgFinish = {
+  type: 'FINISH';
+};
+
+export type ArgFinishWithValue = {
+  type: 'FINISH_ARGUMENT';
+  value: any;
+};
+
+export type Arg = ArgRegular | ArgError | ArgNone | ArgFinish | ArgFinishWithValue;
 
 export type EffectTester = (...args: Array<any>) => Api;
 export type EffectTesterCreator = (value: any) => EffectTester;
-
 
 export type EffectTestersCreator = {
   actionChannel: EffectTesterCreator;
