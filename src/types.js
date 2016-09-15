@@ -31,6 +31,7 @@ export type ApiWithEffectsTesters = {
   takem: EffectTester;
   is: EffectTester;
   isDone: EffectTester;
+  returns: EffectTester;
 };
 
 export type Next = (...args: Array<any>) => ApiWithEffectsTesters;
@@ -76,4 +77,5 @@ export type EffectTestersCreator = {
   takem: EffectTesterCreator;
   is: EffectTesterCreator;
   isDone: EffectTesterCreator;
+  returns: EffectTesterCreator;
 };

@@ -5,8 +5,9 @@ import { testSaga } from '../src';
 
 const identity = value => value;
 
-function* otherSaga() {
+function* otherSaga(z) {
   yield put({ type: 'OTHER', payload: 'hi' });
+  return z;
 }
 
 function* mainSaga(x, y, z) {
@@ -23,6 +24,13 @@ function* mainSaga(x, y, z) {
     yield fork(otherSaga, z);
   } catch (e) {
     yield put({ type: 'ERROR', payload: e });
+  }
+}
+
+function* loopingSaga() {
+  while (true) {
+    const action = yield take('HELLO');
+    yield call(identity, action);
   }
 }
 
@@ -102,6 +110,30 @@ test('cannot back up past beginning', t => {
       .take('HELLO')
       .back(2);
   });
+});
+
+test('can finish the generator early', () => {
+  testSaga(loopingSaga)
+    .next()
+
+    .take('HELLO')
+    .next(action)
+    .call(identity, action)
+    .next()
+
+    .take('HELLO')
+    .next(action)
+    .call(identity, action)
+    .next()
+
+    .take('HELLO')
+    .next(action)
+    .call(identity, action)
+    .next()
+
+    .finish()
+    .next()
+    .isDone();
 });
 
 test('throws for an incorrect take', t => {
@@ -286,4 +318,36 @@ test('restarts before done', () => {
 
     .next()
     .isDone();
+});
+
+test('.isDone throws if not done', t => {
+  t.throws(_ => {
+    saga.next().isDone();
+  });
+});
+
+test('.returns if not done', t => {
+  t.throws(_ => {
+    testSaga(otherSaga, 1)
+      .next()
+      .returns(1);
+  });
+});
+
+test('.returns if return value was not as expected', t => {
+  t.throws(_ => {
+    testSaga(otherSaga, 1)
+      .next()
+      .put({ type: 'OTHER', payload: 'hi' })
+      .next()
+      .returns('foobar');
+  });
+});
+
+test('.returns does not throw if finished and return value matches', () => {
+  testSaga(otherSaga, 1)
+    .next()
+    .put({ type: 'OTHER', payload: 'hi' })
+    .next()
+    .returns(1);
 });
