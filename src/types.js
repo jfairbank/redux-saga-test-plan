@@ -5,6 +5,8 @@ export type Api = {
   next: Progresser;
   finish: Progresser;
   back: Back;
+  save: SaveRestore;
+  restore: SaveRestore;
   restart: Restart;
   throw: ThrowError;
 };
@@ -32,6 +34,7 @@ export type ApiWithEffectsTesters = Api & {
 
 export type Progresser = (...args: Array<any>) => ApiWithEffectsTesters;
 export type Back = (n: number | void) => Api;
+export type SaveRestore = (s: string) => Api;
 export type Restart = () => Api;
 export type ThrowError = (error: Error) => ApiWithEffectsTesters;
 

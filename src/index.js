@@ -150,7 +150,7 @@ export default function testSaga(
   const api = { next, back, finish, restart, save, restore, throw: throwError };
 
   let previousArgs: Array<Arg> = [];
-  let savePoints: Object<String, Number> = {};
+  const savePoints: { [key: string]: Array<Arg> } = {};
   let iterator = createIterator();
 
   function createEffectTester(
