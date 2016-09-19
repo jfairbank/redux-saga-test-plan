@@ -147,10 +147,10 @@ export default function testSaga(
   saga: Function,
   ...sagaArgs: Array<any>
 ): Api {
-  const api = { next, back, finish, restart, mark, gotoMark, throw: throwError };
+  const api = { next, back, finish, restart, save, restore, throw: throwError };
 
   let previousArgs: Array<Arg> = [];
-  let marks: Object<String, Number> = {};
+  let savePoints: Object<String, Number> = {};
   let iterator = createIterator();
 
   function createEffectTester(
@@ -297,14 +297,14 @@ export default function testSaga(
     return apiWithEffectsTesters(result);
   }
 
-  function gotoMark(name: string): Api {
-    if (!marks[name]) {
-      throw new Error(`No such mark ${name}`);
+  function restore(name: string): Api {
+    if (!savePoints[name]) {
+      throw new Error(`No such save point ${name}`);
     }
 
     iterator = createIterator();
-    previousArgs = marks[name];
-    return applyHistory(marks[name]);
+    previousArgs = savePoints[name];
+    return applyHistory(savePoints[name]);
   }
 
   function back(n: number = 1): Api {
@@ -323,8 +323,8 @@ export default function testSaga(
     return applyHistory(previousArgs);
   }
 
-  function mark(name: string): Api {
-    marks[name] = previousArgs.slice(0);
+  function save(name: string): Api {
+    savePoints[name] = previousArgs.slice(0);
     return api;
   }
 

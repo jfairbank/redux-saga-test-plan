@@ -98,12 +98,12 @@ test('can back up multiple steps', () => {
     .take('HELLO');
 });
 
-test('can back up to a named mark', () => {
+test('can back up to a named save point', () => {
   saga
     .next()
     .take('HELLO')
 
-    .mark('pre put(add)')
+    .save('pre put(add)')
 
     .next(action)
     .put({ type: 'ADD', payload: x + y })
@@ -111,12 +111,12 @@ test('can back up to a named mark', () => {
     .next()
     .call(identity, action)
 
-    .gotoMark('pre put(add)')
+    .restore('pre put(add)')
 
     .next(action)
     .put({ type: 'ADD', payload: x + y })
 
-    .mark('post put(add)')
+    .save('post put(add)')
 
     .back(1)
 
@@ -127,23 +127,23 @@ test('can back up to a named mark', () => {
     .next()
     .take('HELLO')
 
-    .gotoMark('post put(add)')
+    .restore('post put(add)')
     .next()
     .call(identity, action);
 });
 
-test('cannot back up to invalid mark', t => {
+test('cannot back up to invalid save point', t => {
   t.throws(_ => {
     saga
       .next()
       .take('HELLO')
 
-      .mark('pre put(add)')
+      .save('pre put(add)')
 
       .next(action)
       .put({ type: 'ADD', payload: x + y })
 
-      .gotoMark('foo bar baz');
+      .restore('foo bar baz');
   });
 });
 
