@@ -147,9 +147,10 @@ export default function testSaga(
   saga: Function,
   ...sagaArgs: Array<any>
 ): Api {
-  const api = { next, back, finish, restart, throw: throwError };
+  const api = { next, back, finish, restart, save, restore, throw: throwError };
 
   let previousArgs: Array<Arg> = [];
+  const savePoints: { [key: string]: Array<Arg> } = {};
   let iterator = createIterator();
 
   function createEffectTester(
@@ -296,6 +297,16 @@ export default function testSaga(
     return apiWithEffectsTesters(result);
   }
 
+  function restore(name: string): Api {
+    if (!savePoints[name]) {
+      throw new Error(`No such save point ${name}`);
+    }
+
+    iterator = createIterator();
+    previousArgs = savePoints[name];
+    return applyHistory(savePoints[name]);
+  }
+
   function back(n: number = 1): Api {
     if (n > previousArgs.length) {
       throw new Error('Cannot go back any further');
@@ -309,8 +320,17 @@ export default function testSaga(
 
     iterator = createIterator();
 
-    for (let i = 0, l = previousArgs.length; i < l; i++) {
-      const arg = previousArgs[i];
+    return applyHistory(previousArgs);
+  }
+
+  function save(name: string): Api {
+    savePoints[name] = previousArgs.slice(0);
+    return api;
+  }
+
+  function applyHistory(history: Array<Arg>): Api {
+    for (let i = 0, l = history.length; i < l; i++) {
+      const arg = history[i];
 
       switch (arg.type) {
         case NONE:

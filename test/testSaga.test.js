@@ -98,6 +98,55 @@ test('can back up multiple steps', () => {
     .take('HELLO');
 });
 
+test('can back up to a named save point', () => {
+  saga
+    .next()
+    .take('HELLO')
+
+    .save('pre put(add)')
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .next()
+    .call(identity, action)
+
+    .restore('pre put(add)')
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .save('post put(add)')
+
+    .back(1)
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .restart()
+    .next()
+    .take('HELLO')
+
+    .restore('post put(add)')
+    .next()
+    .call(identity, action);
+});
+
+test('cannot back up to invalid save point', t => {
+  t.throws(_ => {
+    saga
+      .next()
+      .take('HELLO')
+
+      .save('pre put(add)')
+
+      .next(action)
+      .put({ type: 'ADD', payload: x + y })
+
+      .restore('foo bar baz');
+  });
+});
+
 test('cannot back up at start', t => {
   t.throws(_ => {
     saga.back();
