@@ -1,3 +1,64 @@
+## v1.1.0
+
+### NEW - Restart with different arguments
+
+You can now restart your saga with different arguments by supplying a variable
+number of arguments to the `restart` method.
+
+```js
+function getPredicate() {}
+
+function* mainSaga(x) {
+  try {
+    const predicate = yield select(getPredicate);
+
+    if (predicate) {
+      yield take('TRUE');
+    } else {
+      yield take('FALSE');
+    }
+
+    yield put({ type: 'DONE', payload: x });
+  } catch (e) {
+    yield take('ERROR');
+  }
+}
+
+const saga = testSaga(mainSaga, 42);
+
+saga
+  .next()
+  .select(getPredicate)
+
+  .next(true)
+  .take('TRUE')
+
+  .next()
+  .put({ type: 'DONE', payload: 42 })
+
+  .next()
+  .isDone()
+
+  .restart('hello world')
+  .next()
+  .select(getPredicate)
+
+  .next(true)
+  .take('TRUE')
+
+  .next()
+  .put({ type: 'DONE', payload: 'hello world' })
+
+  .next()
+  .isDone();
+```
+
+### Miscellaneous
+
+- Some internal variable renaming.
+
+---
+
 ## v1.0.0
 
 ### :tada: First major release - no breaking changes
