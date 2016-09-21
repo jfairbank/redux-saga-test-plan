@@ -326,13 +326,13 @@ saga
 
 The mock saga can also time travel through the saga generator.
 
-| Method                   | Description                                            |
-| ------------------------ | ------------------------------------------------------ |
-| `back(n?: number)`       | Back up a number of steps in the saga (defaults to 1)  |
-| `restart()`              | Restart the saga from the beginning                    |
-| `finish(arg?: any)`      | Finish a saga early by forcing a return                |
-| `save(label: string)`    | Save a point in history with a label                   |
-| `restore(label: string)` | Restore a point in history (label must be saved prior) |
+| Method                         | Description                                            |
+| ------------------------------ | ------------------------------------------------------ |
+| `back(n?: number)`             | Back up a number of steps in the saga (defaults to 1)  |
+| `restart(...args: Array<any>)` | Restart the saga from the beginning                    |
+| `finish(arg?: any)`            | Finish a saga early by forcing a return                |
+| `save(label: string)`          | Save a point in history with a label                   |
+| `restore(label: string)`       | Restore a point in history (label must be saved prior) |
 
 ### Go Back or Restart
 
@@ -341,10 +341,18 @@ which allow you to back up some number of steps or completely restart the saga.
 This is useful for handling multiple control flow branches such as `if/else` and
 `try/catch`.
 
+`back` takes an optional number argument to specify the number of steps to back
+up. It defaults to 1.
+
+As its name suggestions, `restart` will restart your saga. If your saga takes
+arguments, then you can restart with new arguments by passing them in to
+`restart`. If you don't supply any arguments, then it will restart with whatever
+original arguments you used.
+
 ```js
 function getPredicate() {}
 
-function* mainSaga() {
+function* mainSaga(x) {
   try {
     const predicate = yield select(getPredicate);
 
@@ -353,12 +361,14 @@ function* mainSaga() {
     } else {
       yield take('FALSE');
     }
+
+    yield put({ type: 'DONE', payload: x });
   } catch (e) {
     yield take('ERROR');
   }
 }
 
-let saga = testSaga(mainSaga);
+let saga = testSaga(mainSaga, 42);
 
 // Back up one step by default
 saga
@@ -370,7 +380,7 @@ saga
   .select(getPredicate);
 
 // Back up `2` steps to try `else` branch
-saga = testSaga(mainSaga);
+saga = testSaga(mainSaga, 42);
 saga
   .next()
   .select(getPredicate)
@@ -386,11 +396,14 @@ saga
   .take('FALSE')
 
   .next()
+  .put({ type: 'DONE', payload: 42 })
+
+  .next()
   .isDone();
 
 // Restart from the beginning to throw
 const error = new Error('My Error');
-saga = testSaga(mainSaga);
+saga = testSaga(mainSaga, 42);
 
 saga
   .next()
@@ -400,12 +413,44 @@ saga
   .take('TRUE')
 
   .next()
+  .put({ type: 'DONE', payload: 42 })
+
+  .next()
   .isDone()
 
   .restart()
   .next()
   .throw(error)
   .take('ERROR')
+
+  .next()
+  .isDone();
+
+// Restart to update the argument
+saga = testSaga(mainSaga, 42);
+
+saga
+  .next()
+  .select(getPredicate)
+
+  .next(true)
+  .take('TRUE')
+
+  .next()
+  .put({ type: 'DONE', payload: 42 })
+
+  .next()
+  .isDone()
+
+  .restart('hello world')
+  .next()
+  .select(getPredicate)
+
+  .next(true)
+  .take('TRUE')
+
+  .next()
+  .put({ type: 'DONE', payload: 'hello world' })
 
   .next()
   .isDone();
