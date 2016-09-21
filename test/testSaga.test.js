@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 /* eslint-disable no-constant-condition */
 import test from 'ava';
 import { call, fork, put, take } from 'redux-saga/effects';
@@ -388,6 +388,57 @@ test('restarts before done', () => {
 
     .next()
     .fork(otherSaga, z)
+
+    .next()
+    .isDone();
+});
+
+test('restarts can change generator arguments', () => {
+  const newX = 20;
+  const newY = 1;
+  const newZ = 10;
+
+  saga
+    .next()
+    .take('HELLO')
+
+    .next(action)
+    .put({ type: 'ADD', payload: x + y })
+
+    .next()
+    .call(identity, action)
+
+    .next()
+    .parallel([
+      call(identity, 'parallel call'),
+      put({ type: 'PARALLEL_PUT' }),
+    ])
+
+    .next()
+    .fork(otherSaga, z)
+
+    .next()
+    .isDone()
+
+    .restart(newX, newY, newZ)
+
+    .next()
+    .take('HELLO')
+
+    .next(action)
+    .put({ type: 'ADD', payload: newX + newY })
+
+    .next()
+    .call(identity, action)
+
+    .next()
+    .parallel([
+      call(identity, 'parallel call'),
+      put({ type: 'PARALLEL_PUT' }),
+    ])
+
+    .next()
+    .fork(otherSaga, newZ)
 
     .next()
     .isDone();

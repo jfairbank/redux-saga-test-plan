@@ -152,6 +152,7 @@ export default function testSaga(
 
   const savePoints: SavePoints = {};
   let previousArgs: Array<Arg> = [];
+  let finalSagaArgs = sagaArgs;
   let iterator = createIterator();
 
   function createEffectTester(
@@ -224,7 +225,7 @@ export default function testSaga(
   };
 
   function createIterator(): Generator<*, *, *> {
-    return saga(...sagaArgs);
+    return saga(...finalSagaArgs);
   }
 
   function apiWithEffectsTesters(
@@ -253,7 +254,11 @@ export default function testSaga(
     };
   }
 
-  function restart(): Api {
+  function restart(...args: Array<any>): Api {
+    if (args.length > 0) {
+      finalSagaArgs = args;
+    }
+
     previousArgs = [];
     iterator = createIterator();
 
