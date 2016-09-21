@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import isEqual from 'lodash.isequal';
 import inspect from 'util-inspect';
 
@@ -151,7 +151,7 @@ export default function testSaga(
   const api = { next, back, finish, restart, save, restore, throw: throwError };
 
   const savePoints: SavePoints = {};
-  let previousArgs: Array<Arg> = [];
+  let history: Array<Arg> = [];
   let finalSagaArgs = sagaArgs;
   let iterator = createIterator();
 
@@ -259,7 +259,7 @@ export default function testSaga(
       finalSagaArgs = args;
     }
 
-    previousArgs = [];
+    history = [];
     iterator = createIterator();
 
     return api;
@@ -270,10 +270,10 @@ export default function testSaga(
     let result;
 
     if (args.length === 0) {
-      previousArgs.push({ type: NONE });
+      history.push({ type: NONE });
       result = iterator.next();
     } else {
-      previousArgs.push({ type: ARGUMENT, value: arg });
+      history.push({ type: ARGUMENT, value: arg });
       result = iterator.next(arg);
     }
 
@@ -285,10 +285,10 @@ export default function testSaga(
     let result;
 
     if (args.length === 0) {
-      previousArgs.push({ type: FINISH });
+      history.push({ type: FINISH });
       result = iterator.return();
     } else {
-      previousArgs.push({ type: FINISH_ARGUMENT, value: arg });
+      history.push({ type: FINISH_ARGUMENT, value: arg });
       result = iterator.return(arg);
     }
 
@@ -296,7 +296,7 @@ export default function testSaga(
   }
 
   function throwError(error: Error): ApiWithEffectsTesters {
-    previousArgs.push({ type: ERROR, value: error });
+    history.push({ type: ERROR, value: error });
 
     const result = iterator.throw(error);
 
@@ -309,32 +309,32 @@ export default function testSaga(
     }
 
     iterator = createIterator();
-    previousArgs = savePoints[name];
-    return applyHistory(savePoints[name]);
+    history = savePoints[name];
+    return applyHistory();
   }
 
   function back(n: number = 1): Api {
-    if (n > previousArgs.length) {
+    if (n > history.length) {
       throw new Error('Cannot go back any further');
     }
 
     let m = n;
 
     while (m--) {
-      previousArgs.pop();
+      history.pop();
     }
 
     iterator = createIterator();
 
-    return applyHistory(previousArgs);
+    return applyHistory();
   }
 
   function save(name: string): Api {
-    savePoints[name] = previousArgs.slice(0);
+    savePoints[name] = history.slice(0);
     return api;
   }
 
-  function applyHistory(history: Array<Arg>): Api {
+  function applyHistory(): Api {
     for (let i = 0, l = history.length; i < l; i++) {
       const arg = history[i];
 
