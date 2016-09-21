@@ -2,10 +2,10 @@
 
 ### :tada: First major release - no breaking changes
 
-With the recent additions courtesy of @rixth, the API feels solid enough to bump
-to v1.0.0.
+With the recent additions courtesy of [@rixth](https://github.com/rixth), the
+API feels solid enough to bump to v1.0.0.
 
-### NEW - Finish early (credit @rixth)
+### NEW - Finish early (credit [@rixth](https://github.com/rixth))
 
 If you want to finish a saga early like bailing out of a `while` loop, then you
 can use the `finish` method.
@@ -42,7 +42,7 @@ saga
   .isDone();
 ```
 
-### NEW - Assert returned values (credit @rixth)
+### NEW - Assert returned values (credit [@rixth](https://github.com/rixth))
 
 Assert a value is returned from a saga and that it is finished with the
 `returns` method.
@@ -59,7 +59,7 @@ saga
   .returns(42);
 ```
 
-### NEW - Save and restore history (credit @rixth)
+### NEW - Save and restore history (credit [@rixth](https://github.com/rixth))
 
 For more robust time travel, you can use the `save` and `restore` methods. The
 `save` method allows you to label a point in the saga that you can return to by
