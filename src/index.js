@@ -25,6 +25,7 @@ import type {
   Arg,
   EffectTesterCreator,
   EffectTestersCreator,
+  SavePoints,
 } from './types';
 
 const identity = value => value;
@@ -149,8 +150,8 @@ export default function testSaga(
 ): Api {
   const api = { next, back, finish, restart, save, restore, throw: throwError };
 
+  const savePoints: SavePoints = {};
   let previousArgs: Array<Arg> = [];
-  const savePoints: { [key: string]: Array<Arg> } = {};
   let iterator = createIterator();
 
   function createEffectTester(
