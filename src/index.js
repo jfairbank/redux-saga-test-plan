@@ -56,6 +56,7 @@ function serializeEffect(
 
 function createErrorMessage(
   header: string,
+  stepNumber: number,
   actual: Object | Array<Object>,
   expected: Object | Array<Object>,
   effectKey?: ?string
@@ -63,10 +64,9 @@ function createErrorMessage(
   const serializedExpected = serializeEffect(expected, effectKey);
   const serializedActual = serializeEffect(actual, effectKey);
 
-  const errorMessage = `\n${header}\n\n`
+  const errorMessage = `\nAssertion ${stepNumber} failed: ${header}\n\n`
                      + `Expected\n--------\n${serializedExpected}\n\n`
                      + `Actual\n------\n${serializedActual}\n`;
-
   return errorMessage;
 }
 
@@ -74,11 +74,13 @@ function validateEffects(
   effectName: string,
   effectKey: ?string,
   actual: Object | Array<Object>,
-  expected: Object | Array<Object>
+  expected: Object | Array<Object>,
+  stepNumber: number,
 ): ?string {
   if (actual == null) {
     return createErrorMessage(
-      `Expected ${effectName} effect, but the saga yielded nothing`,
+      `expected ${effectName} effect, but the saga yielded nothing`,
+      stepNumber,
       actual,
       expected,
       effectKey
@@ -87,7 +89,8 @@ function validateEffects(
 
   if (Array.isArray(actual) && !Array.isArray(expected)) {
     return createErrorMessage(
-      `Expected ${effectName} effect, but the saga yielded parallel effects`,
+      `expected ${effectName} effect, but the saga yielded parallel effects`,
+      stepNumber,
       actual,
       expected,
       effectKey
@@ -96,7 +99,8 @@ function validateEffects(
 
   if (!Array.isArray(actual) && Array.isArray(expected)) {
     return createErrorMessage(
-      'Expected parallel effects, but the saga yielded a single effect',
+      'expected parallel effects, but the saga yielded a single effect',
+      stepNumber,
       actual,
       expected,
       effectKey
@@ -108,7 +112,8 @@ function validateEffects(
     (!Array.isArray(expected) && !expected[effectKey])
   ) {
     return createErrorMessage(
-      `Expected ${effectName} effect, but the saga yielded a different effect`,
+      `expected ${effectName} effect, but the saga yielded a different effect`,
+      stepNumber,
       actual,
       expected
     );
@@ -117,6 +122,7 @@ function validateEffects(
   if (!isEqual(actual, expected)) {
     return createErrorMessage(
       `${effectName} effects do not match`,
+      stepNumber,
       actual,
       expected,
       effectKey
@@ -130,13 +136,15 @@ function assertSameEffect(
   effectName: string,
   effectKey: ?string,
   actual: Object,
-  expected: Object
+  expected: Object,
+  stepNumber: number,
 ): void {
   const errorMessage = validateEffects(
     effectName,
     effectKey,
     actual,
-    expected
+    expected,
+    stepNumber,
   );
 
   if (errorMessage) {
@@ -161,7 +169,7 @@ export default function testSaga(
     effect: Function = identity
   ): EffectTesterCreator {
     return (yieldedValue) => (...args) => {
-      assertSameEffect(name, key, yieldedValue, effect(...args));
+      assertSameEffect(name, key, yieldedValue, effect(...args), history.length);
       return api;
     };
   }
@@ -195,6 +203,7 @@ export default function testSaga(
       if (!isEqual(arg, value)) {
         const errorMessage = createErrorMessage(
           'yielded values do not match',
+          history.length,
           value,
           arg
         );
@@ -213,6 +222,7 @@ export default function testSaga(
       if (!isEqual(arg, value)) {
         const errorMessage = createErrorMessage(
           'returned values do not match',
+          history.length,
           value,
           arg
         );
