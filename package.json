@@ -45,6 +45,7 @@
     "eslint": "^3.6.1",
     "eslint-config-airbnb-base": "^8.0.0",
     "eslint-import-resolver-node": "^0.2.0",
+    "eslint-plugin-flowtype": "^2.19.0",
     "eslint-plugin-import": "^1.12.0",
     "flow-bin": "^0.32.0",
     "redux-saga": "^0.11.0",
@@ -52,6 +53,7 @@
   },
   "dependencies": {
     "lodash.isequal": "^4.1.4",
+    "object-assign": "^4.1.0",
     "util-inspect": "^0.1.8"
   },
   "peerDependencies": {
@@ -71,7 +73,8 @@
     "extends": [
       "airbnb-base",
       "plugin:import/errors",
-      "plugin:import/warnings"
+      "plugin:import/warnings",
+      "plugin:flowtype/recommended"
     ],
     "settings": {
       "import/resolver": "node"
@@ -99,10 +102,9 @@
         }
       ]
     },
-    "globals": {
-      "Generator": true,
-      "IteratorResult": true
-    }
+    "plugins": [
+      "flowtype"
+    ]
   },
   "ava": {
     "require": "babel-register",
