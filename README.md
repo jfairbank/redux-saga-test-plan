@@ -161,7 +161,7 @@ saga.next().take('HI');
 // Throws with below:
 //
 // SagaTestError:
-// take effects do not match
+// Assertion 1 failed: take effects do not match
 // 
 // Expected
 // --------
@@ -182,7 +182,7 @@ saga
 // Throws with below:
 //
 // SagaTestError:
-// put effects do not match
+// Assertion 2 failed: put effects do not match
 // 
 // Expected
 // --------
@@ -226,7 +226,7 @@ saga
   .take('WORLD');
 
 // SagaTestError:
-// Expected take effect, but the saga yielded a different effect
+// Assertion 2 Failed: expected take effect, but the saga yielded a different effect
 // 
 // Expected
 // --------
@@ -691,7 +691,7 @@ saga
   .isDone();
 
 // SagaTestError:
-// put effects do not match
+// Assertion 5 failed: put effects do not match
 //
 // Expected
 // --------
