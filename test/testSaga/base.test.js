@@ -2,7 +2,7 @@
 /* eslint-disable no-constant-condition */
 import test from 'ava';
 import { call, fork, put, take } from 'redux-saga/effects';
-import { testSaga } from '../src';
+import { testSaga } from '../../src';
 
 const identity = value => value;
 

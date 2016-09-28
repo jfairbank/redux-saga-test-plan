@@ -9,6 +9,8 @@ declare type Api = {
   restore: SaveRestore,
   restart: Restart,
   throw: ThrowError,
+  takeEvery: SagaHelperProgresser,
+  takeLatest: SagaHelperProgresser,
 };
 
 declare type ApiWithEffectsTesters = Api & {
@@ -39,6 +41,12 @@ declare type Back = (n?: number) => Api;
 declare type SaveRestore = (s: string) => Api;
 declare type Restart = () => Api;
 declare type ThrowError = (error: Error) => ApiWithEffectsTesters;
+
+declare type SagaHelperProgresser = (
+  pattern: string | Array<string> | Function,
+  saga: Function,
+  ...args: Array<mixed>
+) => Api;
 
 declare type HistoryTypeArgument = 'ARGUMENT';
 declare type HistoryTypeError = 'ERROR';

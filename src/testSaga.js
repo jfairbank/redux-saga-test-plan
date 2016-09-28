@@ -1,6 +1,7 @@
 // @flow
 import isEqual from 'lodash.isequal';
 import assign from 'object-assign';
+import { takeEvery, takeLatest } from 'redux-saga';
 
 import {
   take,
@@ -36,7 +37,17 @@ export default function testSaga(
   saga: Function,
   ...sagaArgs: Array<any>
 ): Api {
-  const api = { next, back, finish, restart, save, restore, throw: throwError };
+  const api = {
+    next,
+    back,
+    finish,
+    restart,
+    save,
+    restore,
+    throw: throwError,
+    takeEvery: createSagaHelperProgresser(takeEvery, 'takeEvery'),
+    takeLatest: createSagaHelperProgresser(takeLatest, 'takeLatest'),
+  };
 
   const savePoints: SavePoints = {};
   let history: Array<HistoryItem> = [];
@@ -221,6 +232,51 @@ export default function testSaga(
   function save(name: string): Api {
     savePoints[name] = history.slice(0);
     return api;
+  }
+
+  function createSagaHelperProgresser(helper: Function, helperName: string) {
+    return function sagaHelperProgresser(
+      pattern: string | Array<string> | Function,
+      otherSaga: Function,
+      ...args: Array<mixed>
+    ): Api {
+      const currentHistoryLength = history.length;
+      const actualTakeEffect = iterator.next();
+      const actualForkEffect = iterator.next();
+
+      history.push(({ type: NONE }: HistoryItemNone));
+      history.push(({ type: NONE }: HistoryItemNone));
+
+      const expectedIterator = helper(pattern, otherSaga, ...args);
+      const expectedTakeEffect = expectedIterator.next();
+      const expectedForkEffect = expectedIterator.next();
+
+      const otherSagaName = otherSaga.name || '<anonymous generator function>';
+
+      if (
+        !isEqual(expectedTakeEffect, actualTakeEffect) ||
+        !isEqual(expectedForkEffect, actualForkEffect)
+      ) {
+        let patternName;
+
+        if (typeof pattern === 'string') {
+          patternName = pattern;
+        } else if (Array.isArray(pattern)) {
+          patternName = `[${pattern.join(', ')}]`;
+        } else {
+          patternName = pattern.name || '<anonymous function>';
+        }
+
+        const errorMessage = createErrorMessage(
+          `expected to ${helperName} ${patternName} with ${otherSagaName}`,
+          currentHistoryLength,
+        );
+
+        throw new SagaTestError(errorMessage);
+      }
+
+      return api;
+    };
   }
 
   function applyHistory(): Api {
