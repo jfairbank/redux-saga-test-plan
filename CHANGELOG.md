@@ -1,3 +1,41 @@
+## v1.1.1
+
+### More helpful error messages (credit [@peterkhayes](https://github.com/peterkhayes))
+
+Changed error messages to show assertion number if an assertion fails.
+
+```js
+function identity(value) {
+  return value;
+}
+
+function* mainSaga() {
+  yield call(identity, 42);
+  yield put({ type: 'DONE' });
+}
+
+testSaga(mainSaga)
+  .next()
+  .call(identity, 42)
+
+  .next()
+  .put({ type: 'READY' })
+
+  .next()
+  .isDone();
+
+// SagaTestError:
+// Assertion 2 failed: put effects do not match
+//
+// Expected
+// --------
+// { channel: null, action: { type: 'READY' } }
+//
+// Actual
+// ------
+// { channel: null, action: { type: 'DONE' } }
+```
+
 ## v1.1.0
 
 ### NEW - Restart with different arguments
