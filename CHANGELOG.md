@@ -1,3 +1,58 @@
+## v1.2.0
+
+### NEW - Assertions for `takeEvery` and `takeLatest`
+
+Redux Saga Test Plan now offers assertions for the saga helper functions
+`takeEvery` and `takeLatest`. The difference between these assertions and the
+normal effect creator assertions is that you shouldn't call `next` on your test
+saga beforehand. The `takeEvery` and `takeLatest` functions in Redux Saga Test
+Plan will automatically advance the saga for you. You can read more about
+`takeEvery` and `takeLatest` in Redux Saga's docs
+[here](http://yelouafi.github.io/redux-saga/docs/api/index.html#saga-helpers).
+
+
+```js
+import { takeEvery } from 'redux-saga';
+import { call } from 'redux-saga/effects';
+import testSaga from 'redux-saga-test-plan';
+
+function identity(value) {
+  return value;
+}
+
+function* otherSaga(action, value) {
+  yield call(identity, value);
+}
+
+function* anotherSaga(action) {
+  yield call(identity, action.payload);
+}
+
+function* mainSaga() {
+  yield call(identity, 'foo');
+  yield* takeEvery('READY', otherSaga, 42);
+}
+
+// All good
+testSaga(mainSaga)
+  .next()
+  .call(identity, 'foo')
+  .takeEvery('READY', otherSaga, 42)
+  .finish()
+  .isDone();
+
+// Will throw
+testSaga(mainSaga)
+  .next()
+  .call(identity, 'foo')
+  .takeEvery('READY', anotherSaga, 42)
+  .finish()
+  .isDone();
+
+// SagaTestError:
+// Assertion 1 failed: expected to takeEvery READY with anotherSaga
+```
+
 ## v1.1.1
 
 ### More helpful error messages (credit [@peterkhayes](https://github.com/peterkhayes))
