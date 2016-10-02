@@ -56,7 +56,7 @@
     "util-inspect": "^0.1.8"
   },
   "peerDependencies": {
-    "redux-saga": "^0.10.0 || ^0.11.0"
+    "redux-saga": "^0.12.0"
   },
   "babel": {
     "presets": [
