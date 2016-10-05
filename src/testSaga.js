@@ -13,6 +13,20 @@ import {
   FINISH_ARGUMENT,
 } from './historyTypes';
 
+import {
+  ACTION_CHANNEL,
+  CALL,
+  CANCEL,
+  CANCELLED,
+  CPS,
+  FORK,
+  JOIN,
+  PUT,
+  RACE,
+  SELECT,
+  TAKE,
+} from './keys';
+
 import SagaTestError from './SagaTestError';
 import identity from './identity';
 import createErrorMessage from './createErrorMessage';
@@ -82,21 +96,21 @@ export default function testSaga(
   }
 
   const effectsTestersCreators: EffectTestersCreator = {
-    actionChannel: createEffectTesterFromEffects('actionChannel', 'ACTION_CHANNEL'),
-    apply: createEffectTesterFromEffects('apply', 'CALL'),
-    call: createEffectTesterFromEffects('call', 'CALL'),
-    cancel: createEffectTesterFromEffects('cancel', 'CANCEL'),
-    cancelled: createEffectTesterFromEffects('cancelled', 'CANCELLED'),
-    cps: createEffectTesterFromEffects('cps', 'CPS'),
-    fork: createEffectTesterFromEffects('fork', 'FORK'),
-    join: createEffectTesterFromEffects('join', 'JOIN'),
+    actionChannel: createEffectTesterFromEffects('actionChannel', ACTION_CHANNEL),
+    apply: createEffectTesterFromEffects('apply', CALL),
+    call: createEffectTesterFromEffects('call', CALL),
+    cancel: createEffectTesterFromEffects('cancel', CANCEL),
+    cancelled: createEffectTesterFromEffects('cancelled', CANCELLED),
+    cps: createEffectTesterFromEffects('cps', CPS),
+    fork: createEffectTesterFromEffects('fork', FORK),
+    join: createEffectTesterFromEffects('join', JOIN),
     parallel: createEffectTester('parallel'),
-    put: createEffectTesterFromEffects('put', 'PUT'),
-    race: createEffectTesterFromEffects('race', 'RACE'),
-    select: createEffectTesterFromEffects('select', 'SELECT'),
-    spawn: createEffectTesterFromEffects('spawn', 'FORK'),
-    take: createEffectTesterFromEffects('take', 'TAKE'),
-    takem: createEffectTesterFromEffects('takem', 'TAKE'),
+    put: createEffectTesterFromEffects('put', PUT),
+    race: createEffectTesterFromEffects('race', RACE),
+    select: createEffectTesterFromEffects('select', SELECT),
+    spawn: createEffectTesterFromEffects('spawn', FORK),
+    take: createEffectTesterFromEffects('take', TAKE),
+    takem: createEffectTesterFromEffects('takem', TAKE),
     takeEveryFork: createEffectHelperTester('takeEvery', takeEvery),
     takeLatestFork: createEffectHelperTester('takeLatest', takeLatest),
 
