@@ -1,6 +1,6 @@
 // @flow
 import test from 'ava';
-import { takeEvery } from 'redux-saga';
+import { takeEvery, takeLatest } from 'redux-saga';
 import { call } from 'redux-saga/effects';
 import { testSaga } from '../../src';
 
@@ -20,6 +20,11 @@ function* mainSaga() {
   yield call(identity, 'foo');
   yield* takeEvery('READY', backgroundSaga, 42);
 }
+
+const mainSagaYielding = (helper) => function* generatedMainSagaYielding() {
+  yield call(identity, 'foo');
+  yield helper('READY', backgroundSaga, 42);
+};
 
 test('handles takeEvery', t => {
   t.notThrows(_ => {
@@ -60,6 +65,60 @@ test('throws if wrong args', t => {
       .next()
       .call(identity, 'foo')
       .takeEvery('READY', backgroundSaga, 41)
+      .finish()
+      .isDone();
+  });
+});
+
+test('handles yielding instead of delegating', () => {
+  testSaga(mainSagaYielding(takeEvery))
+    .next()
+    .call(identity, 'foo')
+
+    .next()
+    .takeEveryFork('READY', backgroundSaga, 42)
+
+    .finish()
+    .isDone();
+});
+
+test('throws if a different helper is yielded', t => {
+  t.throws(_ => {
+    testSaga(mainSagaYielding(takeLatest))
+      .next()
+      .call(identity, 'foo')
+
+      .next()
+      .takeEveryFork('READY', backgroundSaga, 42)
+
+      .finish()
+      .isDone();
+  });
+});
+
+test('throws if the take patterns are different', t => {
+  t.throws(_ => {
+    testSaga(mainSagaYielding(takeEvery))
+      .next()
+      .call(identity, 'foo')
+
+      .next()
+      .takeEveryFork('DONE', backgroundSaga, 42)
+
+      .finish()
+      .isDone();
+  });
+});
+
+test('throws if the arguments are different', t => {
+  t.throws(_ => {
+    testSaga(mainSagaYielding(takeEvery))
+      .next()
+      .call(identity, 'foo')
+
+      .next()
+      .takeEveryFork('READY', backgroundSaga, 41)
+
       .finish()
       .isDone();
   });

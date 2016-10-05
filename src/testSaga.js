@@ -32,6 +32,7 @@ import SagaTestError from './SagaTestError';
 import identity from './identity';
 import createErrorMessage from './createErrorMessage';
 import assertSameEffect from './assertSameEffect';
+import validateSagaHelperEffects from './validateSagaHelperEffects';
 
 export default function testSaga(
   saga: Function,
@@ -81,6 +82,8 @@ export default function testSaga(
     spawn: createEffectTester('spawn', 'FORK', spawn),
     take: createEffectTester('take', 'TAKE', take),
     takem: createEffectTester('takem', 'TAKE', takem),
+    takeEveryFork: createEffectTester('takeEvery', 'FORK', takeEvery),
+    takeLatestFork: createEffectTester('takeLatest', 'FORK', takeLatest),
 
     isDone: (done) => () => {
       if (!done) {
@@ -148,6 +151,8 @@ export default function testSaga(
       spawn: effectsTestersCreators.spawn(value),
       take: effectsTestersCreators.take(value),
       takem: effectsTestersCreators.takem(value),
+      takeEveryFork: effectsTestersCreators.takeEveryFork(value),
+      takeLatestFork: effectsTestersCreators.takeLatestFork(value),
       is: effectsTestersCreators.is(value),
       isDone: effectsTestersCreators.isDone(done),
       returns: effectsTestersCreators.returns(value, done),
@@ -240,38 +245,17 @@ export default function testSaga(
       otherSaga: Function,
       ...args: Array<mixed>
     ): Api {
-      const currentHistoryLength = history.length;
-      const actualTakeEffect = iterator.next();
-      const actualForkEffect = iterator.next();
+      const errorMessage = validateSagaHelperEffects(
+        helperName,
+        iterator, // this will be mutated (i.e. 2 steps will be taken)
+        helper(pattern, otherSaga, ...args),
+        history.length,
+      );
 
       history.push(({ type: NONE }: HistoryItemNone));
       history.push(({ type: NONE }: HistoryItemNone));
 
-      const expectedIterator = helper(pattern, otherSaga, ...args);
-      const expectedTakeEffect = expectedIterator.next();
-      const expectedForkEffect = expectedIterator.next();
-
-      const otherSagaName = otherSaga.name || '<anonymous generator function>';
-
-      if (
-        !isEqual(expectedTakeEffect, actualTakeEffect) ||
-        !isEqual(expectedForkEffect, actualForkEffect)
-      ) {
-        let patternName;
-
-        if (typeof pattern === 'string') {
-          patternName = pattern;
-        } else if (Array.isArray(pattern)) {
-          patternName = `[${pattern.join(', ')}]`;
-        } else {
-          patternName = pattern.name || '<anonymous function>';
-        }
-
-        const errorMessage = createErrorMessage(
-          `expected to ${helperName} ${patternName} with ${otherSagaName}`,
-          currentHistoryLength,
-        );
-
+      if (errorMessage) {
         throw new SagaTestError(errorMessage);
       }
 

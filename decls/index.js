@@ -29,6 +29,8 @@ declare type ApiWithEffectsTesters = Api & {
   spawn: EffectTester,
   take: EffectTester,
   takem: EffectTester,
+  takeEveryFork: EffectTester,
+  takeLatestFork: EffectTester,
   is: EffectTester,
   isDone: EffectTester,
   returns: EffectTester,
@@ -103,7 +105,31 @@ declare type EffectTestersCreator = {
   spawn: EffectTesterCreator,
   take: EffectTesterCreator,
   takem: EffectTesterCreator,
+  takeEveryFork: EffectTesterCreator,
+  takeLatestFork: EffectTesterCreator,
   is: EffectTesterCreator,
   isDone: EffectTesterCreator,
   returns: EffectTesterCreator,
+};
+
+declare type Effect = {
+  '@@redux-saga/IO': true,
+};
+
+// This is a hack to get validateSagaHelperEffects to typecheck
+declare type HelperEffect = Effect & {
+  TAKE: {
+    pattern: string | Array<string>,
+  },
+
+  FORK: {
+    context: ?mixed,
+    fn: Function,
+    args: Array<mixed>,
+  },
+};
+
+declare type SagaHelperGenerator = Generator<HelperEffect, void, void> & {
+  name?: string,
+  '@@redux-saga/HELPER'?: true,
 };
