@@ -1,3 +1,77 @@
+## v1.3.0
+
+### Support for Redux Saga v0.12.0
+
+- Added `flush` effect creator assertion
+- Add `throttle` saga helper assertion
+- **Backwards-compatible support:** attempting to use an effect creator like
+  `flush` or a saga helper like `throttle` on a version of Redux Saga that does
+  not support it will throw an error with a message that your version lacks
+  support.  This is primarily to keep from bumping the major version of Redux
+  Saga Test Plan and ensure bug fixes for other features will work for all
+  supported versions of Redux Saga (0.10.x - 0.12.x).
+- Add support for testing yielded `takeEvery`, `takeLatest`, and `throttle`
+  instead of just delegating to them. Use the `*Fork` variants: `takeEveryFork`,
+  `takeLatestFork`, and `throttleFork`. Example below.
+
+```js
+import { takeEvery } from 'redux-saga';
+import { call } from 'redux-saga/effects';
+import testSaga from 'redux-saga-test-plan';
+
+function identity(value) {
+  return value;
+}
+
+function* otherSaga(action, value) {
+  yield call(identity, value);
+}
+
+function* anotherSaga(action) {
+  yield call(identity, action.payload);
+}
+
+function* mainSaga() {
+  yield call(identity, 'foo');
+  yield takeEvery('READY', otherSaga, 42);
+}
+
+// All good
+testSaga(mainSaga)
+  .next()
+  .call(identity, 'foo')
+
+  .next()
+  .takeEveryFork('READY', otherSaga, 42)
+
+  .finish()
+  .isDone();
+
+// Will throw
+testSaga(mainSaga)
+  .next()
+  .call(identity, 'foo')
+
+  .next()
+  .takeEveryFork('READY', anotherSaga, 42)
+
+  .finish()
+  .isDone();
+
+// SagaTestError:
+// Assertion 2 failed: expected takeEvery to fork anotherSaga
+//
+// Expected
+// --------
+// [Function: anotherSaga]
+//
+// Actual
+// ------
+// [Function: otherSaga]
+```
+
+---
+
 ## v1.2.0
 
 ### NEW - Assertions for `takeEvery` and `takeLatest`
@@ -9,7 +83,6 @@ saga beforehand. The `takeEvery` and `takeLatest` functions in Redux Saga Test
 Plan will automatically advance the saga for you. You can read more about
 `takeEvery` and `takeLatest` in Redux Saga's docs
 [here](http://yelouafi.github.io/redux-saga/docs/api/index.html#saga-helpers).
-
 
 ```js
 import { takeEvery } from 'redux-saga';
@@ -53,6 +126,8 @@ testSaga(mainSaga)
 // Assertion 1 failed: expected to takeEvery READY with anotherSaga
 ```
 
+---
+
 ## v1.1.1
 
 ### More helpful error messages (credit [@peterkhayes](https://github.com/peterkhayes))
@@ -90,6 +165,8 @@ testSaga(mainSaga)
 // ------
 // { channel: null, action: { type: 'DONE' } }
 ```
+
+---
 
 ## v1.1.0
 
