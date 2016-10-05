@@ -1,10 +1,10 @@
 // @flow
 import isEqual from 'lodash.isequal';
-import { is } from 'redux-saga/utils';
 import createErrorMessage from './createErrorMessage';
 import validateHelperEffectNamesMatch from './validateHelperEffectNamesMatch';
 import validateTakeHelperEffects from './validateTakeHelperEffects';
 import validateThrottleHelperEffect from './validateThrottleHelperEffect';
+import isHelper from './isHelper';
 
 export default function validateEffects(
   effectName: string,
@@ -13,8 +13,8 @@ export default function validateEffects(
   expected: Object | Array<Object>,
   stepNumber: number,
 ): ?string {
-  const expectedIsHelper = is.helper(expected);
-  const actualIsHelper = is.helper(actual);
+  const expectedIsHelper = isHelper(expected);
+  const actualIsHelper = isHelper(actual);
 
   const finalEffectName = expectedIsHelper
     ? `${effectName} helper`

@@ -154,7 +154,7 @@ test('yielding throws if wrong saga', t => {
   });
 });
 
-test('delegating throws if wrong args', t => {
+test('yielding throws if wrong args', t => {
   t.throws(_ => {
     testSaga(mainSagaYieldingThrottle)
       .next()

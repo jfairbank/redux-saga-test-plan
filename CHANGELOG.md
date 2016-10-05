@@ -1,3 +1,12 @@
+## v1.3.1
+
+## Bug Fixes
+
+- Fix bug trying to access `utils.is.helper` when it may not be available in
+  older versions of redux-saga.
+
+---
+
 ## v1.3.0
 
 ### Support for Redux Saga v0.12.0

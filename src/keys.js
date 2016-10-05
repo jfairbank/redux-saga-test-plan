@@ -11,3 +11,4 @@ export const PUT = 'PUT';
 export const RACE = 'RACE';
 export const SELECT = 'SELECT';
 export const TAKE = 'TAKE';
+export const HELPER = '@@redux-saga/HELPER';
