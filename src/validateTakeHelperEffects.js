@@ -1,45 +1,16 @@
 // @flow
 import isEqual from 'lodash.isequal';
 import createErrorMessage from './createErrorMessage';
-import extractSagaHelperEffectName from './extractSagaHelperEffectName';
 import { TAKE, FORK } from './keys';
 import getFunctionName from './getFunctionName';
+import serializeTakePattern from './serializeTakePattern';
 
-function serializePattern(
-  pattern: string | Array<string> | Function
-): string {
-  if (Array.isArray(pattern)) {
-    return `[${pattern.join(', ')}]`;
-  }
-
-  if (typeof pattern === 'function') {
-    return getFunctionName(pattern);
-  }
-
-  return pattern;
-}
-
-export default function validateSagaHelperEffects(
+export default function validateTakeHelperEffects(
   effectName: string,
-  actual: SagaHelperGenerator,
-  expected: SagaHelperGenerator,
+  actual: TakeHelperGenerator,
+  expected: TakeHelperGenerator,
   stepNumber: number,
 ): ?string {
-  // Delegated helpers won't have a name property
-  if (typeof actual.name === 'string') {
-    const actualEffectName = extractSagaHelperEffectName(actual.name);
-
-    if (actualEffectName !== effectName) {
-      return createErrorMessage(
-        `expected a ${effectName} helper effect, but the saga used a ` +
-        `${actualEffectName} helper effect`,
-        stepNumber,
-        actualEffectName,
-        effectName,
-      );
-    }
-  }
-
   const expectedTake = expected.next().value;
   const actualTake = actual.next().value;
 
@@ -63,7 +34,7 @@ export default function validateSagaHelperEffects(
 
   if (!isEqual(actualTakePattern, expectedTakePattern)) {
     return createErrorMessage(
-      `expected ${effectName} to watch pattern ${serializePattern(expectedTakePattern)}`,
+      `expected ${effectName} to watch pattern ${serializeTakePattern(expectedTakePattern)}`,
       stepNumber,
       actualTakePattern,
       expectedTakePattern,

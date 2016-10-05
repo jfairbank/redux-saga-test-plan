@@ -2,7 +2,9 @@
 import isEqual from 'lodash.isequal';
 import { is } from 'redux-saga/utils';
 import createErrorMessage from './createErrorMessage';
-import validateSagaHelperEffects from './validateSagaHelperEffects';
+import validateHelperEffectNamesMatch from './validateHelperEffectNamesMatch';
+import validateTakeHelperEffects from './validateTakeHelperEffects';
+import validateThrottleHelperEffect from './validateThrottleHelperEffect';
 
 export default function validateEffects(
   effectName: string,
@@ -34,7 +36,27 @@ export default function validateEffects(
     !Array.isArray(expected) &&
     expectedIsHelper
   ) {
-    return validateSagaHelperEffects(
+    const errorMessage = validateHelperEffectNamesMatch(
+      effectName,
+      actual,
+      expected,
+      stepNumber,
+    );
+
+    if (errorMessage) {
+      return errorMessage;
+    }
+
+    if (effectName === 'throttle') {
+      return validateThrottleHelperEffect(
+        effectName,
+        actual,
+        expected,
+        stepNumber,
+      );
+    }
+
+    return validateTakeHelperEffects(
       effectName,
       actual,
       expected,

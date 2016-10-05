@@ -26,7 +26,7 @@ const mainSagaYielding = (helper) => function* generatedMainSagaYielding() {
   yield helper('READY', backgroundSaga, 42);
 };
 
-test('handles takeEvery', t => {
+test('handles delegating takeEvery', t => {
   t.notThrows(_ => {
     testSaga(mainSaga)
       .next()
@@ -37,7 +37,7 @@ test('handles takeEvery', t => {
   });
 });
 
-test('throws if wrong pattern', t => {
+test('delegating throws if wrong pattern', t => {
   t.throws(_ => {
     testSaga(mainSaga)
       .next()
@@ -48,7 +48,7 @@ test('throws if wrong pattern', t => {
   });
 });
 
-test('throws if wrong saga', t => {
+test('delegating throws if wrong saga', t => {
   t.throws(_ => {
     testSaga(mainSaga)
       .next()
@@ -59,7 +59,7 @@ test('throws if wrong saga', t => {
   });
 });
 
-test('throws if wrong args', t => {
+test('delegating throws if wrong args', t => {
   t.throws(_ => {
     testSaga(mainSaga)
       .next()
@@ -82,7 +82,7 @@ test('handles yielding instead of delegating', () => {
     .isDone();
 });
 
-test('throws if a different helper is yielded', t => {
+test('yielding throws if a different helper is yielded', t => {
   t.throws(_ => {
     testSaga(mainSagaYielding(takeLatest))
       .next()
@@ -96,7 +96,7 @@ test('throws if a different helper is yielded', t => {
   });
 });
 
-test('throws if the take patterns are different', t => {
+test('yielding throws if wrong pattern', t => {
   t.throws(_ => {
     testSaga(mainSagaYielding(takeEvery))
       .next()
@@ -110,7 +110,21 @@ test('throws if the take patterns are different', t => {
   });
 });
 
-test('throws if the arguments are different', t => {
+test('yielding throws if wrong saga', t => {
+  t.throws(_ => {
+    testSaga(mainSagaYielding(takeEvery))
+      .next()
+      .call(identity, 'foo')
+
+      .next()
+      .takeEveryFork('READY', otherBackgroundSaga, 42)
+
+      .finish()
+      .isDone();
+  });
+});
+
+test('yielding throws if wrong args', t => {
   t.throws(_ => {
     testSaga(mainSagaYielding(takeEvery))
       .next()

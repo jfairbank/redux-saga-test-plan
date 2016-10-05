@@ -1,7 +1,7 @@
 // @flow
 import isEqual from 'lodash.isequal';
 import assign from 'object-assign';
-import { takeEvery, takeLatest } from 'redux-saga';
+import * as rs from 'redux-saga';
 import * as effects from 'redux-saga/effects';
 import { is } from 'redux-saga/utils';
 
@@ -19,6 +19,7 @@ import {
   CANCEL,
   CANCELLED,
   CPS,
+  FLUSH,
   FORK,
   JOIN,
   PUT,
@@ -31,7 +32,8 @@ import SagaTestError from './SagaTestError';
 import identity from './identity';
 import createErrorMessage from './createErrorMessage';
 import assertSameEffect from './assertSameEffect';
-import validateSagaHelperEffects from './validateSagaHelperEffects';
+import validateTakeHelperEffects from './validateTakeHelperEffects';
+import validateThrottleHelperEffect from './validateThrottleHelperEffect';
 
 export default function testSaga(
   saga: Function,
@@ -45,8 +47,9 @@ export default function testSaga(
     save,
     restore,
     throw: throwError,
-    takeEvery: createSagaHelperProgresser(takeEvery, 'takeEvery'),
-    takeLatest: createSagaHelperProgresser(takeLatest, 'takeLatest'),
+    takeEvery: createTakeHelperProgresser('takeEvery'),
+    takeLatest: createTakeHelperProgresser('takeLatest'),
+    throttle: createThrottleHelperProgresser('throttle'),
   };
 
   const savePoints: SavePoints = {};
@@ -80,10 +83,7 @@ export default function testSaga(
     return createEffectTester(name, key, effects[name]);
   }
 
-  function createEffectHelperTester(
-    name: string,
-    helper: Function,
-  ): EffectTesterCreator {
+  function createEffectHelperTester(name: string): EffectTesterCreator {
     if (!('helper' in is)) {
       return () => () => {
         throw new Error(
@@ -92,7 +92,14 @@ export default function testSaga(
       };
     }
 
-    return createEffectTester(name, undefined, helper);
+    if (!(name in rs)) {
+      return () => () => {
+        throw new Error(`Your version of redux-saga does not support ${name}.`);
+      };
+    }
+
+    // eslint-disable-next-line import/namespace
+    return createEffectTester(name, undefined, rs[name]);
   }
 
   const effectsTestersCreators: EffectTestersCreator = {
@@ -102,6 +109,7 @@ export default function testSaga(
     cancel: createEffectTesterFromEffects('cancel', CANCEL),
     cancelled: createEffectTesterFromEffects('cancelled', CANCELLED),
     cps: createEffectTesterFromEffects('cps', CPS),
+    flush: createEffectTesterFromEffects('flush', FLUSH),
     fork: createEffectTesterFromEffects('fork', FORK),
     join: createEffectTesterFromEffects('join', JOIN),
     parallel: createEffectTester('parallel'),
@@ -111,8 +119,9 @@ export default function testSaga(
     spawn: createEffectTesterFromEffects('spawn', FORK),
     take: createEffectTesterFromEffects('take', TAKE),
     takem: createEffectTesterFromEffects('takem', TAKE),
-    takeEveryFork: createEffectHelperTester('takeEvery', takeEvery),
-    takeLatestFork: createEffectHelperTester('takeLatest', takeLatest),
+    takeEveryFork: createEffectHelperTester('takeEvery'),
+    takeLatestFork: createEffectHelperTester('takeLatest'),
+    throttleFork: createEffectHelperTester('throttle'),
 
     isDone: (done) => () => {
       if (!done) {
@@ -171,6 +180,7 @@ export default function testSaga(
       cancel: effectsTestersCreators.cancel(value),
       cancelled: effectsTestersCreators.cancelled(value),
       cps: effectsTestersCreators.cps(value),
+      flush: effectsTestersCreators.flush(value),
       fork: effectsTestersCreators.fork(value),
       join: effectsTestersCreators.join(value),
       parallel: effectsTestersCreators.parallel(value),
@@ -182,6 +192,7 @@ export default function testSaga(
       takem: effectsTestersCreators.takem(value),
       takeEveryFork: effectsTestersCreators.takeEveryFork(value),
       takeLatestFork: effectsTestersCreators.takeLatestFork(value),
+      throttleFork: effectsTestersCreators.throttleFork(value),
       is: effectsTestersCreators.is(value),
       isDone: effectsTestersCreators.isDone(done),
       returns: effectsTestersCreators.returns(value, done),
@@ -268,19 +279,64 @@ export default function testSaga(
     return api;
   }
 
-  function createSagaHelperProgresser(helper: Function, helperName: string) {
-    return function sagaHelperProgresser(
-      pattern: string | Array<string> | Function,
+  function createTakeHelperProgresser(helperName: string) {
+    if (!(helperName in rs)) {
+      return () => {
+        throw new Error(`Your version of redux-saga does not support ${helperName}.`);
+      };
+    }
+
+    // eslint-disable-next-line import/namespace
+    const helper = rs[helperName];
+
+    return function takeHelperProgresser(
+      pattern: TakePattern,
       otherSaga: Function,
       ...args: Array<mixed>
     ): Api {
-      const errorMessage = validateSagaHelperEffects(
+      const errorMessage = validateTakeHelperEffects(
         helperName,
         iterator, // this will be mutated (i.e. 2 steps will be taken)
         helper(pattern, otherSaga, ...args),
-        history.length,
+        history.length + 1,
       );
 
+      history.push(({ type: NONE }: HistoryItemNone));
+      history.push(({ type: NONE }: HistoryItemNone));
+
+      if (errorMessage) {
+        throw new SagaTestError(errorMessage);
+      }
+
+      return api;
+    };
+  }
+
+  function createThrottleHelperProgresser(helperName: string) {
+    if (!(helperName in rs)) {
+      return () => {
+        throw new Error(`Your version of redux-saga does not support ${helperName}.`);
+      };
+    }
+
+    // eslint-disable-next-line import/namespace
+    const helper = rs[helperName];
+
+    return function throttleHelperProgresser(
+      delayTime: number,
+      pattern: TakePattern,
+      otherSaga: Function,
+      ...args: Array<mixed>
+    ): Api {
+      const errorMessage = validateThrottleHelperEffect(
+        helperName,
+        iterator, // this will be mutated (i.e. 4 steps will be taken)
+        helper(delayTime, pattern, otherSaga, ...args),
+        history.length + 1,
+      );
+
+      history.push(({ type: NONE }: HistoryItemNone));
+      history.push(({ type: NONE }: HistoryItemNone));
       history.push(({ type: NONE }: HistoryItemNone));
       history.push(({ type: NONE }: HistoryItemNone));
 

@@ -9,8 +9,9 @@ declare type Api = {
   restore: SaveRestore,
   restart: Restart,
   throw: ThrowError,
-  takeEvery: SagaHelperProgresser,
-  takeLatest: SagaHelperProgresser,
+  takeEvery: TakeHelperProgresser,
+  takeLatest: TakeHelperProgresser,
+  throttle: ThrottleHelperProgresser,
 };
 
 declare type ApiWithEffectsTesters = Api & {
@@ -20,6 +21,7 @@ declare type ApiWithEffectsTesters = Api & {
   cancel: EffectTester,
   cancelled: EffectTester,
   cps: EffectTester,
+  flush: EffectTester,
   fork: EffectTester,
   join: EffectTester,
   parallel: EffectTester,
@@ -31,6 +33,7 @@ declare type ApiWithEffectsTesters = Api & {
   takem: EffectTester,
   takeEveryFork: EffectTester,
   takeLatestFork: EffectTester,
+  throttleFork: EffectTester,
   is: EffectTester,
   isDone: EffectTester,
   returns: EffectTester,
@@ -44,8 +47,15 @@ declare type SaveRestore = (s: string) => Api;
 declare type Restart = () => Api;
 declare type ThrowError = (error: Error) => ApiWithEffectsTesters;
 
-declare type SagaHelperProgresser = (
-  pattern: string | Array<string> | Function,
+declare type TakeHelperProgresser = (
+  pattern: TakePattern,
+  saga: Function,
+  ...args: Array<mixed>
+) => Api;
+
+declare type ThrottleHelperProgresser = (
+  delayTime: number,
+  pattern: TakePattern,
   saga: Function,
   ...args: Array<mixed>
 ) => Api;
@@ -96,6 +106,7 @@ declare type EffectTestersCreator = {
   cancel: EffectTesterCreator,
   cancelled: EffectTesterCreator,
   cps: EffectTesterCreator,
+  flush: EffectTesterCreator,
   fork: EffectTesterCreator,
   join: EffectTesterCreator,
   parallel: EffectTesterCreator,
@@ -107,21 +118,25 @@ declare type EffectTestersCreator = {
   takem: EffectTesterCreator,
   takeEveryFork: EffectTesterCreator,
   takeLatestFork: EffectTesterCreator,
+  throttleFork: EffectTesterCreator,
   is: EffectTesterCreator,
   isDone: EffectTesterCreator,
   returns: EffectTesterCreator,
 };
 
+declare type TakePattern = string | Array<string> | Function;
+
 declare type Effect = {
   '@@redux-saga/IO': true,
 };
 
-// This is a hack to get validateSagaHelperEffects to typecheck
-declare type HelperEffect = Effect & {
+declare type TakePatternEffect = Effect & {
   TAKE: {
-    pattern: string | Array<string>,
+    pattern: TakePattern,
   },
+};
 
+declare type ForkEffect = Effect & {
   FORK: {
     context: ?mixed,
     fn: Function,
@@ -129,7 +144,45 @@ declare type HelperEffect = Effect & {
   },
 };
 
-declare type SagaHelperGenerator = Generator<HelperEffect, void, void> & {
+declare type ActionChannelEffect = Effect & {
+  ACTION_CHANNEL: {
+    pattern: TakePattern,
+    buffer: Object,
+  },
+};
+
+declare type TakeChannelEffect = Effect & {
+  TAKE: {
+    channel: Object,
+  },
+};
+
+declare type ThrottleCallEffect = Effect & {
+  CALL: {
+    context: ?mixed,
+    fn: Function,
+    args: Array<number>,
+  },
+};
+
+// These are hacks to get validateTakeHelperEffects and
+// validateThrottleHelperEffects to typecheck
+declare type TakeHelperEffect
+  = TakePatternEffect
+  & ForkEffect;
+
+declare type ThrottleHelperEffect
+  = ActionChannelEffect
+  & TakeChannelEffect
+  & ForkEffect
+  & ThrottleCallEffect;
+
+declare type TakeHelperGenerator = Generator<TakeHelperEffect, void, void> & {
+  name?: string,
+  '@@redux-saga/HELPER'?: true,
+};
+
+declare type ThrottleHelperGenerator = Generator<ThrottleHelperEffect, void, void> & {
   name?: string,
   '@@redux-saga/HELPER'?: true,
 };

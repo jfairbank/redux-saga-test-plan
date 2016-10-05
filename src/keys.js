@@ -4,6 +4,7 @@ export const CALL = 'CALL';
 export const CANCEL = 'CANCEL';
 export const CANCELLED = 'CANCELLED';
 export const CPS = 'CPS';
+export const FLUSH = 'FLUSH';
 export const FORK = 'FORK';
 export const JOIN = 'JOIN';
 export const PUT = 'PUT';
