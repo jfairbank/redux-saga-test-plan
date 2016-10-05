@@ -2,23 +2,8 @@
 import isEqual from 'lodash.isequal';
 import assign from 'object-assign';
 import { takeEvery, takeLatest } from 'redux-saga';
-
-import {
-  take,
-  takem,
-  put,
-  race,
-  call,
-  apply,
-  cps,
-  fork,
-  spawn,
-  join,
-  cancel,
-  select,
-  actionChannel,
-  cancelled,
-} from 'redux-saga/effects';
+import * as effects from 'redux-saga/effects';
+import { is } from 'redux-saga/utils';
 
 import {
   ARGUMENT,
@@ -66,24 +51,54 @@ export default function testSaga(
     };
   }
 
+  function createEffectTesterFromEffects(
+    name: string,
+    key: string,
+  ): EffectTesterCreator {
+    if (!(name in effects)) {
+      return () => () => {
+        throw new Error(
+          `The ${name} effect is not available in your version of redux-saga.`
+        );
+      };
+    }
+
+    return createEffectTester(name, key, effects[name]);
+  }
+
+  function createEffectHelperTester(
+    name: string,
+    helper: Function,
+  ): EffectTesterCreator {
+    if (!('helper' in is)) {
+      return () => () => {
+        throw new Error(
+          `Your version of redux-saga does not support yielding ${name} directly.`
+        );
+      };
+    }
+
+    return createEffectTester(name, undefined, helper);
+  }
+
   const effectsTestersCreators: EffectTestersCreator = {
-    actionChannel: createEffectTester('actionChannel', 'ACTION_CHANNEL', actionChannel),
-    apply: createEffectTester('apply', 'CALL', apply),
-    call: createEffectTester('call', 'CALL', call),
-    cancel: createEffectTester('cancel', 'CANCEL', cancel),
-    cancelled: createEffectTester('cancelled', 'CANCELLED', cancelled),
-    cps: createEffectTester('cps', 'CPS', cps),
-    fork: createEffectTester('fork', 'FORK', fork),
-    join: createEffectTester('join', 'JOIN', join),
+    actionChannel: createEffectTesterFromEffects('actionChannel', 'ACTION_CHANNEL'),
+    apply: createEffectTesterFromEffects('apply', 'CALL'),
+    call: createEffectTesterFromEffects('call', 'CALL'),
+    cancel: createEffectTesterFromEffects('cancel', 'CANCEL'),
+    cancelled: createEffectTesterFromEffects('cancelled', 'CANCELLED'),
+    cps: createEffectTesterFromEffects('cps', 'CPS'),
+    fork: createEffectTesterFromEffects('fork', 'FORK'),
+    join: createEffectTesterFromEffects('join', 'JOIN'),
     parallel: createEffectTester('parallel'),
-    put: createEffectTester('put', 'PUT', put),
-    race: createEffectTester('race', 'RACE', race),
-    select: createEffectTester('select', 'SELECT', select),
-    spawn: createEffectTester('spawn', 'FORK', spawn),
-    take: createEffectTester('take', 'TAKE', take),
-    takem: createEffectTester('takem', 'TAKE', takem),
-    takeEveryFork: createEffectTester('takeEvery', 'FORK', takeEvery),
-    takeLatestFork: createEffectTester('takeLatest', 'FORK', takeLatest),
+    put: createEffectTesterFromEffects('put', 'PUT'),
+    race: createEffectTesterFromEffects('race', 'RACE'),
+    select: createEffectTesterFromEffects('select', 'SELECT'),
+    spawn: createEffectTesterFromEffects('spawn', 'FORK'),
+    take: createEffectTesterFromEffects('take', 'TAKE'),
+    takem: createEffectTesterFromEffects('takem', 'TAKE'),
+    takeEveryFork: createEffectHelperTester('takeEvery', takeEvery),
+    takeLatestFork: createEffectHelperTester('takeLatest', takeLatest),
 
     isDone: (done) => () => {
       if (!done) {
