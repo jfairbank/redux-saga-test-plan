@@ -1,5 +1,4 @@
 // @flow
-import test from 'ava';
 import { throttle, takeEvery } from 'redux-saga';
 import { call } from 'redux-saga/effects';
 import { testSaga } from '../../src';
@@ -31,59 +30,59 @@ function* mainSagaYieldingTakeEvery() {
   yield takeEvery('READY', backgroundSaga, 42);
 }
 
-test('handles delegating throttle', t => {
-  t.notThrows(_ => {
+test('handles delegating throttle', () => {
+  expect(_ => {
     testSaga(mainSaga)
       .next()
       .call(identity, 'foo')
       .throttle(500, 'READY', backgroundSaga, 42)
       .finish()
       .isDone();
-  });
+  }).not.toThrow();
 });
 
-test('delegating throws if wrong delay time', t => {
-  t.throws(_ => {
+test('delegating throws if wrong delay time', () => {
+  expect(_ => {
     testSaga(mainSaga)
       .next()
       .call(identity, 'foo')
       .throttle(250, 'READY', backgroundSaga, 42)
       .finish()
       .isDone();
-  });
+  }).toThrow();
 });
 
-test('delegating throws if wrong pattern', t => {
-  t.throws(_ => {
+test('delegating throws if wrong pattern', () => {
+  expect(_ => {
     testSaga(mainSaga)
       .next()
       .call(identity, 'foo')
       .throttle(500, 'DONE', backgroundSaga, 42)
       .finish()
       .isDone();
-  });
+  }).toThrow();
 });
 
-test('delegating throws if wrong saga', t => {
-  t.throws(_ => {
+test('delegating throws if wrong saga', () => {
+  expect(_ => {
     testSaga(mainSaga)
       .next()
       .call(identity, 'foo')
       .throttle(500, 'READY', otherBackgroundSaga, 42)
       .finish()
       .isDone();
-  });
+  }).toThrow();
 });
 
-test('delegating throws if wrong args', t => {
-  t.throws(_ => {
+test('delegating throws if wrong args', () => {
+  expect(_ => {
     testSaga(mainSaga)
       .next()
       .call(identity, 'foo')
       .throttle(500, 'READY', backgroundSaga, 41)
       .finish()
       .isDone();
-  });
+  }).toThrow();
 });
 
 test('handles yielding instead of delegating', () => {
@@ -98,8 +97,8 @@ test('handles yielding instead of delegating', () => {
     .isDone();
 });
 
-test('yielding throws if wrong delay time', t => {
-  t.throws(_ => {
+test('yielding throws if wrong delay time', () => {
+  expect(_ => {
     testSaga(mainSagaYieldingThrottle)
       .next()
       .call(identity, 'foo')
@@ -109,11 +108,11 @@ test('yielding throws if wrong delay time', t => {
 
       .finish()
       .isDone();
-  });
+  }).toThrow();
 });
 
-test('yielding throws if a different helper is yielded', t => {
-  t.throws(_ => {
+test('yielding throws if a different helper is yielded', () => {
+  expect(_ => {
     testSaga(mainSagaYieldingTakeEvery)
       .next()
       .call(identity, 'foo')
@@ -123,11 +122,11 @@ test('yielding throws if a different helper is yielded', t => {
 
       .finish()
       .isDone();
-  });
+  }).toThrow();
 });
 
-test('yielding throws if wrong pattern', t => {
-  t.throws(_ => {
+test('yielding throws if wrong pattern', () => {
+  expect(_ => {
     testSaga(mainSagaYieldingThrottle)
       .next()
       .call(identity, 'foo')
@@ -137,11 +136,11 @@ test('yielding throws if wrong pattern', t => {
 
       .finish()
       .isDone();
-  });
+  }).toThrow();
 });
 
-test('yielding throws if wrong saga', t => {
-  t.throws(_ => {
+test('yielding throws if wrong saga', () => {
+  expect(_ => {
     testSaga(mainSagaYieldingThrottle)
       .next()
       .call(identity, 'foo')
@@ -151,11 +150,11 @@ test('yielding throws if wrong saga', t => {
 
       .finish()
       .isDone();
-  });
+  }).toThrow();
 });
 
-test('yielding throws if wrong args', t => {
-  t.throws(_ => {
+test('yielding throws if wrong args', () => {
+  expect(_ => {
     testSaga(mainSagaYieldingThrottle)
       .next()
       .call(identity, 'foo')
@@ -165,5 +164,5 @@ test('yielding throws if wrong args', t => {
 
       .finish()
       .isDone();
-  });
+  }).toThrow();
 });

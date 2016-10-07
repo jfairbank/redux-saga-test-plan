@@ -1,6 +1,5 @@
 // @flow
 /* eslint-disable no-constant-condition */
-import test from 'ava';
 import { call, fork, put, take } from 'redux-saga/effects';
 import { testSaga } from '../../src';
 
@@ -47,7 +46,7 @@ function createSaga() {
 
 let saga;
 
-test.beforeEach(_ => {
+beforeEach(() => {
   saga = createSaga();
 });
 
@@ -132,8 +131,8 @@ test('can back up to a named save point', () => {
     .call(identity, action);
 });
 
-test('cannot back up to invalid save point', t => {
-  t.throws(_ => {
+test('cannot back up to invalid save point', () => {
+  expect(_ => {
     saga
       .next()
       .take('HELLO')
@@ -144,22 +143,22 @@ test('cannot back up to invalid save point', t => {
       .put({ type: 'ADD', payload: x + y })
 
       .restore('foo bar baz');
-  });
+  }).toThrow();
 });
 
-test('cannot back up at start', t => {
-  t.throws(_ => {
+test('cannot back up at start', () => {
+  expect(_ => {
     saga.back();
-  });
+  }).toThrow();
 });
 
-test('cannot back up past beginning', t => {
-  t.throws(_ => {
+test('cannot back up past beginning', () => {
+  expect(_ => {
     saga
       .next()
       .take('HELLO')
       .back(2);
-  });
+  }).toThrow();
 });
 
 test('can finish the generator early', () => {
@@ -209,34 +208,34 @@ test('can finish with an arg', () => {
     .returns(42);
 });
 
-test('throws for an incorrect take', t => {
-  t.throws(_ => {
+test('throws for an incorrect take', () => {
+  expect(_ => {
     saga.next().take('WORLD');
-  });
+  }).toThrow();
 });
 
-test('throws for an incorrect put', t => {
-  t.throws(_ => {
+test('throws for an incorrect put', () => {
+  expect(_ => {
     saga
       .next()
       .take('HELLO')
 
       .next()
       .put({ type: 'ADD', payload: x + y + 1 });
-  });
+  }).toThrow();
 
-  t.throws(_ => {
+  expect(_ => {
     saga
       .next()
       .take('HELLO')
 
       .next()
       .put({ type: 'SUBTRACT', payload: x + y });
-  });
+  }).toThrow();
 });
 
-test('throws for an incorrect call', t => {
-  t.throws(_ => {
+test('throws for an incorrect call', () => {
+  expect(_ => {
     saga
       .next()
       .take('HELLO')
@@ -246,9 +245,9 @@ test('throws for an incorrect call', t => {
 
       .next()
       .call(identity, y - 1);
-  });
+  }).toThrow();
 
-  t.throws(_ => {
+  expect(_ => {
     saga
       .next()
       .take('HELLO')
@@ -258,11 +257,11 @@ test('throws for an incorrect call', t => {
 
       .next()
       .call(__ => {}, y);
-  });
+  }).toThrow();
 });
 
-test('throws for an incorrect fork', t => {
-  t.throws(_ => {
+test('throws for an incorrect fork', () => {
+  expect(_ => {
     saga
       .next()
       .take('HELLO')
@@ -275,9 +274,9 @@ test('throws for an incorrect fork', t => {
 
       .next()
       .fork(otherSaga, z + 1);
-  });
+  }).toThrow();
 
-  t.throws(_ => {
+  expect(_ => {
     saga
       .next()
       .take('HELLO')
@@ -290,13 +289,13 @@ test('throws for an incorrect fork', t => {
 
       .next()
       .fork(__ => {}, z);
-  });
+  }).toThrow();
 });
 
-test('throws for an incorrect sequence', t => {
-  t.throws(_ => {
+test('throws for an incorrect sequence', () => {
+  expect(_ => {
     saga.next().call(__ => {});
-  });
+  }).toThrow();
 });
 
 test('follows catch block when throwing', () => {
@@ -444,28 +443,28 @@ test('restarts can change generator arguments', () => {
     .isDone();
 });
 
-test('.isDone throws if not done', t => {
-  t.throws(_ => {
+test('.isDone throws if not done', () => {
+  expect(_ => {
     saga.next().isDone();
-  });
+  }).toThrow();
 });
 
-test('.returns if not done', t => {
-  t.throws(_ => {
+test('.returns if not done', () => {
+  expect(_ => {
     testSaga(otherSaga, 1)
       .next()
       .returns(1);
-  });
+  }).toThrow();
 });
 
-test('.returns if return value was not as expected', t => {
-  t.throws(_ => {
+test('.returns if return value was not as expected', () => {
+  expect(_ => {
     testSaga(otherSaga, 1)
       .next()
       .put({ type: 'OTHER', payload: 'hi' })
       .next()
       .returns('foobar');
-  });
+  }).toThrow();
 });
 
 test('.returns does not throw if finished and return value matches', () => {
