@@ -1,9 +1,9 @@
 // @flow
-import * as reduxSaga from 'redux-saga';
-import { call } from 'redux-saga/effects';
-import createTestSaga from '../../src/createTestSaga';
+import niv from 'npm-install-version';
+import createTestSaga from '../../../src/createTestSaga';
 
-const { takeEvery, takeLatest } = reduxSaga;
+const reduxSaga = niv.require('redux-saga@0.11.1');
+const { takeEvery, effects: { call } } = reduxSaga;
 
 const testSaga = createTestSaga(reduxSaga);
 
@@ -73,21 +73,9 @@ test('delegating throws if wrong args', () => {
   }).toThrow();
 });
 
-test('handles yielding instead of delegating', () => {
-  testSaga(mainSagaYielding(takeEvery))
-    .next()
-    .call(identity, 'foo')
-
-    .next()
-    .takeEveryFork('READY', backgroundSaga, 42)
-
-    .finish()
-    .isDone();
-});
-
-test('yielding throws if a different helper is yielded', () => {
+test('does not support yielding', () => {
   expect(_ => {
-    testSaga(mainSagaYielding(takeLatest))
+    testSaga(mainSagaYielding(takeEvery))
       .next()
       .call(identity, 'foo')
 
@@ -96,47 +84,7 @@ test('yielding throws if a different helper is yielded', () => {
 
       .finish()
       .isDone();
-  }).toThrow();
-});
-
-test('yielding throws if wrong pattern', () => {
-  expect(_ => {
-    testSaga(mainSagaYielding(takeEvery))
-      .next()
-      .call(identity, 'foo')
-
-      .next()
-      .takeEveryFork('DONE', backgroundSaga, 42)
-
-      .finish()
-      .isDone();
-  }).toThrow();
-});
-
-test('yielding throws if wrong saga', () => {
-  expect(_ => {
-    testSaga(mainSagaYielding(takeEvery))
-      .next()
-      .call(identity, 'foo')
-
-      .next()
-      .takeEveryFork('READY', otherBackgroundSaga, 42)
-
-      .finish()
-      .isDone();
-  }).toThrow();
-});
-
-test('yielding throws if wrong args', () => {
-  expect(_ => {
-    testSaga(mainSagaYielding(takeEvery))
-      .next()
-      .call(identity, 'foo')
-
-      .next()
-      .takeEveryFork('READY', backgroundSaga, 41)
-
-      .finish()
-      .isDone();
-  }).toThrow();
+  }).toThrowError(
+    'Your version of redux-saga does not support yielding takeEvery directly'
+  );
 });

@@ -7,7 +7,7 @@ export default function serializeTakePattern(pattern: TakePattern): string {
   }
 
   if (typeof pattern === 'function') {
-    return getFunctionName(pattern);
+    return `[Function: ${getFunctionName(pattern)}]`;
   }
 
   return pattern;

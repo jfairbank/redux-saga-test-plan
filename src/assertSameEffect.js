@@ -3,6 +3,7 @@ import SagaTestError from './SagaTestError';
 import validateEffects from './validateEffects';
 
 export default function assertSameEffect(
+  eventChannel: Function,
   effectName: string,
   effectKey: ?string,
   actual: Object,
@@ -10,6 +11,7 @@ export default function assertSameEffect(
   stepNumber: number,
 ) {
   const errorMessage = validateEffects(
+    eventChannel,
     effectName,
     effectKey,
     actual,

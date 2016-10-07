@@ -9,11 +9,12 @@
   ],
   "scripts": {
     "build": "babel src --out-dir lib",
+    "check": "npm run lint && npm run typecheck && npm test",
     "clean": "rimraf lib",
     "lint": "eslint src/ __tests__/",
     "prepublish": "npm run clean && npm run build",
-    "test": "jest",
-    "watch:test": "jest --watch",
+    "test": "niv redux-saga@0.11.1 && jest",
+    "watch:test": "npm test -- --watch",
     "typecheck": "flow"
   },
   "repository": {
@@ -49,6 +50,7 @@
     "eslint-plugin-import": "^1.12.0",
     "flow-bin": "^0.33.0",
     "jest": "^16.0.1",
+    "npm-install-version": "^5.0.9",
     "redux-saga": "^0.12.0",
     "rimraf": "^2.5.4"
   },

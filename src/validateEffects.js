@@ -7,6 +7,7 @@ import validateThrottleHelperEffect from './validateThrottleHelperEffect';
 import isHelper from './isHelper';
 
 export default function validateEffects(
+  eventChannel: Function,
   effectName: string,
   effectKey: ?string,
   actual: Object | Array<Object>,
@@ -49,6 +50,7 @@ export default function validateEffects(
 
     if (effectName === 'throttle') {
       return validateThrottleHelperEffect(
+        eventChannel,
         effectName,
         actual,
         expected,

@@ -1,7 +1,10 @@
 // @flow
 /* eslint-disable no-constant-condition */
+import * as reduxSaga from 'redux-saga';
 import { call, fork, put, take } from 'redux-saga/effects';
-import { testSaga } from '../../src';
+import createTestSaga from '../../src/createTestSaga';
+
+const testSaga = createTestSaga(reduxSaga);
 
 const identity = value => value;
 

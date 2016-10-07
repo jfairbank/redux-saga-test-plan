@@ -1,6 +1,5 @@
 // @flow
 import isEqual from 'lodash.isequal';
-import { eventChannel } from 'redux-saga';
 import createErrorMessage from './createErrorMessage';
 import serializeTakePattern from './serializeTakePattern';
 import getFunctionName from './getFunctionName';
@@ -9,6 +8,7 @@ import { ACTION_CHANNEL, CALL, FORK } from './keys';
 const fakeChannelCreator = () => () => {};
 
 export default function validateThrottleHelperEffect(
+  eventChannel: Function,
   effectName: string,
   actual: ThrottleHelperGenerator,
   expected: ThrottleHelperGenerator,
