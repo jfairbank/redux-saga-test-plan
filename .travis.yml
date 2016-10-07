@@ -6,6 +6,7 @@ node_js:
 branches:
   only:
     - master
+    - dev
     - /^greenkeeper-.*$/
 script:
   - npm run lint
