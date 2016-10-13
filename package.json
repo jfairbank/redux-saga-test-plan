@@ -61,5 +61,17 @@
   },
   "peerDependencies": {
     "redux-saga": "^0.10.0 || ^0.11.0 || ^0.12.0"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text-summary"
+    ],
+    "testRegex": "__tests__/.*\\.test\\.js$"
   }
 }
