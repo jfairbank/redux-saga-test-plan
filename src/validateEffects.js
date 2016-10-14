@@ -10,7 +10,7 @@ export default function validateEffects(
   eventChannel: Function,
   effectName: string,
   effectKey: ?string,
-  actual: Object | Array<Object>,
+  actual: ?Object | ?Array<Object>,
   expected: Object | Array<Object>,
   stepNumber: number,
 ): ?string {

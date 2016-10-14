@@ -182,7 +182,7 @@ declare type TakeHelperGenerator = Generator<?TakeHelperEffect, void, void> & {
   '@@redux-saga/HELPER'?: true,
 };
 
-declare type ThrottleHelperGenerator = Generator<ThrottleHelperEffect, void, void> & {
+declare type ThrottleHelperGenerator = Generator<?ThrottleHelperEffect, void, void> & {
   name?: string,
   '@@redux-saga/HELPER'?: true,
 };
