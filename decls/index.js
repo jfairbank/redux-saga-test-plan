@@ -177,7 +177,7 @@ declare type ThrottleHelperEffect
   & ForkEffect
   & ThrottleCallEffect;
 
-declare type TakeHelperGenerator = Generator<TakeHelperEffect, void, void> & {
+declare type TakeHelperGenerator = Generator<?TakeHelperEffect, void, void> & {
   name?: string,
   '@@redux-saga/HELPER'?: true,
 };

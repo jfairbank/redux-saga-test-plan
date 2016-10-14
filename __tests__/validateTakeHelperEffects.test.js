@@ -1,3 +1,4 @@
+// @flow
 import { fork, take } from 'redux-saga/effects';
 import validateTakeHelperEffects from '../src/validateTakeHelperEffects';
 
@@ -27,7 +28,7 @@ test('returns error message for null/undefined expected take', () => {
     1,
   );
 
-  expect(result).toMatch('expected takeEvery did not take a pattern');
+  expect(result).toMatch(/expected takeEvery did not take a pattern/);
 });
 
 test('returns error message for null/undefined actual take', () => {
@@ -38,7 +39,7 @@ test('returns error message for null/undefined actual take', () => {
     1,
   );
 
-  expect(result).toMatch('actual takeEvery did not take a pattern');
+  expect(result).toMatch(/actual takeEvery did not take a pattern/);
 });
 
 test('returns error message for null/undefined expected fork', () => {
@@ -49,7 +50,7 @@ test('returns error message for null/undefined expected fork', () => {
     1,
   );
 
-  expect(result).toMatch('expected takeEvery did not fork');
+  expect(result).toMatch(/expected takeEvery did not fork/);
 });
 
 test('returns error message for null/undefined actual fork', () => {
@@ -60,5 +61,5 @@ test('returns error message for null/undefined actual fork', () => {
     1,
   );
 
-  expect(result).toMatch('actual takeEvery did not fork');
+  expect(result).toMatch(/actual takeEvery did not fork/);
 });
