@@ -1,3 +1,4 @@
+// @flow
 import niv from 'npm-install-version';
 import createTestSaga from '../../../src/createTestSaga';
 

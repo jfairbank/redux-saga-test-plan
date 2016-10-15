@@ -1,7 +1,9 @@
 // @flow
 import { delay, eventChannel } from 'redux-saga';
 import { actionChannel, call, fork, take } from 'redux-saga/effects';
-import validateThrottleHelperEffect from '../src/validateThrottleHelperEffect';
+import validateThrottleHelperEffect, {
+  fakeChannelCreator,
+} from '../src/validateThrottleHelperEffect';
 
 function* yieldNullActionChannel() {
   yield null;
@@ -108,3 +110,6 @@ test('returns error message for null/undefined actual call', () => {
 
   expect(result).toMatch(/actual throttle did not call delay/);
 });
+
+// Code coverage
+fakeChannelCreator()();

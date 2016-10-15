@@ -43,6 +43,6 @@ test('does not support yielding throttle', () => {
       .next()
       .throttleFork(500, 'READY', backgroundSaga, 42);
   }).toThrowError(
-    'Your version of redux-saga does not support yielding throttle directly.'
+    'Your version of redux-saga does not support throttle.'
   );
 });

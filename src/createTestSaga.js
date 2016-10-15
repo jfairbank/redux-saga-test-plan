@@ -92,17 +92,17 @@ export default function createTestSaga(rs: Object): Function {
     }
 
     function createEffectHelperTester(name: string): EffectTesterCreator {
+      if (!(name in rs)) {
+        return () => () => {
+          throw new Error(`Your version of redux-saga does not support ${name}.`);
+        };
+      }
+
       if (!('helper' in is)) {
         return () => () => {
           throw new Error(
             `Your version of redux-saga does not support yielding ${name} directly.`
           );
-        };
-      }
-
-      if (!(name in rs)) {
-        return () => () => {
-          throw new Error(`Your version of redux-saga does not support ${name}.`);
         };
       }
 
@@ -288,12 +288,6 @@ export default function createTestSaga(rs: Object): Function {
     }
 
     function createTakeHelperProgresser(helperName: string) {
-      if (!(helperName in rs)) {
-        return () => {
-          throw new Error(`Your version of redux-saga does not support ${helperName}.`);
-        };
-      }
-
       // eslint-disable-next-line import/namespace
       const helper = rs[helperName];
 

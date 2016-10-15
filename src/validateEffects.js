@@ -40,7 +40,6 @@ export default function validateEffects(
     const errorMessage = validateHelperEffectNamesMatch(
       effectName,
       actual,
-      expected,
       stepNumber,
     );
 

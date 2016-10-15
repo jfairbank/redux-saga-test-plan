@@ -5,7 +5,6 @@ import extractSagaHelperEffectName from './extractSagaHelperEffectName';
 export default function validateHelperEffectNamesMatch(
   effectName: string,
   actual: TakeHelperGenerator | ThrottleHelperGenerator,
-  expected: TakeHelperGenerator | ThrottleHelperGenerator,
   stepNumber: number,
 ): ?string {
   // Delegated helpers won't have a name property

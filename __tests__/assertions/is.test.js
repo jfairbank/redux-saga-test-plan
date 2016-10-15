@@ -8,7 +8,7 @@ test('handles primitive values', () => {
 
   testSaga(mainSaga).next().is(42);
 
-  expect(() => {
+  expect(_ => {
     testSaga(mainSaga).next().is('foo');
   }).toThrowError('yielded values do not match');
 });
@@ -22,13 +22,13 @@ test('handles objects', () => {
     .next()
     .is({ hello: 'world', foo: { bar: 'baz' } });
 
-  expect(() => {
+  expect(_ => {
     testSaga(mainSaga)
       .next()
       .is({ hello: 'mundo', foo: { bar: 'baz' } });
   }).toThrowError('yielded values do not match');
 
-  expect(() => {
+  expect(_ => {
     testSaga(mainSaga)
       .next()
       .is({ hello: 'world', foo: { bar: 'quux' } });

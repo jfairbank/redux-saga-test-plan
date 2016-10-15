@@ -474,3 +474,36 @@ test('.returns does not throw if finished and return value matches', () => {
     .next()
     .returns(1);
 });
+
+test('applying all possible history types', () => {
+  const getValue = () => 4;
+
+  function* mySaga() {
+    try {
+      const value = yield call(getValue);
+      yield value;
+    } catch (e) {
+      yield e.message;
+      yield call(getValue);
+    }
+  }
+
+  const error = new Error('an error');
+
+  testSaga(mySaga)
+    .next()
+    .call(getValue)
+    .next(42)
+    .is(42)
+    .back()
+    .throw(error)
+    .is(error.message)
+    .next()
+    .call(getValue)
+    .finish()
+    .next()
+    .back()
+    .finish(42)
+    .next()
+    .back();
+});

@@ -5,7 +5,7 @@ import serializeTakePattern from './serializeTakePattern';
 import getFunctionName from './getFunctionName';
 import { ACTION_CHANNEL, CALL, FORK } from './keys';
 
-const fakeChannelCreator = () => () => {};
+export const fakeChannelCreator = () => () => {};
 
 export default function validateThrottleHelperEffect(
   eventChannel: Function,
