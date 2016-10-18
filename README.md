@@ -18,7 +18,15 @@ Powerful test helpers for Redux Saga.
 
 ## Install
 
-    $ npm install --save-dev redux-saga-test-plan
+Install with yarn or npm.
+
+```
+yarn add redux-saga-test-plan --dev
+```
+
+```
+npm install --save-dev redux-saga-test-plan
+```
 
 ## Usage
 
