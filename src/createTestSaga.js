@@ -154,6 +154,11 @@ export default function createTestSaga(rs: Object): Function {
         return api;
       },
 
+      inspect: (value) => (fn) => {
+        fn(value);
+        return api;
+      },
+
       returns: (value, done) => (arg) => {
         if (!done) {
           throw new SagaTestError('saga not done');
@@ -202,6 +207,7 @@ export default function createTestSaga(rs: Object): Function {
         takeLatestFork: effectsTestersCreators.takeLatestFork(value),
         throttleFork: effectsTestersCreators.throttleFork(value),
         is: effectsTestersCreators.is(value),
+        inspect: effectsTestersCreators.inspect(value),
         isDone: effectsTestersCreators.isDone(done),
         returns: effectsTestersCreators.returns(value, done),
       });

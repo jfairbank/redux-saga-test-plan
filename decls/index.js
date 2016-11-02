@@ -35,6 +35,7 @@ declare type ApiWithEffectsTesters = Api & {
   takeLatestFork: EffectTester,
   throttleFork: EffectTester,
   is: EffectTester,
+  inspect: EffectTester,
   isDone: EffectTester,
   returns: EffectTester,
 };
@@ -120,6 +121,7 @@ declare type EffectTestersCreator = {
   takeLatestFork: EffectTesterCreator,
   throttleFork: EffectTesterCreator,
   is: EffectTesterCreator,
+  inspect: EffectTesterCreator,
   isDone: EffectTesterCreator,
   returns: EffectTesterCreator,
 };
