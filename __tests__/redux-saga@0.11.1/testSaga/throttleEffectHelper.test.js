@@ -33,7 +33,7 @@ test('does not support delegating throttle', () => {
       .finish()
       .isDone();
   }).toThrowError(
-    'Your version of redux-saga does not support throttle.'
+    'Your version of redux-saga does not support throttle.',
   );
 });
 
@@ -43,6 +43,6 @@ test('does not support yielding throttle', () => {
       .next()
       .throttleFork(500, 'READY', backgroundSaga, 42);
   }).toThrowError(
-    'Your version of redux-saga does not support throttle.'
+    'Your version of redux-saga does not support throttle.',
   );
 });

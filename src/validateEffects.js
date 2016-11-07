@@ -27,7 +27,7 @@ export default function validateEffects(
       stepNumber,
       actual,
       expected,
-      effectKey
+      effectKey,
     );
   }
 
@@ -71,7 +71,7 @@ export default function validateEffects(
       stepNumber,
       actual,
       expected,
-      effectKey
+      effectKey,
     );
   }
 
@@ -81,7 +81,7 @@ export default function validateEffects(
       stepNumber,
       actual,
       expected,
-      effectKey
+      effectKey,
     );
   }
 
@@ -93,7 +93,7 @@ export default function validateEffects(
       `expected ${finalEffectName} effect, but the saga yielded a different effect`,
       stepNumber,
       actual,
-      expected
+      expected,
     );
   }
 
@@ -103,7 +103,7 @@ export default function validateEffects(
       stepNumber,
       actual,
       expected,
-      effectKey
+      effectKey,
     );
   }
 

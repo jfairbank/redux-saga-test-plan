@@ -29,7 +29,7 @@ test('returns error message if names do not match', () => {
 
   const regex = new RegExp(
     'expected a takeEvery helper effect, but the saga ' +
-    'used a takeLatest helper effect'
+    'used a takeLatest helper effect',
   );
 
   expect(result).toMatch(regex);

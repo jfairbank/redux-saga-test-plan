@@ -83,7 +83,7 @@ export default function createTestSaga(rs: Object): Function {
       if (!(name in effects)) {
         return () => () => {
           throw new Error(
-            `The ${name} effect is not available in your version of redux-saga.`
+            `The ${name} effect is not available in your version of redux-saga.`,
           );
         };
       }
@@ -101,7 +101,7 @@ export default function createTestSaga(rs: Object): Function {
       if (!('helper' in is)) {
         return () => () => {
           throw new Error(
-            `Your version of redux-saga does not support yielding ${name} directly.`
+            `Your version of redux-saga does not support yielding ${name} directly.`,
           );
         };
       }
@@ -145,7 +145,7 @@ export default function createTestSaga(rs: Object): Function {
             'yielded values do not match',
             history.length,
             value,
-            arg
+            arg,
           );
 
           throw new SagaTestError(errorMessage);
@@ -164,7 +164,7 @@ export default function createTestSaga(rs: Object): Function {
             'returned values do not match',
             history.length,
             value,
-            arg
+            arg,
           );
 
           throw new SagaTestError(errorMessage);
