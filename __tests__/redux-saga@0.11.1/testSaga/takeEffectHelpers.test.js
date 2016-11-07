@@ -85,6 +85,6 @@ test('does not support yielding', () => {
       .finish()
       .isDone();
   }).toThrowError(
-    'Your version of redux-saga does not support yielding takeEvery directly'
+    'Your version of redux-saga does not support yielding takeEvery directly',
   );
 });

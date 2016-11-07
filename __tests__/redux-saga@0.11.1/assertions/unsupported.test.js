@@ -17,6 +17,6 @@ test('does not support flush', () => {
       .next()
       .flush({});
   }).toThrowError(
-    'The flush effect is not available in your version of redux-saga'
+    'The flush effect is not available in your version of redux-saga',
   );
 });
