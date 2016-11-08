@@ -49,7 +49,7 @@
     "eslint-plugin-flowtype": "^2.19.0",
     "eslint-plugin-import": "^2.1.0",
     "flow-bin": "^0.34.0",
-    "jest": "^16.0.1",
+    "jest": "^17.0.0",
     "npm-install-version": "^5.0.9",
     "redux-saga": "^0.12.0",
     "rimraf": "^2.5.4"
