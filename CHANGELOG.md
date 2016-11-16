@@ -1,3 +1,40 @@
+## v1.4.0
+
+### NEW - `inspect` helper
+
+The `inspect` method allows you to inspect the yielded value after calling
+`next` or `throw`. This is useful for handling more complex scenarios such as
+yielding nondeterministic values that the effect assertions and general
+assertions can't test.
+
+```js
+function* saga() {
+  yield () => 42;
+}
+
+testSaga(saga)
+  .next()
+  .inspect((fn) => {
+    expect(fn()).toBe(42);
+  });
+```
+
+### Redux Saga 0.13.0 support
+
+Redux Saga 0.13.0 mainly introduced tweaks to their monitor API, which primarily
+affected their middleware and internals. Therefore, Redux Saga Test Plan should
+continue to work just fine with Redux Saga 0.13.0.
+
+### Internal
+
+- Migrate to jest for testing
+- 100% code coverage
+- Some internal cleanup
+- Rearrange order of unsupported version errors in `createEffectHelperTester`
+- Remove unsupported version error in `createTakeHelperProgresser`
+
+---
+
 ## v1.3.1
 
 ## Bug Fixes
