@@ -1,13 +1,29 @@
+cache:
+  directories:
+    - $HOME/.yarn-cache
+
 language: node_js
+
 node_js:
   - "4"
   - "5"
   - "6"
+
 branches:
   only:
     - master
     - dev
     - /^greenkeeper-.*$/
+
+before_install:
+  # Yarn
+  - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
+  - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -qq yarn
+
+install: yarn
+
 script:
   - npm run lint
   - npm run typecheck
