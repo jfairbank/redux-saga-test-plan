@@ -2,6 +2,9 @@
 
 ### NEW - `inspect` helper
 
+Original idea and credit goes to
+[@christian-schulze](https://github.com/christian-schulze).
+
 The `inspect` method allows you to inspect the yielded value after calling
 `next` or `throw`. This is useful for handling more complex scenarios such as
 yielding nondeterministic values that the effect assertions and general
