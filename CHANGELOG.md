@@ -1,3 +1,54 @@
+## v2.0.0
+
+### Redux Saga 0.14.x support
+
+#### Effect Creators for Saga Helpers
+
+Redux Saga introduced effect creators for the saga helpers `takeEvery`,
+`takeLatest`, and `throttle` in order to simply interacting with and testing
+these helpers. Please review the example from Redux Saga's [release
+notes](https://github.com/redux-saga/redux-saga/releases/tag/v0.14.0) below:
+
+```js
+import { takeEvery } from 'redux-saga/effects'
+// ...
+yield* takeEvery('ACTION', worker) // this WON'T work, as effect is just an object
+const task = yield takeEvery('ACTION', worker) // this WILL work like charm
+
+-----
+
+import { takeEvery } from 'redux-saga'
+// ...
+yield* takeEvery('ACTION', worker) // this will continue to work for now
+const task = yield takeEvery('ACTION', worker) // and so will this
+```
+
+Accordingly, Redux Saga Test Plan now supports testing these effect creators via
+the respective assertion methods `takeEveryEffect`, `takeLatestEffect`, and
+`throttleEffect`. The old patterns of delegating or yielding the helpers
+directly is deprecated and may eventually be removed by Redux Saga and Redux
+Saga Test Plan. Your are encouraged to move to using the equivalent effect
+creators.
+
+#### Name Changes
+
+Redux Saga renamed `takem` to `take.maybe`. Redux Saga Test Plan has added an
+equivalent `take.maybe` assertion method. The former is deprecated but still
+available in Redux Saga and Redux Saga Test Plan.
+
+Redux Saga also renamed `put.sync` to `put.resolve`. Redux Saga Test Plan had
+never supported `put.sync`, but now supports the renamed `put.resolve`. There
+are no plans to support `put.sync` since it had never been added to Redux Saga
+Test Plan, so please move to `put.resolve`.
+
+### BREAKING CHANGES
+
+The only real breaking change is that Redux Saga Test Plan drops support for
+Redux Saga versions prior to 0.14.x. No assertion methods were removed or
+renamed.
+
+---
+
 ## v1.4.0
 
 ### NEW - `inspect` helper
