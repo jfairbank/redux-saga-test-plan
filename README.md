@@ -256,10 +256,11 @@ available in Redux Saga. You can reference them in Redux Saga's docs
 [here](http://yelouafi.github.io/redux-saga/docs/api/index.html#effect-creators).
 
 - `take(pattern)`
-- `takem(pattern)`
+- `take.maybe(pattern)`
 - `take(channel)`
-- `takem(channel)`
+- `take.maybe(channel)`
 - `put(action)`
+- `put.resolve(action)`
 - `put(channel, action)`
 - `call(fn, ...args)`
 - `call([context, fn], ...args)`
@@ -274,8 +275,10 @@ available in Redux Saga. You can reference them in Redux Saga's docs
 - `cancel(task)`
 - `select(selector, ...args)`
 - `actionChannel(pattern, [buffer])`
-- `flush(channel)` - Starting in Redux Saga v0.12.0
+- `flush(channel)`
 - `cancelled()`
+- `takem(pattern)` **DEPRECATED:** Use `take.maybe`
+- `takem(channel)` **DEPRECATED:** Use `take.maybe`
 
 ## Saga Helpers
 

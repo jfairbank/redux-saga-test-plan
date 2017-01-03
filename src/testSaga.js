@@ -170,6 +170,18 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     },
   };
 
+  effectsTestersCreators.take.maybe = createEffectTester(
+    'take.maybe',
+    TAKE,
+    effects.take.maybe,
+  );
+
+  effectsTestersCreators.put.resolve = createEffectTester(
+    'put.resolve',
+    PUT,
+    effects.put.resolve,
+  );
+
   function createIterator(): Generator<*, *, *> {
     return saga(...finalSagaArgs);
   }
@@ -177,7 +189,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
   function apiWithEffectsTesters(
     { value, done }: IteratorResult<*, *>,
   ): ApiWithEffectsTesters {
-    return assign({}, api, {
+    const newApi = assign({}, api, {
       actionChannel: effectsTestersCreators.actionChannel(value),
       apply: effectsTestersCreators.apply(value),
       call: effectsTestersCreators.call(value),
@@ -205,6 +217,11 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       isDone: effectsTestersCreators.isDone(done),
       returns: effectsTestersCreators.returns(value, done),
     });
+
+    newApi.take.maybe = effectsTestersCreators.take.maybe(value);
+    newApi.put.resolve = effectsTestersCreators.put.resolve(value);
+
+    return newApi;
   }
 
   function restart(...args: Array<any>): Api {
