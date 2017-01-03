@@ -1,6 +1,6 @@
 // @flow
 import { fork, take } from 'redux-saga/effects';
-import validateTakeHelperEffects from '../src/validateTakeHelperEffects';
+import validateTakeHelper from '../src/validateTakeHelper';
 
 function* yieldNullTake() {
   yield null;
@@ -21,7 +21,7 @@ function* yieldFork() {
 }
 
 test('returns error message for null/undefined expected take', () => {
-  const result = validateTakeHelperEffects(
+  const result = validateTakeHelper(
     'takeEvery',
     yieldNullTake(),
     yieldNullTake(),
@@ -32,7 +32,7 @@ test('returns error message for null/undefined expected take', () => {
 });
 
 test('returns error message for null/undefined actual take', () => {
-  const result = validateTakeHelperEffects(
+  const result = validateTakeHelper(
     'takeEvery',
     yieldNullTake(),
     yieldTake(),
@@ -43,7 +43,7 @@ test('returns error message for null/undefined actual take', () => {
 });
 
 test('returns error message for null/undefined expected fork', () => {
-  const result = validateTakeHelperEffects(
+  const result = validateTakeHelper(
     'takeEvery',
     yieldNullFork(),
     yieldNullFork(),
@@ -54,7 +54,7 @@ test('returns error message for null/undefined expected fork', () => {
 });
 
 test('returns error message for null/undefined actual fork', () => {
-  const result = validateTakeHelperEffects(
+  const result = validateTakeHelper(
     'takeEvery',
     yieldNullFork(),
     yieldFork(),

@@ -1,11 +1,7 @@
 // @flow
-import * as reduxSaga from 'redux-saga';
+import { takeEvery, throttle } from 'redux-saga';
 import { call } from 'redux-saga/effects';
-import createTestSaga from '../../src/createTestSaga';
-
-const { throttle, takeEvery } = reduxSaga;
-
-const testSaga = createTestSaga(reduxSaga);
+import { testSaga } from '../../src';
 
 function identity(value) {
   return value;

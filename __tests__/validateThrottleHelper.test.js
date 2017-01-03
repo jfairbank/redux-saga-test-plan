@@ -1,9 +1,9 @@
 // @flow
 import { delay, eventChannel } from 'redux-saga';
 import { actionChannel, call, fork, take } from 'redux-saga/effects';
-import validateThrottleHelperEffect, {
+import validateThrottleHelper, {
   fakeChannelCreator,
-} from '../src/validateThrottleHelperEffect';
+} from '../src/validateThrottleHelper';
 
 function* yieldNullActionChannel() {
   yield null;
@@ -40,7 +40,7 @@ function* yieldCall() {
 }
 
 test('returns error message for null/undefined expected actionChannel', () => {
-  const result = validateThrottleHelperEffect(
+  const result = validateThrottleHelper(
     eventChannel,
     'throttle',
     yieldNullActionChannel(),
@@ -52,7 +52,7 @@ test('returns error message for null/undefined expected actionChannel', () => {
 });
 
 test('returns error message for null/undefined actual actionChannel', () => {
-  const result = validateThrottleHelperEffect(
+  const result = validateThrottleHelper(
     eventChannel,
     'throttle',
     yieldNullActionChannel(),
@@ -64,7 +64,7 @@ test('returns error message for null/undefined actual actionChannel', () => {
 });
 
 test('returns error message for null/undefined expected fork', () => {
-  const result = validateThrottleHelperEffect(
+  const result = validateThrottleHelper(
     eventChannel,
     'throttle',
     yieldNullFork(),
@@ -76,7 +76,7 @@ test('returns error message for null/undefined expected fork', () => {
 });
 
 test('returns error message for null/undefined actual fork', () => {
-  const result = validateThrottleHelperEffect(
+  const result = validateThrottleHelper(
     eventChannel,
     'throttle',
     yieldNullFork(),
@@ -88,7 +88,7 @@ test('returns error message for null/undefined actual fork', () => {
 });
 
 test('returns error message for null/undefined expected call', () => {
-  const result = validateThrottleHelperEffect(
+  const result = validateThrottleHelper(
     eventChannel,
     'throttle',
     yieldNullCall(),
@@ -100,7 +100,7 @@ test('returns error message for null/undefined expected call', () => {
 });
 
 test('returns error message for null/undefined actual call', () => {
-  const result = validateThrottleHelperEffect(
+  const result = validateThrottleHelper(
     eventChannel,
     'throttle',
     yieldNullCall(),

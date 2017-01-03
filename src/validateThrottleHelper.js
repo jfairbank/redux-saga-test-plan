@@ -7,7 +7,7 @@ import { ACTION_CHANNEL, CALL, FORK } from './keys';
 
 export const fakeChannelCreator = () => () => {};
 
-export default function validateThrottleHelperEffect(
+export default function validateThrottleHelper(
   eventChannel: Function,
   effectName: string,
   actual: ThrottleHelperGenerator,

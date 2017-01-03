@@ -5,7 +5,7 @@ import { TAKE, FORK } from './keys';
 import getFunctionName from './getFunctionName';
 import serializeTakePattern from './serializeTakePattern';
 
-export default function validateTakeHelperEffects(
+export default function validateTakeHelper(
   effectName: string,
   actual: TakeHelperGenerator,
   expected: TakeHelperGenerator,

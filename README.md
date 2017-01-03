@@ -279,36 +279,61 @@ available in Redux Saga. You can reference them in Redux Saga's docs
 
 ## Saga Helpers
 
-Redux Saga Test Plan also offers assertions for the saga helper functions
-`takeEvery`, `takeLatest`, and `throttle` (available starting in Redux Saga
-v0.12.0), depending on how you use them:
+Redux Saga Test Plan also offers assertions for the saga helper effects
+`takeEvery`, `takeLatest`, and `throttle`. These helpers come in two flavors.
+Your sagas can delegate (i.e. use `yield*`) to these helpers if you import them
+directly from the `redux-saga` module. This is now a deprecated pattern
+according to Redux Saga. You are encouraged to now import the equivalent effect
+creators for these helpers from the `redux-saga/effects` module and just yield
+them like other effect creators. Redux Saga still supports delegating to the
+helpers, but if it removes support for delegation, then Redux Saga Test Plan
+will also necessarily remove support for testing delegations.
 
-1. If your saga delegates to any of these helpers (i.e. uses `yield*`), then you
-   can use the respective `takeEvery`, `takeLatest`, and `throttle` methods from
-   Redux Saga Test Plan. The difference between these assertions and the normal
-   effect creator assertions is that you shouldn't call `next` on your test saga
-   beforehand. These methods will automatically advance the saga for you. You
-   can read more about `takeEvery`, `takeLatest`, and `throttle` in Redux Saga's
-   docs
-   [here](http://yelouafi.github.io/redux-saga/docs/api/index.html#saga-helpers).
+To decide which assertions you need for testing your saga, please review the
+possibilities below:
 
-2. Starting in Redux Saga v0.12.0, instead of delegating to these helpers, you
-   can instead yield them like normal effect creators such as `call` or `put`.
-   These are non-blocking yields; internally, Redux Saga will fork them like the
+1. If you are using the helper effect creators from `redux-saga/effects`, you
+   can use the respective methods `takeEveryEffect`, `takeLatestEffect`, and
+   `throttleEffect` from Redux Saga Test Plan.
+
+2. If your saga delegates to any of these helpers from `redux-saga` directly,
+   then you can use the respective `takeEvery`, `takeLatest`, and `throttle`
+   methods from Redux Saga Test Plan. The difference between these assertions
+   and the normal effect creator assertions is that you shouldn't call `next` on
+   your test saga beforehand. These methods will automatically advance the saga
+   for you.
+
+   **DEPRECATION NOTICE**:  
+   Delegating is now a deprecated pattern for Redux Saga. Please move to using
+   the effect creators added in Redux Saga
+   [v0.14.0](https://github.com/redux-saga/redux-saga/releases/tag/v0.14.0).
+   If Redux Saga removes this pattern, then Redux Saga Test Plan will also
+   remove the respective assertion methods.
+
+3. Starting in Redux Saga
+   [v0.12.0](https://github.com/redux-saga/redux-saga/releases/tag/v0.12.0),
+   instead of delegating to the helpers from the `redux-saga` module, you could
+   instead yield them like normal effect creators such as `call` or `put`. These
+   are non-blocking yields; internally, Redux Saga will fork them like the
    normal `fork` effect creator. If you yield instead of delegating, then you
    can use the respective `takeEveryFork`, `takeLatestFork`, and `throttleFork`
    methods from Redux Saga Test Plan. Because these assertions are like the
    normal effect creator assertions, you **WILL** need to call `next` prior to
    these assertions.
 
+   **DEPRECATION NOTICE**:  
+   Because these are the same helpers you can delegate to, this pattern may also
+   be removed by Redux Saga, meaning Redux Saga Test Plan will also remove the
+   respective assertion methods.
+
 
 #### Summary
 
-| Helper | Delegating | Yielding |
-| ------ | ---------- | -------- |
-| `takeEvery` | Use `takeEvery` assertion.<br>Don't call `next` before. | Use `takeEveryFork` assertion.<br>Call `next` before. |
-| `takeLatest` | Use `takeLatest` assertion.<br>Don't call `next` before. | Use `takeLatestFork` assertion.<br>Call `next` before. |
-| `throttle` | Use `throttle` assertion.<br>Don't call `next` before. | Use `throttleFork` assertion.<br>Call `next` before. |
+| Helper | Effect Creator | Delegating Helper<br>DEPRECATED | Yielding Helper<br>DEPRECATED |
+| ------ | -------------- | ----------------- | --------------- |
+| `takeEvery` | Use `takeEveryEffect` assertion.<br>Call `next` before. | Use `takeEvery` assertion.<br>Don't call `next` before. | Use `takeEveryFork` assertion.<br>Call `next` before. |
+| `takeLatest` | Use `takeLatestEveryEffect` assertion.<br>Call `next` before. | Use `takeLatest` assertion.<br>Don't call `next` before. | Use `takeLatestFork` assertion.<br>Call `next` before. |
+| `throttle` | Use `throttleEffect` assertion.<br>Call `next` before. | Use `throttle` assertion.<br>Don't call `next` before. | Use `throttleFork` assertion.<br>Call `next` before. |
 
 #### Delegating Example
 

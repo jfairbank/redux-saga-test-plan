@@ -2,7 +2,7 @@
 import createErrorMessage from './createErrorMessage';
 import extractSagaHelperEffectName from './extractSagaHelperEffectName';
 
-export default function validateHelperEffectNamesMatch(
+export default function validateHelperNamesMatch(
   effectName: string,
   actual: TakeHelperGenerator | ThrottleHelperGenerator,
   stepNumber: number,
