@@ -253,7 +253,7 @@ saga
 
 As mentioned, Redux Saga Test Plan has assertions for all the effect creators
 available in Redux Saga. You can reference them in Redux Saga's docs
-[here](http://yelouafi.github.io/redux-saga/docs/api/index.html#effect-creators).
+[here](http://redux-saga.github.io/redux-saga/docs/api/index.html#effect-creators).
 
 - `take(pattern)`
 - `take.maybe(pattern)`
