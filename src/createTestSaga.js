@@ -33,10 +33,7 @@ import validateTakeHelperEffects from './validateTakeHelperEffects';
 import validateThrottleHelperEffect from './validateThrottleHelperEffect';
 
 export default function createTestSaga(rs: Object): Function {
-  const {
-    effects,
-    utils: { is },
-  } = rs;
+  const { effects } = rs;
 
   return function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     const api = {
@@ -80,33 +77,10 @@ export default function createTestSaga(rs: Object): Function {
       name: string,
       key: string,
     ): EffectTesterCreator {
-      if (!(name in effects)) {
-        return () => () => {
-          throw new Error(
-            `The ${name} effect is not available in your version of redux-saga.`,
-          );
-        };
-      }
-
       return createEffectTester(name, key, effects[name]);
     }
 
     function createEffectHelperTester(name: string): EffectTesterCreator {
-      if (!(name in rs)) {
-        return () => () => {
-          throw new Error(`Your version of redux-saga does not support ${name}.`);
-        };
-      }
-
-      if (!('helper' in is)) {
-        return () => () => {
-          throw new Error(
-            `Your version of redux-saga does not support yielding ${name} directly.`,
-          );
-        };
-      }
-
-      // eslint-disable-next-line import/namespace
       return createEffectTester(name, undefined, rs[name]);
     }
 
@@ -321,13 +295,6 @@ export default function createTestSaga(rs: Object): Function {
     }
 
     function createThrottleHelperProgresser(helperName: string) {
-      if (!(helperName in rs)) {
-        return () => {
-          throw new Error(`Your version of redux-saga does not support ${helperName}.`);
-        };
-      }
-
-      // eslint-disable-next-line import/namespace
       const helper = rs[helperName];
 
       return function throttleHelperProgresser(

@@ -13,7 +13,7 @@
     "clean": "rimraf lib",
     "lint": "eslint src/ __tests__/",
     "prepublish": "npm run clean && npm run build",
-    "test": "niv redux-saga@0.11.1 && jest",
+    "test": "jest",
     "watch:test": "npm test -- --watch",
     "typecheck": "flow"
   },
@@ -50,7 +50,6 @@
     "eslint-plugin-import": "^2.1.0",
     "flow-bin": "^0.37.0",
     "jest": "^17.0.0",
-    "npm-install-version": "^6.0.0",
     "redux-saga": "^0.13.0",
     "rimraf": "^2.5.4"
   },
@@ -60,7 +59,7 @@
     "util-inspect": "^0.1.8"
   },
   "peerDependencies": {
-    "redux-saga": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0"
+    "redux-saga": "^0.12.0 || ^0.13.0"
   },
   "jest": {
     "collectCoverage": true,
