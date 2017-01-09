@@ -1,14 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 import isEqual from 'lodash.isequal';
-import { findIndex } from './utils/array';
+import { findIndex } from './array';
 
-export default class FakeSet {
-  constructor() {
-    this._values = [];
-  }
-
-  get size() {
-    return this._values.length;
+export default class ArraySet {
+  constructor(values = []) {
+    this._values = values.slice(0);
   }
 
   values() {
