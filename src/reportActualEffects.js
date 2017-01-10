@@ -1,6 +1,10 @@
+// @flow
 import serializeEffect from './serializeEffect';
 
-export default function reportActualEffects(store, storeKey) {
+export default function reportActualEffects(
+  store: Object,
+  storeKey: string,
+): string {
   const values = store.values();
 
   if (values.length === 0) {

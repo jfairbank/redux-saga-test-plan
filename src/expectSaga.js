@@ -1,3 +1,4 @@
+// @flow
 import { effects, runSaga, utils } from 'redux-saga';
 import SagaTestError from './SagaTestError';
 import Map from './utils/Map';
@@ -21,11 +22,9 @@ import {
   TAKE,
 } from './keys';
 
-type Timeout = number | false;
-
 const { asEffect, is } = utils;
 
-export default function expectSaga(generator, ...sagaArgs) {
+export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): ExpectApi {
   const effectStores = {
     [TAKE]: new ArraySet(),
     [PUT]: new ArraySet(),
@@ -50,7 +49,7 @@ export default function expectSaga(generator, ...sagaArgs) {
   let mainTask;
   let mainTaskPromise;
 
-  function getAllPromises() {
+  function getAllPromises(): Promise<*> {
     return Promise.all([
       ...effectStores[PROMISE].values(),
       ...forkedTasks.map(task => task.done),
@@ -58,12 +57,12 @@ export default function expectSaga(generator, ...sagaArgs) {
     ]);
   }
 
-  function addForkedTask(task) {
+  function addForkedTask(task: Task): void {
     stopDirty = true;
     forkedTasks.push(task);
   }
 
-  function cancelMainTask(timeout: Timeout, timedOut: boolean): Promise<*> {
+  function cancelMainTask(timeout: number, timedOut: boolean): Promise<*> {
     if (stopDirty) {
       stopDirty = false;
       return scheduleStop(timeout);
@@ -93,24 +92,24 @@ export default function expectSaga(generator, ...sagaArgs) {
     );
   }
 
-  function queueAction(action) {
+  function queueAction(action: Action): void {
     queuedActions.push(action);
   }
 
-  function notifyListeners(value) {
+  function notifyListeners(action: Action): void {
     listeners.forEach((listener) => {
-      listener(value);
+      listener(action);
     });
   }
 
-  function notifyNextAction() {
+  function notifyNextAction(): void {
     if (queuedActions.length > 0) {
       const action = queuedActions.shift();
       notifyListeners(action);
     }
   }
 
-  function parseEffect(effect) {
+  function parseEffect(effect: Object): string {
     switch (true) {
       case is.promise(effect):
         return PROMISE;
@@ -144,10 +143,11 @@ export default function expectSaga(generator, ...sagaArgs) {
     }
   }
 
-  function storeEffect(event) {
+  function storeEffect(event: Object): void {
     const effectType = parseEffect(event.effect);
 
-    if (effectType === NONE) {
+    // Using string literal for flow
+    if (effectType === 'NONE') {
       return;
     }
 
@@ -165,10 +165,10 @@ export default function expectSaga(generator, ...sagaArgs) {
     }
   }
 
-  let storeState;
+  let storeState: mixed;
 
   const io = {
-    subscribe(listener) {
+    subscribe(listener: Function): Function {
       listeners.push(listener);
 
       return () => {
@@ -179,16 +179,16 @@ export default function expectSaga(generator, ...sagaArgs) {
 
     dispatch: notifyListeners,
 
-    getState() {
+    getState(): mixed {
       return storeState;
     },
 
     sagaMonitor: {
-      effectTriggered(event) {
+      effectTriggered(event: Object): void {
         storeEffect(event);
       },
 
-      effectResolved(effectId, value) {
+      effectResolved(effectId: number, value: any): void {
         const forkEffect = outstandingForkEffects.get(effectId);
 
         if (forkEffect) {
@@ -221,7 +221,7 @@ export default function expectSaga(generator, ...sagaArgs) {
   api.put.resolve = createEffectTester('put.resolve', PUT, effects.put.resolve);
   api.take.maybe = createEffectTester('take.maybe', TAKE, effects.take.maybe);
 
-  function checkExpectations() {
+  function checkExpectations(): void {
     expectations.forEach(({ effectName, expectedEffect, store, storeKey }) => {
       const deleted = store.delete(expectedEffect);
 
@@ -237,12 +237,12 @@ export default function expectSaga(generator, ...sagaArgs) {
     });
   }
 
-  function dispatch(action) {
+  function dispatch(action: Action): ExpectApi {
     queueAction(action);
     return api;
   }
 
-  function start() {
+  function start(): ExpectApi {
     iterator = generator(...sagaArgs);
 
     mainTask = runSaga(iterator, io);
@@ -256,7 +256,7 @@ export default function expectSaga(generator, ...sagaArgs) {
     return api;
   }
 
-  function stop(timeout: Timeout): Promise {
+  function stop(timeout: Timeout): Promise<*> {
     return scheduleStop(timeout).then((err) => {
       if (err) {
         throw err;
@@ -266,18 +266,22 @@ export default function expectSaga(generator, ...sagaArgs) {
 
   function run(
     timeout?: Timeout = expectSaga.DEFAULT_TIMEOUT,
-  ): Promise {
+  ): Promise<*> {
     start();
     return stop(timeout);
   }
 
-  function withState(state) {
+  function withState(state: mixed): ExpectApi {
     storeState = state;
     return api;
   }
 
-  function createEffectTester(effectName, storeKey, effectCreator) {
-    return (...args) => {
+  function createEffectTester(
+    effectName: string,
+    storeKey: string,
+    effectCreator: Function,
+  ): Function {
+    return (...args: mixed[]) => {
       const expectedEffect = effectCreator(...args);
 
       expectations.push({
@@ -291,7 +295,10 @@ export default function expectSaga(generator, ...sagaArgs) {
     };
   }
 
-  function createEffectTesterFromEffects(effectName, storeKey) {
+  function createEffectTesterFromEffects(
+    effectName: string,
+    storeKey: string,
+  ): Function {
     return createEffectTester(effectName, storeKey, effects[effectName]);
   }
 
