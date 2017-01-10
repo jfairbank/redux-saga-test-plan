@@ -1,6 +1,6 @@
 # Integration Testing
 
-**NOTE: `exportSaga` is a relatively new feature of Redux Saga Test Plan, and
+**NOTE: `expectSaga` is a relatively new feature of Redux Saga Test Plan, and
 many kinks may still need worked out and other use cases considered.**
 
 **Requires global `Promise` to be available**
