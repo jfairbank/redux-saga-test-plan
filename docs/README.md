@@ -117,22 +117,19 @@ saga
 
 Yes, it's that simple to test with `expectSaga`.
 
-## Install
+## Table of Contents
 
-Install with yarn or npm.
-
-```
-yarn add redux-saga-test-plan --dev
-```
-
-```
-npm install --save-dev redux-saga-test-plan
-```
-
-## Getting Started
-
-#### [Docs](http://redux-saga-test-plan.jeremyfairbank.com)
-
-Redux Saga Test Plan has a host of options along with more helper methods for
-testing sagas. To learn more, check out the docs at
-[redux-saga-test-plan.jeremyfairbank.com](http://redux-saga-test-plan.jeremyfairbank.com).
+- [Introduction](/README.md)
+- [Getting Started](/getting-started.md)
+- [Unit Testing](/unit-testing/README.md)
+  - [Error Messages](/unit-testing/error-messages.md)
+  - [Effect Creators](/unit-testing/effect-creators.md)
+  - [Saga Helpers](/unit-testing/saga-helpers.md)
+  - [General Assertions](/unit-testing/general-assertions.md)
+  - [Time Travel](/unit-testing/time-travel.md)
+- [Integration Testing](/integration-testing/README.md)
+  - [Effect Creators](/integration-testing/effect-creators.md)
+  - [Dispatching](/integration-testing/dispatching.md)
+  - [Timeout](/integration-testing/timeout.md)
+  - [State](/integration-testing/state.md)
+  - [Forked Sagas](/integration-testing/forked-sagas.md)

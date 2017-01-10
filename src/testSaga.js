@@ -34,7 +34,7 @@ import {
 } from './keys';
 
 import SagaTestError from './SagaTestError';
-import identity from './identity';
+import identity from './utils/identity';
 import createErrorMessage from './createErrorMessage';
 import assertSameEffect from './assertSameEffect';
 import validateTakeHelper from './validateTakeHelper';

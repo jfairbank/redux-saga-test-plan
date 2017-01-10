@@ -1,0 +1,13 @@
+{
+  "gitbook": "3.2.2",
+  "root": "./docs",
+  "plugins": [
+    "advanced-emoji",
+    "github"
+  ],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/jfairbank/redux-saga-test-plan"
+    }
+  }
+}

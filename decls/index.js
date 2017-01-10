@@ -194,3 +194,34 @@ declare type ThrottleHelperGenerator = Generator<?ThrottleHelperEffect, void, vo
   name?: string,
   '@@redux-saga/HELPER'?: true,
 };
+
+// expectSaga
+
+type Action = {
+  type: string | Symbol,
+};
+
+type Timeout = number | false;
+
+type TimeoutConfig = {
+  silenceTimeout?: boolean,
+  timeout?: Timeout,
+};
+
+type Task = { done: Promise<*> };
+
+type ExpectApi = {
+  dispatch: Function,
+  run: Function,
+  withState: Function,
+  actionChannel: Function,
+  apply: Function,
+  call: Function,
+  cps: Function,
+  fork: Function,
+  put: Function,
+  race: Function,
+  select: Function,
+  spawn: Function,
+  take: Function,
+};

@@ -1,7 +1,9 @@
 {
   "parser": "babel-eslint",
   "env": {
-    "jest": true
+    "browser": true,
+    "jest": true,
+    "node": true
   },
   "extends": [
     "airbnb-base",
@@ -14,6 +16,7 @@
   },
   "rules": {
     "arrow-parens": 0,
+    "global-require": 0,
     "no-plusplus": 0,
     "no-unused-vars": [
       "error",

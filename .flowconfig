@@ -1,6 +1,7 @@
 [ignore]
 .*/node_modules/config-chain/.*
 .*/npm/test/fixtures/config/package\.json
+.*/read-package-tree/.*
 
 [include]
 

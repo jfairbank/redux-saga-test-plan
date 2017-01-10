@@ -15,7 +15,12 @@
     "prepublish": "npm run clean && npm run build",
     "test": "jest",
     "watch:test": "npm test -- --watch",
-    "typecheck": "flow"
+    "typecheck": "flow",
+    "docs:clean": "rimraf _book",
+    "docs:prepare": "gitbook install",
+    "docs:build": "npm run docs:prepare && gitbook build",
+    "docs:watch": "npm run docs:prepare && gitbook serve",
+    "docs:publish": "npm run docs:clean && npm run docs:build && cp CNAME _book && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:jfairbank/redux-saga-test-plan gh-pages --force"
   },
   "repository": {
     "type": "git",
@@ -39,6 +44,7 @@
     "babel-core": "^6.7.7",
     "babel-eslint": "^7.0.0",
     "babel-jest": "^18.0.0",
+    "babel-plugin-transform-async-to-generator": "^6.16.0",
     "babel-plugin-transform-flow-strip-types": "^6.8.0",
     "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.16.0",
@@ -49,11 +55,13 @@
     "eslint-plugin-flowtype": "^2.19.0",
     "eslint-plugin-import": "^2.1.0",
     "flow-bin": "^0.37.0",
+    "gitbook-cli": "^2.3.0",
     "jest": "^18.1.0",
     "redux-saga": "^0.14.1",
     "rimraf": "^2.5.4"
   },
   "dependencies": {
+    "core-js": "^2.4.1",
     "lodash.isequal": "^4.1.4",
     "object-assign": "^4.1.0",
     "util-inspect": "^0.1.8"
@@ -64,7 +72,8 @@
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "src/**/*.js"
+      "src/**/*.js",
+      "!src/utils/**/*.js"
     ],
     "coverageReporters": [
       "json",
