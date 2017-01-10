@@ -1,3 +1,53 @@
+## v2.1.0
+
+### NEW - Integration Testing :tada:
+
+**NOTE: `exportSaga` is a relatively new feature of Redux Saga Test Plan, and
+many kinks may still need worked out and other use cases considered.**
+
+**Requires global `Promise` to be available**
+
+Redux Saga Test Plan now exports a new function called `expectSaga` for
+integration, BDD-style testing!
+
+One downside to unit testing is that it couples your test to your
+implementation. Simple reordering of yielded effects in your saga could break
+your tests even if the functionality stays the same. If you're not concerned
+with the order or exact effects your saga yields, then you can take a
+integrative approach, testing the behavior of your saga when run by Redux Saga.
+Then, you can simply test that a particular effect was yielded during the saga
+run. `expectSaga` runs your saga asynchronously, so it returns a `Promise`.
+
+```js
+import { expectSaga } from 'redux-saga-test-plan';
+
+function identity(value) {
+  return value;
+}
+
+function* mainSaga(x, y) {
+  const action = yield take('HELLO');
+
+  yield put({ type: 'ADD', payload: x + y });
+  yield call(identity, action);
+}
+
+it('works!', () => {
+  return expectSaga(mainSaga, 40, 2)
+    // assert that the saga will eventually yield `put`
+    // with the expected action
+    .put({ type: 'ADD', payload: 42 })
+
+    // dispatch any actions your saga will `take`
+    .dispatch({ type: 'HELLO' })
+
+    // run it
+    .run();
+});
+```
+
+---
+
 ## v2.0.0
 
 ### Redux Saga 0.14.x support
