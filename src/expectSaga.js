@@ -6,6 +6,7 @@ import serializeEffect from './serializeEffect';
 import { warn } from './utils/logging';
 import { delay, schedule } from './utils/async';
 import identity from './utils/identity';
+import reportActualEffects from './reportActualEffects';
 
 import {
   ACTION_CHANNEL,
@@ -20,28 +21,9 @@ import {
   TAKE,
 } from './keys';
 
+type Timeout = number | false;
+
 const { asEffect, is } = utils;
-
-const DEFAULT_TIMEOUT = 250;
-
-const emptySet = {
-  add() {},
-  delete() { return false; },
-};
-
-function reportActualEffects(store, storeKey) {
-  const values = store.values();
-
-  if (values.length === 0) {
-    return '';
-  }
-
-  const serializedEffects = values.map(
-    (effect, i) => `${i + 1}. ${serializeEffect(effect, storeKey)}`,
-  );
-
-  return `\nActual:\n------\n${serializedEffects.join('\n')}\n`;
-}
 
 export default function expectSaga(generator, ...sagaArgs) {
   const effectStores = {
@@ -54,7 +36,6 @@ export default function expectSaga(generator, ...sagaArgs) {
     [SELECT]: new ArraySet(),
     [ACTION_CHANNEL]: new ArraySet(),
     [PROMISE]: new ArraySet(),
-    [NONE]: emptySet,
   };
 
   const expectations = [];
@@ -63,7 +44,6 @@ export default function expectSaga(generator, ...sagaArgs) {
   const forkedTasks = [];
   const outstandingForkEffects = new Map();
 
-  let isWaitingOnTake = false;
   let stopDirty = false;
 
   let iterator;
@@ -74,6 +54,7 @@ export default function expectSaga(generator, ...sagaArgs) {
     return Promise.all([
       ...effectStores[PROMISE].values(),
       ...forkedTasks.map(task => task.done),
+      mainTaskPromise,
     ]);
   }
 
@@ -82,7 +63,7 @@ export default function expectSaga(generator, ...sagaArgs) {
     forkedTasks.push(task);
   }
 
-  function cancelMainTask(timeout, timedOut) {
+  function cancelMainTask(timeout: Timeout, timedOut: boolean): Promise<*> {
     if (stopDirty) {
       stopDirty = false;
       return scheduleStop(timeout);
@@ -97,10 +78,10 @@ export default function expectSaga(generator, ...sagaArgs) {
     return mainTaskPromise;
   }
 
-  function scheduleStop(timeout) {
+  function scheduleStop(timeout: Timeout): Promise<*> {
     let promise = schedule(getAllPromises).then(() => false);
 
-    if (timeout > 0) {
+    if (typeof timeout === 'number') {
       promise = Promise.race([
         promise,
         delay(timeout).then(() => true),
@@ -165,6 +146,11 @@ export default function expectSaga(generator, ...sagaArgs) {
 
   function storeEffect(event) {
     const effectType = parseEffect(event.effect);
+
+    if (effectType === NONE) {
+      return;
+    }
+
     const effectStore = effectStores[effectType];
 
     if (effectType === FORK) {
@@ -174,9 +160,7 @@ export default function expectSaga(generator, ...sagaArgs) {
 
     effectStore.add(event.effect);
 
-    isWaitingOnTake = effectType === TAKE;
-
-    if (isWaitingOnTake) {
+    if (effectType === TAKE) {
       schedule(notifyNextAction);
     }
   }
@@ -189,10 +173,7 @@ export default function expectSaga(generator, ...sagaArgs) {
 
       return () => {
         const index = listeners.indexOf(listener);
-
-        if (index !== -1) {
-          listeners.splice(index, 1);
-        }
+        listeners.splice(index, 1);
       };
     },
 
@@ -257,12 +238,7 @@ export default function expectSaga(generator, ...sagaArgs) {
   }
 
   function dispatch(action) {
-    if (isWaitingOnTake) {
-      notifyListeners(action);
-    } else {
-      queueAction(action);
-    }
-
+    queueAction(action);
     return api;
   }
 
@@ -280,7 +256,7 @@ export default function expectSaga(generator, ...sagaArgs) {
     return api;
   }
 
-  function stop(timeout = DEFAULT_TIMEOUT) {
+  function stop(timeout: Timeout): Promise {
     return scheduleStop(timeout).then((err) => {
       if (err) {
         throw err;
@@ -288,7 +264,9 @@ export default function expectSaga(generator, ...sagaArgs) {
     });
   }
 
-  function run(timeout = DEFAULT_TIMEOUT) {
+  function run(
+    timeout?: Timeout = expectSaga.DEFAULT_TIMEOUT,
+  ): Promise {
     start();
     return stop(timeout);
   }
@@ -319,3 +297,5 @@ export default function expectSaga(generator, ...sagaArgs) {
 
   return api;
 }
+
+expectSaga.DEFAULT_TIMEOUT = 250;

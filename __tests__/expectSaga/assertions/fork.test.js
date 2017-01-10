@@ -1,6 +1,8 @@
-import { fork, put } from 'redux-saga/effects';
+import { fork, put, takeEvery } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
 import { errorRegex, unreachableError } from './_helper';
+
+jest.mock('../../../src/utils/logging');
 
 function* otherSaga() {
   yield put({ type: 'FORKED' });
@@ -8,6 +10,10 @@ function* otherSaga() {
 
 function* saga() {
   yield fork(otherSaga);
+}
+
+function* sagaWithTakeEvery() {
+  yield takeEvery('TAKE_EVERY', otherSaga);
 }
 
 function* otherSagaWithArg(value) {
@@ -33,6 +39,13 @@ test('fork assertion with arg passes', () => (
 test('forked saga runs', () => (
   expectSaga(saga)
     .put({ type: 'FORKED' })
+    .run()
+));
+
+test('takeEvery saga runs', () => (
+  expectSaga(sagaWithTakeEvery)
+    .put({ type: 'FORKED' })
+    .dispatch({ type: 'TAKE_EVERY' })
     .run()
 ));
 

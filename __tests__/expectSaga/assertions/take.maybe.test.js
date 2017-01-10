@@ -2,6 +2,8 @@ import { take } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
 import { errorRegex, unreachableError } from './_helper';
 
+jest.mock('../../../src/utils/logging');
+
 function* saga() {
   yield take.maybe('READY');
 }
