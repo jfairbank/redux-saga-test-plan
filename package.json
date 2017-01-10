@@ -1,6 +1,6 @@
 {
   "name": "redux-saga-test-plan",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Powerful test helpers for Redux Saga",
   "main": "lib/index.js",
   "files": [
@@ -31,7 +31,9 @@
     "saga",
     "redux-saga",
     "test",
-    "testing"
+    "testing",
+    "tdd",
+    "bdd"
   ],
   "author": "Jeremy Fairbank <elpapapollo@gmail.com> (http://jeremyfairbank.com)",
   "license": "MIT",
