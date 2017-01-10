@@ -33,6 +33,20 @@ test('warns if times out with default timeout', async () => {
   expect(actual).toMatch(expected);
 });
 
+test('silences warnings', async () => {
+  warn.mockClear();
+
+  function* saga() {
+    while (true) {
+      yield take('FOO');
+    }
+  }
+
+  await expectSaga(saga).run({ silenceTimeout: true });
+
+  expect(warn).not.toHaveBeenCalled();
+});
+
 test('warns if times out with supplied timeout', async () => {
   warn.mockClear();
 
@@ -51,6 +65,25 @@ test('warns if times out with supplied timeout', async () => {
   const [[arg]] = warn.mock.calls;
 
   expect(arg).toMatch(`Saga exceeded async timeout of ${timeout}ms`);
+});
+
+test('silences warning if times out with supplied timeout', async () => {
+  warn.mockClear();
+
+  const timeout = expectSaga.DEFAULT_TIMEOUT + 10;
+
+  function* saga() {
+    while (true) {
+      yield take('FOO');
+    }
+  }
+
+  await expectSaga(saga).run({
+    timeout,
+    silenceTimeout: true,
+  });
+
+  expect(warn).not.toHaveBeenCalled();
 });
 
 test('waits for completion without timeout', async () => {

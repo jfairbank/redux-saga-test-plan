@@ -202,6 +202,12 @@ type Action = {
 };
 
 type Timeout = number | false;
+
+type TimeoutConfig = {
+  silenceTimeout?: boolean,
+  timeout?: Timeout,
+};
+
 type Task = { done: Promise<*> };
 
 type ExpectApi = {

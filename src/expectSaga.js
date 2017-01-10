@@ -62,13 +62,17 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     forkedTasks.push(task);
   }
 
-  function cancelMainTask(timeout: number, timedOut: boolean): Promise<*> {
+  function cancelMainTask(
+    timeout: number,
+    silenceTimeout: boolean,
+    timedOut: boolean,
+  ): Promise<*> {
     if (stopDirty) {
       stopDirty = false;
       return scheduleStop(timeout);
     }
 
-    if (timedOut) {
+    if (!silenceTimeout && timedOut) {
       warn(`Saga exceeded async timeout of ${timeout}ms`);
     }
 
@@ -77,18 +81,36 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     return mainTaskPromise;
   }
 
-  function scheduleStop(timeout: Timeout): Promise<*> {
+  function scheduleStop(timeout: Timeout | TimeoutConfig): Promise<*> {
     let promise = schedule(getAllPromises).then(() => false);
+    let silenceTimeout = false;
+    let timeoutLength: ?Timeout;
 
     if (typeof timeout === 'number') {
+      timeoutLength = timeout;
+    } else if (typeof timeout === 'object') {
+      silenceTimeout = timeout.silenceTimeout === true;
+
+      if ('timeout' in timeout) {
+        timeoutLength = timeout.timeout;
+      } else {
+        timeoutLength = expectSaga.DEFAULT_TIMEOUT;
+      }
+    }
+
+    if (typeof timeoutLength === 'number') {
       promise = Promise.race([
         promise,
-        delay(timeout).then(() => true),
+        delay(timeoutLength).then(() => true),
       ]);
     }
 
     return promise.then(
-      timedOut => schedule(cancelMainTask, [timeout, timedOut]),
+      timedOut => schedule(cancelMainTask, [
+        timeoutLength,
+        silenceTimeout,
+        timedOut,
+      ]),
     );
   }
 
@@ -256,7 +278,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     return api;
   }
 
-  function stop(timeout: Timeout): Promise<*> {
+  function stop(timeout: Timeout | TimeoutConfig): Promise<*> {
     return scheduleStop(timeout).then((err) => {
       if (err) {
         throw err;
@@ -265,7 +287,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   }
 
   function run(
-    timeout?: Timeout = expectSaga.DEFAULT_TIMEOUT,
+    timeout?: Timeout | TimeoutConfig = expectSaga.DEFAULT_TIMEOUT,
   ): Promise<*> {
     start();
     return stop(timeout);
