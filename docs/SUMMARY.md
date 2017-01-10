@@ -9,3 +9,8 @@
   - [General Assertions](/unit-testing/general-assertions.md)
   - [Time Travel](/unit-testing/time-travel.md)
 - [Integration Testing](/integration-testing/README.md)
+  - [Effect Creators](/integration-testing/effect-creators.md)
+  - [Dispatching](/integration-testing/dispatching.md)
+  - [Timeout](/integration-testing/timeout.md)
+  - [State](/integration-testing/state.md)
+  - [Forked Sagas](/integration-testing/forked-sagas.md)

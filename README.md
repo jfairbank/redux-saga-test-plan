@@ -69,11 +69,16 @@ saga
 
 ## Integration Testing
 
+**NOTE: `exportSaga` is a relatively new feature of Redux Saga Test Plan, and
+many kinks may still need worked out and other use cases considered.**
+
+**Requires global `Promise` to be available**
+
 One downside to unit testing is that it couples your test to your
 implementation. Simple reordering of yielded effects in your saga could break
 your tests even if the functionality stays the same. If you're not concerned
 with the order or exact effects your saga yields, then you can take a
-integration testing approach, whereby your saga is actually run by Redux Saga.
+integrative approach, testing the behavior of your saga when run by Redux Saga.
 Then, you can simply test that a particular effect was yielded during the saga
 run. For this, use the `expectSaga` test function.
 
@@ -103,15 +108,14 @@ saga
   // with the expected action
   .put({ type: 'ADD', payload: 42 })
 
-  // start Redux Saga up with the saga
-  .start()
-
   // dispatch any actions your saga will `take`
   .dispatch({ type: 'HELLO' })
 
-  // stop the saga
-  .stop();
+  // run it
+  .run();
 ```
+
+Yes, it's that simple to test with `expectSaga`.
 
 ## Install
 

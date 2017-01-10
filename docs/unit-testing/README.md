@@ -10,7 +10,7 @@ arguments which will be the arguments passed on to the generator function.
 
 ```js
 // ES2015
-import testSaga from 'redux-saga-test-plan';
+import { testSaga } from 'redux-saga-test-plan';
 
 // ES5
 var testSaga = require('redux-saga-test-plan').testSaga;
