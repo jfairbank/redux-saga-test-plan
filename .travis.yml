@@ -13,7 +13,7 @@ branches:
   only:
     - master
     - dev
-    - /^greenkeeper-.*$/
+    - /^greenkeeper.*$/
 
 before_install:
   # Yarn
