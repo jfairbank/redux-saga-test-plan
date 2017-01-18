@@ -1,6 +1,7 @@
 // @flow
 import { effects, runSaga, utils } from 'redux-saga';
 import SagaTestError from './SagaTestError';
+import { findIndex, splitAt } from './utils/array';
 import Map from './utils/Map';
 import ArraySet from './utils/ArraySet';
 import serializeEffect from './serializeEffect';
@@ -24,6 +25,12 @@ import {
 
 const { asEffect, is } = utils;
 
+const INIT_ACTION = { type: '@@redux-saga-test-plan/INIT' };
+
+function extractState(reducer: Reducer, initialState?: any): any {
+  return initialState || reducer(undefined, INIT_ACTION);
+}
+
 export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): ExpectApi {
   const effectStores = {
     [TAKE]: new ArraySet(),
@@ -42,12 +49,22 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   const listeners = [];
   const forkedTasks = [];
   const outstandingForkEffects = new Map();
+  const outstandingActionChannelEffects = new Map();
+  const channelsToPatterns = new Map();
 
   let stopDirty = false;
 
   let iterator;
   let mainTask;
   let mainTaskPromise;
+
+  let storeState: any;
+
+  function defaultReducer(state = storeState) {
+    return state;
+  }
+
+  let reducer: Reducer = defaultReducer;
 
   function getAllPromises(): Promise<*> {
     return Promise.all([
@@ -124,11 +141,26 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     });
   }
 
-  function notifyNextAction(): void {
-    if (queuedActions.length > 0) {
-      const action = queuedActions.shift();
-      notifyListeners(action);
+  function dispatch(action: Action): any {
+    storeState = reducer(storeState, action);
+    notifyListeners(action);
+    return action;
+  }
+
+  function associateChannelWithPattern(channel: Object, pattern: any): void {
+    channelsToPatterns.set(channel, pattern);
+  }
+
+  function getDispatchableActions(effect: Object): Array<Action> {
+    const type = effect.pattern || channelsToPatterns.get(effect.channel);
+    const index = findIndex(queuedActions, a => a.type === type);
+
+    if (index > -1) {
+      const actions = queuedActions.splice(0, index + 1);
+      return actions;
     }
+
+    return [];
   }
 
   function parseEffect(effect: Object): string {
@@ -165,7 +197,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     }
   }
 
-  function storeEffect(event: Object): void {
+  function processEffect(event: Object): void {
     const effectType = parseEffect(event.effect);
 
     // Using string literal for flow
@@ -175,19 +207,41 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
     const effectStore = effectStores[effectType];
 
-    if (effectType === FORK) {
-      const effect = asEffect.fork(event.effect);
-      outstandingForkEffects.set(event.effectId, effect);
-    }
-
     effectStore.add(event.effect);
 
-    if (effectType === TAKE) {
-      schedule(notifyNextAction);
+    switch (effectType) {
+      case FORK: {
+        const effect = asEffect.fork(event.effect);
+        outstandingForkEffects.set(event.effectId, effect);
+        break;
+      }
+
+      case TAKE: {
+        const effect = asEffect.take(event.effect);
+        const actions = getDispatchableActions(effect);
+
+        const [reducerActions, [sagaAction]] = splitAt(actions, -1);
+
+        reducerActions.forEach((action) => {
+          dispatch(action);
+        });
+
+        if (sagaAction) {
+          schedule(() => dispatch(sagaAction));
+        }
+
+        break;
+      }
+
+      case ACTION_CHANNEL: {
+        const effect = asEffect.actionChannel(event.effect);
+        outstandingActionChannelEffects.set(event.effectId, effect);
+        break;
+      }
+
+      // no default
     }
   }
-
-  let storeState: mixed;
 
   const io = {
     subscribe(listener: Function): Function {
@@ -199,15 +253,15 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
       };
     },
 
-    dispatch: notifyListeners,
+    dispatch,
 
-    getState(): mixed {
+    getState(): any {
       return storeState;
     },
 
     sagaMonitor: {
       effectTriggered(event: Object): void {
-        storeEffect(event);
+        processEffect(event);
       },
 
       effectResolved(effectId: number, value: any): void {
@@ -215,6 +269,13 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
         if (forkEffect) {
           addForkedTask(value);
+          return;
+        }
+
+        const actionChannelEffect = outstandingActionChannelEffects.get(effectId);
+
+        if (actionChannelEffect) {
+          associateChannelWithPattern(value, actionChannelEffect.pattern);
         }
       },
 
@@ -224,9 +285,10 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   };
 
   const api = {
-    dispatch,
     run,
     withState,
+    withReducer,
+    dispatch: apiDispatch,
 
     actionChannel: createEffectTesterFromEffects('actionChannel', ACTION_CHANNEL),
     apply: createEffectTesterFromEffects('apply', CALL),
@@ -259,7 +321,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     });
   }
 
-  function dispatch(action: Action): ExpectApi {
+  function apiDispatch(action: Action): ExpectApi {
     queueAction(action);
     return api;
   }
@@ -293,8 +355,16 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     return stop(timeout);
   }
 
-  function withState(state: mixed): ExpectApi {
+  function withState(state: any): ExpectApi {
     storeState = state;
+    return api;
+  }
+
+  function withReducer(newReducer: Reducer, initialState?: any): ExpectApi {
+    reducer = newReducer;
+
+    storeState = extractState(newReducer, initialState);
+
     return api;
   }
 

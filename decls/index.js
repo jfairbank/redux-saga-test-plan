@@ -201,6 +201,8 @@ type Action = {
   type: string | Symbol,
 };
 
+type Reducer = (state: any, action: Action) => any;
+
 type Timeout = number | false;
 
 type TimeoutConfig = {
@@ -213,7 +215,8 @@ type Task = { done: Promise<*> };
 type ExpectApi = {
   dispatch: Function,
   run: Function,
-  withState: Function,
+  withState: (any) => ExpectApi,
+  withReducer: (Reducer, any) => ExpectApi,
   actionChannel: Function,
   apply: Function,
   call: Function,

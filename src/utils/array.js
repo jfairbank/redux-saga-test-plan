@@ -17,3 +17,13 @@ export const findIndex = [].findIndex ?
 
     return -1;
   };
+
+export function splitAt<T>(
+  array: Array<T>,
+  index: number,
+): [Array<T>, Array<T>] {
+  return [
+    array.slice(0, index),
+    array.slice(index),
+  ];
+}
