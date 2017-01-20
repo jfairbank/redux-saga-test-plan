@@ -13,6 +13,7 @@ branches:
   only:
     - master
     - dev
+    - redux-store-support
     - /^greenkeeper.*$/
 
 before_install:
