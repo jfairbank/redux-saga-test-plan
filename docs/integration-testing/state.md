@@ -20,8 +20,10 @@ function* saga() {
   yield put({ type: 'DATA', payload: data });
 }
 
-expectSaga(saga)
-  .withState(storeState)
-  .put({ type: 'DATA', payload: storeState.data })
-  .run();
+it('can take store state', () => {
+  return expectSaga(saga)
+    .withState(storeState)
+    .put({ type: 'DATA', payload: storeState.data })
+    .run();
+});
 ```
