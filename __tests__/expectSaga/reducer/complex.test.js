@@ -1,6 +1,7 @@
 // @flow
 import { put, select, take } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
+import { errorRegex, unreachableError } from '../assertions/_helper';
 
 const READY = 'READY';
 const DONE = 'DONE';
@@ -58,4 +59,23 @@ test('handles dispatches only for reducer', () => (
     .dispatch({ type: DONE })
 
     .run()
+));
+
+test('fails with wrong put payload', () => (
+  expectSaga(saga)
+    .withReducer(dogReducer)
+
+    .put({ type: AGE_BEFORE, payload: 11 })
+    .put({ type: AGE_AFTER, payload: 11 })
+
+    .dispatch({ type: READY })
+    .dispatch({ type: HAVE_BIRTHDAY })
+    .dispatch({ type: HAD_BIRTHDAY })
+    .dispatch({ type: DONE })
+
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
 ));

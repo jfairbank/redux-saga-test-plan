@@ -1,6 +1,7 @@
 // @flow
 import { put, select, take } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
+import { errorRegex, unreachableError } from '../assertions/_helper';
 
 const HAVE_BIRTHDAY = 'HAVE_BIRTHDAY';
 const AGE_BEFORE = 'AGE_BEFORE';
@@ -54,4 +55,20 @@ test('handles reducers when supplying initial state', () => (
     .put({ type: AGE_AFTER, payload: 12 })
     .dispatch({ type: HAVE_BIRTHDAY })
     .run()
+));
+
+test('fails with wrong put payload', () => (
+  expectSaga(saga)
+    .withReducer(dogReducer)
+
+    .put({ type: AGE_BEFORE, payload: 11 })
+    .put({ type: AGE_AFTER, payload: 11 })
+
+    .dispatch({ type: HAVE_BIRTHDAY })
+
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
 ));
