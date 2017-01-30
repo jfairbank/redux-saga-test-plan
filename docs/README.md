@@ -13,18 +13,112 @@ action at some point, Redux Saga Test Plan has you covered.
 Redux Saga Test Plan aims to embrace both unit testing and integration testing
 approaches to make testing your sagas easy.
 
+## Integration Testing
+
+**Requires global `Promise` to be available**
+
+One downside to unit testing sagas is that it couples your test to your
+implementation. Simple reordering of yielded effects in your saga could break
+your tests even if the functionality stays the same. If you're not concerned
+with the order or exact effects your saga yields, then you can take a
+integrative approach, testing the behavior of your saga when run by Redux Saga.
+Then, you can simply test that a particular effect was yielded during the saga
+run. For this, use the `expectSaga` test function.
+
+### Simple Example
+
+```js
+import { expectSaga } from 'redux-saga-test-plan';
+
+function identity(value) {
+  return value;
+}
+
+function* mainSaga(x, y) {
+  const action = yield take('HELLO');
+
+  yield put({ type: 'ADD', payload: x + y });
+  yield call(identity, action);
+}
+
+it('just works!', () => {
+  return expectSaga(mainSaga, 40, 2);
+    // assert that the saga will eventually yield `put`
+    // with the expected action
+    .put({ type: 'ADD', payload: 42 })
+
+    // dispatch any actions your saga will `take`
+    .dispatch({ type: 'HELLO' })
+
+    // run it
+    .run();
+});
+```
+
+### Example with Reducer
+
+```js
+import { expectSaga } from 'redux-saga-test-plan';
+
+const HAVE_BIRTHDAY = 'HAVE_BIRTHDAY';
+const AGE_BEFORE = 'AGE_BEFORE';
+const AGE_AFTER = 'AGE_AFTER';
+
+const initialDog = {
+  name: 'Tucker',
+  age: 11,
+};
+
+function dogReducer(state = initialDog, action) {
+  if (action.type === HAVE_BIRTHDAY) {
+    return {
+      ...state,
+      age: state.age + 1,
+    };
+  }
+
+  return state;
+}
+
+function getAge(state) {
+  return state.age;
+}
+
+function* saga() {
+  const ageBefore = yield select(getAge);
+
+  yield put({ type: AGE_BEFORE, payload: ageBefore });
+
+  yield take(HAVE_BIRTHDAY);
+
+  const ageAfter = yield select(getAge);
+
+  yield put({ type: AGE_AFTER, payload: ageAfter });
+}
+
+it('handles reducers', () => {
+  return expectSaga(saga)
+    .withReducer(dogReducer)
+
+    .put({ type: AGE_BEFORE, payload: 11 })
+    .put({ type: AGE_AFTER, payload: 12 })
+
+    .dispatch({ type: HAVE_BIRTHDAY })
+
+    .run();
+});
+```
+
+Yes, it's that simple to test with `expectSaga`.
+
 ## Unit Testing
 
 If you want to ensure that your saga yields specific types of effects in a
 particular order, then you'll want to use the `testSaga` function. Here's a
-simple example
+simple example:
 
 ```js
-// ES2015
 import { testSaga } from 'redux-saga-test-plan';
-
-// ES5/CJS
-var testSaga = require('redux-saga-test-plan').testSaga;
 
 function identity(value) {
   return value;
@@ -39,83 +133,32 @@ function* mainSaga(x, y) {
 
 const action = { type: 'TEST' };
 
-// create saga mock             x   y
-const saga = testSaga(mainSaga, 40, 2);
+it('works with unit tests', () => {
+  testSaga(mainSaga, 40, 2);
+    // advance saga with `next()`
+    .next()
 
-saga
-  // advance saga with `next()`
-  .next()
+    // assert that the saga yields `take` with `'HELLO'` as type
+    .take('HELLO')
 
-  // assert that the saga yields `take` with `'HELLO'` as type
-  .take('HELLO')
+    // pass back in a value to a saga after it yields
+    .next(action)
 
-  // pass back in a value to a saga after it yields
-  .next(action)
+    // assert that the saga yields `put` with the expected action
+    .put({ type: 'ADD', payload: 42 })
 
-  // assert that the saga yields `put` with the expected action
-  .put({ type: 'ADD', payload: 42 })
+    .next()
 
-  .next()
+    // assert that the saga yields a `call` to `identity` with
+    // the `action` argument
+    .call(identity, action)
 
-  // assert that the saga yields a `call` to `identity` with
-  // the `action` argument
-  .call(identity, action)
+    .next()
 
-  .next()
-
-  // assert that the saga is finished
-  .isDone();
+    // assert that the saga is finished
+    .isDone();
+});
 ```
-
-## Integration Testing
-
-**NOTE: `expectSaga` is a relatively new feature of Redux Saga Test Plan, and
-many kinks may still need worked out and other use cases considered.**
-
-**Requires global `Promise` to be available**
-
-One downside to unit testing is that it couples your test to your
-implementation. Simple reordering of yielded effects in your saga could break
-your tests even if the functionality stays the same. If you're not concerned
-with the order or exact effects your saga yields, then you can take a
-integrative approach, testing the behavior of your saga when run by Redux Saga.
-Then, you can simply test that a particular effect was yielded during the saga
-run. For this, use the `expectSaga` test function.
-
-```js
-// ES2015
-import { expectSaga } from 'redux-saga-test-plan';
-
-// ES5/CJS
-var expectSaga = require('redux-saga-test-plan').expectSaga;
-
-function identity(value) {
-  return value;
-}
-
-function* mainSaga(x, y) {
-  const action = yield take('HELLO');
-
-  yield put({ type: 'ADD', payload: x + y });
-  yield call(identity, action);
-}
-
-// create saga mock               x   y
-const saga = expectSaga(mainSaga, 40, 2);
-
-saga
-  // assert that the saga will eventually yield `put`
-  // with the expected action
-  .put({ type: 'ADD', payload: 42 })
-
-  // dispatch any actions your saga will `take`
-  .dispatch({ type: 'HELLO' })
-
-  // run it
-  .run();
-```
-
-Yes, it's that simple to test with `expectSaga`.
 
 ## Table of Contents
 
