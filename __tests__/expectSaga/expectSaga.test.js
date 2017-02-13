@@ -51,6 +51,7 @@ test('silences warnings with forks', async () => {
   warn.mockClear();
 
   function* otherSaga() {
+    yield 42;
   }
 
   function* saga() {
@@ -186,13 +187,14 @@ test('times out even if promises keep getting added', async () => {
 
   function* otherSaga() {
     yield takeEvery('FOO', function* handler() {
+      yield 42;
     });
   }
 
   function* sagas() {
     yield [
       fork(saga),
-      fork(otherSaga)
+      fork(otherSaga),
     ];
   }
 
