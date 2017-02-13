@@ -1,5 +1,5 @@
 /* eslint-disable no-constant-condition */
-import { take } from 'redux-saga/effects';
+import { take, takeEvery, fork, put, spawn } from 'redux-saga/effects';
 import { warn } from '../../src/utils/logging';
 import { delay } from '../../src/utils/async';
 import { expectSaga } from '../../src';
@@ -40,6 +40,21 @@ test('silences warnings', async () => {
     while (true) {
       yield take('FOO');
     }
+  }
+
+  await expectSaga(saga).run({ silenceTimeout: true });
+
+  expect(warn).not.toHaveBeenCalled();
+});
+
+test('silences warnings with forks', async () => {
+  warn.mockClear();
+
+  function* otherSaga() {
+  }
+
+  function* saga() {
+    yield takeEvery('TAKE_EVERY', otherSaga);
   }
 
   await expectSaga(saga).run({ silenceTimeout: true });
@@ -111,6 +126,38 @@ test('waits on promises with sufficient timeout period', async () => {
   expect(warn).not.toHaveBeenCalled();
 });
 
+test('waits for promises that were added later on', async () => {
+  warn.mockClear();
+
+  const mock = jest.fn();
+  function* saga() {
+    yield delay(50);
+    yield spawn(function* fork1() {
+      yield delay(100);
+      mock();
+    });
+  }
+
+  await expectSaga(saga).run(200);
+  expect(mock).toHaveBeenCalled();
+});
+
+test('doesn\'t extend timeout period when new promises are added', async () => {
+  warn.mockClear();
+
+  const mock = jest.fn();
+  function* saga() {
+    yield delay(100);
+    yield spawn(function* fork1() {
+      yield delay(150);
+      mock();
+    });
+  }
+
+  await expectSaga(saga).run(200);
+  expect(mock).not.toHaveBeenCalled();
+});
+
 test('times out if promise doesn\'t resolve in time', async () => {
   warn.mockClear();
 
@@ -125,4 +172,38 @@ test('times out if promise doesn\'t resolve in time', async () => {
   const [[arg]] = warn.mock.calls;
 
   expect(arg).toMatch('Saga exceeded async timeout of 200ms');
+});
+
+test('times out even if promises keep getting added', async () => {
+  warn.mockClear();
+
+  function* saga() {
+    while (true) {
+      yield put({ type: 'FOO' });
+      yield delay(100);
+    }
+  }
+
+  function* otherSaga() {
+    yield takeEvery('FOO', function* handler() {
+    });
+  }
+
+  function* sagas() {
+    yield [
+      fork(saga),
+      fork(otherSaga)
+    ];
+  }
+
+  const promise = Promise.race([
+    expectSaga(sagas).run(200).then(() => false),
+    delay(210).then(() => true),
+  ]);
+
+  const timedOut = await promise;
+
+  expect(timedOut).toBe(false);
+
+  expect(warn).toHaveBeenCalledTimes(1);
 });

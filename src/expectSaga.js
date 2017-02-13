@@ -67,11 +67,19 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   let reducer: Reducer = defaultReducer;
 
   function getAllPromises(): Promise<*> {
-    return Promise.all([
-      ...effectStores[PROMISE].values(),
-      ...forkedTasks.map(task => task.done),
-      mainTaskPromise,
-    ]);
+    return new Promise(resolve => {
+      Promise.all([
+        ...effectStores[PROMISE].values(),
+        ...forkedTasks.map(task => task.done),
+        mainTaskPromise,
+      ]).then(() => {
+        if (stopDirty) {
+          stopDirty = false;
+          resolve(getAllPromises());
+        }
+        resolve();
+      });
+    });
   }
 
   function addForkedTask(task: Task): void {
@@ -84,11 +92,6 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     silenceTimeout: boolean,
     timedOut: boolean,
   ): Promise<*> {
-    if (stopDirty) {
-      stopDirty = false;
-      return scheduleStop(timeout);
-    }
-
     if (!silenceTimeout && timedOut) {
       warn(`Saga exceeded async timeout of ${timeout}ms`);
     }
