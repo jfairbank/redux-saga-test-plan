@@ -1,3 +1,15 @@
+## v2.2.1
+
+### Bug Fixes
+
+- Forked sagas no longer extend the timeout of `expectSaga`. The original
+  behavior was not properly documented and probably unhelpful behavior anyway.
+  (credit [@peterkhayes](https://github.com/peterkhayes))
+- Forked sagas caused the `silenceTimeout` option of `expectSaga` to not work.
+  This is now fixed. (credit [@peterkhayes](https://github.com/peterkhayes))
+
+---
+
 ## v2.2.0
 
 ### NEW - `withReducer` method for `expectSaga`
