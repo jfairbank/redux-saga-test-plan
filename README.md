@@ -174,8 +174,8 @@ npm install --save-dev redux-saga-test-plan
 
 ## Getting Started
 
-#### [Docs](http://redux-saga-test-plan.jeremyfairbank.com)
+#### [Docs](http://jfairbank.github.io/redux-saga-test-plan/)
 
 Redux Saga Test Plan has a host of options along with more helper methods for
 testing sagas. To learn more, check out the docs at
-[redux-saga-test-plan.jeremyfairbank.com](http://redux-saga-test-plan.jeremyfairbank.com).
+[jfairbank.github.io/redux-saga-test-plan](http://jfairbank.github.io/redux-saga-test-plan/).
