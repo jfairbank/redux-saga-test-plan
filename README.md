@@ -42,7 +42,7 @@ function* mainSaga(x, y) {
 }
 
 it('just works!', () => {
-  return expectSaga(mainSaga, 40, 2);
+  return expectSaga(mainSaga, 40, 2)
     // assert that the saga will eventually yield `put`
     // with the expected action
     .put({ type: 'ADD', payload: 42 })
