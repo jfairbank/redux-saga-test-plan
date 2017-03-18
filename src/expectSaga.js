@@ -1,7 +1,8 @@
 // @flow
-/* eslint-disable no-constant-condition */
+/* eslint-disable no-constant-condition, no-underscore-dangle */
 import { effects, runSaga, utils } from 'redux-saga';
 import { fork, race, spawn } from 'redux-saga/effects';
+import assign from 'object-assign';
 import SagaTestError from './SagaTestError';
 import { findIndex, splitAt } from './utils/array';
 import Map from './utils/Map';
@@ -55,9 +56,12 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   const outstandingForkEffects = new Map();
   const outstandingActionChannelEffects = new Map();
   const channelsToPatterns = new Map();
+  const dispatchPromise = Promise.resolve();
 
   let stopDirty = false;
   let negateNextAssertion = false;
+  let isRunning = false;
+  let delayTime = null;
 
   let iterator;
   let mainTask;
@@ -218,9 +222,18 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   }
 
   function dispatch(action: Action): any {
-    storeState = reducer(storeState, action);
-    notifyListeners(action);
-    return action;
+    function handler() {
+      storeState = reducer(storeState, action);
+      notifyListeners(action);
+    }
+
+    if ('_delayTime' in action) {
+      dispatchPromise
+        .then(() => delay(action._delayTime))
+        .then(handler);
+    } else {
+      dispatchPromise.then(handler);
+    }
   }
 
   function associateChannelWithPattern(channel: Object, pattern: any): void {
@@ -273,7 +286,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
         });
 
         if (sagaAction) {
-          schedule(() => dispatch(sagaAction));
+          dispatch(sagaAction);
         }
 
         break;
@@ -336,6 +349,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     withReducer,
     provide,
     dispatch: apiDispatch,
+    delay: apiDelay,
 
     get not() {
       negateNextAssertion = true;
@@ -383,14 +397,31 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   }
 
   function apiDispatch(action: Action): ExpectApi {
-    queueAction(action);
+    let dispatchableAction;
+
+    if (delayTime != null) {
+      dispatchableAction = assign({}, action, {
+        _delayTime: delayTime,
+      });
+
+      delayTime = null;
+    } else {
+      dispatchableAction = action;
+    }
+
+    if (isRunning) {
+      dispatch(dispatchableAction);
+    } else {
+      queueAction(dispatchableAction);
+    }
+
     return api;
   }
 
   function start(): ExpectApi {
+    isRunning = true;
     iterator = generator(...sagaArgs);
 
-    // mainTask = runSaga(iterator, io);
     mainTask = runSaga(sagaWrapper(iterator), io);
 
     mainTaskPromise = mainTask.done
@@ -432,6 +463,11 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
   function provide(newProviders) {
     providers = newProviders;
+    return api;
+  }
+
+  function apiDelay(time) {
+    delayTime = time;
     return api;
   }
 
