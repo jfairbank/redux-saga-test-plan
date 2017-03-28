@@ -11,6 +11,7 @@ import {
   FLUSH,
   FORK,
   JOIN,
+  PARALLEL,
   PUT,
   RACE,
   SELECT,
@@ -22,7 +23,7 @@ const { asEffect } = utils;
 export const NO_FAKE_VALUE = Object.create(null);
 export const noFakeValue = () => NO_FAKE_VALUE;
 
-const handlers = {
+export const handlers = {
   [ACTION_CHANNEL]: 'actionChannel',
   [CALL]: 'call',
   [CANCEL]: 'cancel',
@@ -43,6 +44,13 @@ const handlers = {
     return NO_FAKE_VALUE;
   },
   [JOIN]: 'join',
+  [PARALLEL](providers, value) {
+    if (providers.parallel) {
+      return providers.parallel(value, noFakeValue);
+    }
+
+    return NO_FAKE_VALUE;
+  },
   [PUT]: 'put',
   [RACE]: 'race',
   [SELECT]: 'select',
@@ -51,7 +59,10 @@ const handlers = {
 
 export function checkYieldedValue(providers: Providers, value: Object) {
   if (providers) {
-    const effectType = parseEffect(value);
+    const effectType = Array.isArray(value)
+      ? PARALLEL
+      : parseEffect(value);
+
     const handler = handlers[effectType];
 
     if (typeof handler === 'string' && handler in providers) {

@@ -8,6 +8,7 @@ export const FLUSH = 'FLUSH';
 export const FORK = 'FORK';
 export const JOIN = 'JOIN';
 export const NONE = 'NONE';
+export const PARALLEL = 'PARALLEL';
 export const PROMISE = 'PROMISE';
 export const PUT = 'PUT';
 export const RACE = 'RACE';

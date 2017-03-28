@@ -221,6 +221,7 @@ type Providers = {
   flush?: Function,
   fork?: Function,
   join?: Function,
+  parallel?: Function,
   put?: Function,
   race?: Function,
   select?: Function,

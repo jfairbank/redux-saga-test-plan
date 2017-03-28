@@ -18,8 +18,9 @@ import {
 
 import { createMockTask } from 'redux-saga/utils';
 import { expectSaga } from '../../src';
-
-jest.mock('../../src/utils/logging');
+import { delay } from '../../src/utils/async';
+import { NO_FAKE_VALUE, handlers } from '../../src/checkYieldedValue';
+import { PARALLEL } from '../../src/keys';
 
 const fakeChannel = {
   take() {},
@@ -380,6 +381,60 @@ test('uses provided value for `race`', () => {
   ]);
 });
 
+test('inner providers for `race` work', () => {
+  const fakeUser = { id: 1, name: 'John Doe' };
+  const fetchUser = () => delay(1000).then(() => fakeUser);
+
+  function* saga() {
+    const action = yield take('REQUEST_USER');
+    const id = action.payload;
+
+    const { user } = yield race({
+      user: call(fetchUser, id),
+      timeout: call(delay, 500),
+    });
+
+    if (user) {
+      yield put({ type: 'RECEIVE_USER', payload: user });
+    } else {
+      yield put({ type: 'TIMEOUT' });
+    }
+  }
+
+  const promise1 = expectSaga(saga)
+    .provide({
+      call({ fn }, next) {
+        if (fn === fetchUser) {
+          return fakeUser;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .dispatch({ type: 'REQUEST_USER' })
+    .run();
+
+  const promise2 = expectSaga(saga)
+    .provide({
+      call({ fn }, next) {
+        if (fn === delay) {
+          return undefined;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'TIMEOUT' })
+    .dispatch({ type: 'REQUEST_USER' })
+    .run();
+
+  return Promise.all([
+    promise1,
+    promise2,
+  ]);
+});
+
 test('uses provided value for `select`', () => {
   const getValue = () => 0;
   const getOtherValue = state => state.otherValue;
@@ -505,7 +560,30 @@ test('provides actions for `take.maybe`', () => {
     .run();
 });
 
-test('provides values for effects yielded in parallel', () => {
+test('uses provided value for `parallel`', () => {
+  const apiFunction = () => 0;
+
+  function* saga() {
+    const [x, { payload: y }] = yield [
+      call(apiFunction),
+      take('Y'),
+    ];
+
+    yield put({ type: 'DONE', payload: x + y });
+  }
+
+  return expectSaga(saga)
+    .provide({
+      parallel: () => [
+        20,
+        { type: 'Y', payload: 22 },
+      ],
+    })
+    .put({ type: 'DONE', payload: 42 })
+    .run();
+});
+
+test('inner providers for `parallel` work', () => {
   const apiFunction = () => 0;
 
   function* saga() {
@@ -524,6 +602,11 @@ test('provides values for effects yielded in parallel', () => {
     })
     .put({ type: 'DONE', payload: 42 })
     .run();
+});
+
+test('test coverage for PARALLEL handler', () => {
+  const actual = handlers[PARALLEL]({}, {});
+  expect(actual).toBe(NO_FAKE_VALUE);
 });
 
 test('handles errors', () => {
