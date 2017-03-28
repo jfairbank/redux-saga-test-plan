@@ -212,9 +212,25 @@ type TimeoutConfig = {
 
 type Task = { done: Promise<*> };
 
+type Providers = {
+  actionChannel?: Function,
+  call?: Function,
+  cancel?: Function,
+  cancelled?: Function,
+  cps?: Function,
+  flush?: Function,
+  fork?: Function,
+  join?: Function,
+  put?: Function,
+  race?: Function,
+  select?: Function,
+  take?: Function,
+};
+
 type ExpectApi = {
   dispatch: Function,
   run: Function,
+  provide: (Providers) => ExpectApi,
   withState: (any) => ExpectApi,
   withReducer: (Reducer, any) => ExpectApi,
   actionChannel: Function,

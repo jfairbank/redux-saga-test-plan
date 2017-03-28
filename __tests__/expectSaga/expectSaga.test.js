@@ -1,5 +1,5 @@
 /* eslint-disable no-constant-condition */
-import { take, takeEvery, fork, put, spawn } from 'redux-saga/effects';
+import { take, takeEvery, fork, join, put, spawn } from 'redux-saga/effects';
 import { warn } from '../../src/utils/logging';
 import { delay } from '../../src/utils/async';
 import { expectSaga } from '../../src';
@@ -208,4 +208,21 @@ test('times out even if promises keep getting added', async () => {
   expect(timedOut).toBe(false);
 
   expect(warn).toHaveBeenCalledTimes(1);
+});
+
+// Mainly for test coverage
+test('ignores effects without effect store', () => {
+  function* backgroundSaga() {
+    yield put({ type: 'BACKGROUND' });
+  }
+
+  function* saga() {
+    const task = yield fork(backgroundSaga);
+    yield join(task);
+    yield put({ type: 'DONE' });
+  }
+
+  return expectSaga(saga)
+    .put({ type: 'DONE' })
+    .run();
 });

@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable no-constant-condition */
 import { effects, runSaga, utils } from 'redux-saga';
 import SagaTestError from './SagaTestError';
 import { findIndex, splitAt } from './utils/array';
@@ -9,13 +10,14 @@ import { warn } from './utils/logging';
 import { delay, schedule } from './utils/async';
 import identity from './utils/identity';
 import reportActualEffects from './reportActualEffects';
+import parseEffect from './parseEffect';
+import { NO_FAKE_VALUE, checkYieldedValue } from './checkYieldedValue';
 
 import {
   ACTION_CHANNEL,
   CALL,
   CPS,
   FORK,
-  NONE,
   PROMISE,
   PUT,
   RACE,
@@ -23,7 +25,7 @@ import {
   TAKE,
 } from './keys';
 
-const { asEffect, is } = utils;
+const { asEffect } = utils;
 
 const INIT_ACTION = { type: '@@redux-saga-test-plan/INIT' };
 
@@ -57,8 +59,50 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   let iterator;
   let mainTask;
   let mainTaskPromise;
+  let providers;
 
   let storeState: any;
+
+  function useProvidedValue(value) {
+    const fakeValue = checkYieldedValue(providers, value);
+
+    if (fakeValue === NO_FAKE_VALUE) {
+      return value;
+    }
+
+    return fakeValue;
+  }
+
+  function* sagaWrapper(wrappedIterator) {
+    let result = wrappedIterator.next();
+
+    while (true) {
+      let values = result.value;
+      const yieldedArray = Array.isArray(values);
+
+      if (!yieldedArray) {
+        values = [values];
+      }
+
+      try {
+        values = values.map(useProvidedValue);
+
+        const responses = yield values;
+
+        if (yieldedArray) {
+          result = wrappedIterator.next(responses);
+        } else {
+          result = wrappedIterator.next(responses[0]);
+        }
+      } catch (e) {
+        result = wrappedIterator.throw(e);
+      }
+
+      if (result.done) {
+        break;
+      }
+    }
+  }
 
   function defaultReducer(state = storeState) {
     return state;
@@ -166,40 +210,6 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     return [];
   }
 
-  function parseEffect(effect: Object): string {
-    switch (true) {
-      case is.promise(effect):
-        return PROMISE;
-
-      case is.notUndef(asEffect.take(effect)):
-        return TAKE;
-
-      case is.notUndef(asEffect.put(effect)):
-        return PUT;
-
-      case is.notUndef(asEffect.race(effect)):
-        return RACE;
-
-      case is.notUndef(asEffect.call(effect)):
-        return CALL;
-
-      case is.notUndef(asEffect.cps(effect)):
-        return CPS;
-
-      case is.notUndef(asEffect.fork(effect)):
-        return FORK;
-
-      case is.notUndef(asEffect.select(effect)):
-        return SELECT;
-
-      case is.notUndef(asEffect.actionChannel(effect)):
-        return ACTION_CHANNEL;
-
-      default:
-        return NONE;
-    }
-  }
-
   function processEffect(event: Object): void {
     const effectType = parseEffect(event.effect);
 
@@ -209,6 +219,10 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     }
 
     const effectStore = effectStores[effectType];
+
+    if (!effectStore) {
+      return;
+    }
 
     effectStore.add(event.effect);
 
@@ -291,6 +305,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     run,
     withState,
     withReducer,
+    provide,
     dispatch: apiDispatch,
 
     actionChannel: createEffectTesterFromEffects('actionChannel', ACTION_CHANNEL),
@@ -332,7 +347,8 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   function start(): ExpectApi {
     iterator = generator(...sagaArgs);
 
-    mainTask = runSaga(iterator, io);
+    // mainTask = runSaga(iterator, io);
+    mainTask = runSaga(sagaWrapper(iterator), io);
 
     mainTaskPromise = mainTask.done
       .then(checkExpectations)
@@ -368,6 +384,11 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
     storeState = extractState(newReducer, initialState);
 
+    return api;
+  }
+
+  function provide(newProviders) {
+    providers = newProviders;
     return api;
   }
 
