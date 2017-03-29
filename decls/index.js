@@ -222,9 +222,11 @@ type Providers = {
   fork?: Function,
   join?: Function,
   parallel?: Function,
+  provideInForkedTasks?: boolean,
   put?: Function,
   race?: Function,
   select?: Function,
+  spawn?: Function,
   take?: Function,
 };
 
