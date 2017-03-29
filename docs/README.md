@@ -170,6 +170,8 @@ it('works with unit tests', () => {
   - [Timeout](/integration-testing/timeout.md)
   - [State](/integration-testing/state.md)
   - [Mocking](/integration-testing/mocking.md)
+  - [Partial Matching](/integration-testing/partial-matching.md)
+  - [Negated Assertions](/integration-testing/negated-assertions.md)
   - [Forked Sagas](/integration-testing/forked-sagas.md)
 - [Unit Testing](/unit-testing/README.md)
   - [Error Messages](/unit-testing/error-messages.md)
