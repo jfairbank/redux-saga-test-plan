@@ -14,9 +14,25 @@ test('take.maybe assertion passes', () => (
     .run()
 ));
 
+test('negative take.maybe assertion passes', () => (
+  expectSaga(saga)
+    .not.take.maybe('FOO')
+    .run()
+));
+
 test('take.maybe assertion fails', () => (
   expectSaga(saga)
     .take.maybe('FOO')
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative take.maybe assertion fails', () => (
+  expectSaga(saga)
+    .not.take.maybe('READY')
     .run()
     .then(unreachableError)
     .catch((e) => {

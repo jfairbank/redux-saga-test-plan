@@ -57,6 +57,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   const channelsToPatterns = new Map();
 
   let stopDirty = false;
+  let negateNextAssertion = false;
 
   let iterator;
   let mainTask;
@@ -336,6 +337,11 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     provide,
     dispatch: apiDispatch,
 
+    get not() {
+      negateNextAssertion = true;
+      return api;
+    },
+
     actionChannel: createEffectTesterFromEffects('actionChannel', ACTION_CHANNEL),
     apply: createEffectTesterFromEffects('apply', CALL),
     call: createEffectTesterFromEffects('call', CALL),
@@ -352,16 +358,25 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   api.take.maybe = createEffectTester('take.maybe', TAKE, effects.take.maybe);
 
   function checkExpectations(): void {
-    expectations.forEach(({ effectName, expectedEffect, store, storeKey }) => {
+    expectations.forEach(({ effectName, expectedEffect, store, storeKey, expectToHave }) => {
       const deleted = store.delete(expectedEffect);
+      let errorMessage = '';
 
-      if (!deleted) {
+      if (deleted && !expectToHave) {
         const serializedEffect = serializeEffect(expectedEffect, storeKey);
-        let errorMessage = `\n${effectName} expectation unmet:` +
-                           `\n\nExpected\n--------\n${serializedEffect}\n`;
+
+        errorMessage = `\n${effectName} expectation unmet:` +
+                       `\n\nNot Expected\n------------\n${serializedEffect}\n`;
+      } else if (!deleted && expectToHave) {
+        const serializedEffect = serializeEffect(expectedEffect, storeKey);
+
+        errorMessage = `\n${effectName} expectation unmet:` +
+                       `\n\nExpected\n--------\n${serializedEffect}\n`;
 
         errorMessage += reportActualEffects(store, storeKey, effectName);
+      }
 
+      if (errorMessage) {
         throw new SagaTestError(errorMessage);
       }
     });
@@ -433,7 +448,10 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
         expectedEffect,
         storeKey,
         store: effectStores[storeKey],
+        expectToHave: !negateNextAssertion,
       });
+
+      negateNextAssertion = false;
 
       return api;
     };

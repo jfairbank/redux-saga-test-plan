@@ -29,6 +29,24 @@ test('race assertion passes', () => (
     .run()
 ));
 
+test('negative race assertion passes with wrong success', () => (
+  expectSaga(saga, quickFetchData)
+    .not.race({
+      success: call(() => {}),
+      cancel: take('CANCEL'),
+    })
+    .run()
+));
+
+test('negative race assertion passes with wrong cancel', () => (
+  expectSaga(saga, quickFetchData)
+    .not.race({
+      success: call(quickFetchData),
+      cancel: take('FOO'),
+    })
+    .run()
+));
+
 test('success branch wins', () => (
   expectSaga(saga, quickFetchData)
     .put({ type: 'DONE', success: true })
@@ -59,6 +77,19 @@ test('race assertion fails with wrong success', () => (
   expectSaga(saga, quickFetchData)
     .race({
       success: call(() => {}),
+      cancel: take('CANCEL'),
+    })
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative race assertion fails with correct success and cancel', () => (
+  expectSaga(saga, quickFetchData)
+    .not.race({
+      success: call(quickFetchData),
       cancel: take('CANCEL'),
     })
     .run()

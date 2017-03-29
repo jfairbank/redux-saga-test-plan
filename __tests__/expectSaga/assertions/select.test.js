@@ -24,6 +24,13 @@ test('select assertion passes', () => (
     .run()
 ));
 
+test('negative select assertion passes', () => (
+  expectSaga(saga)
+    .withState(storeState)
+    .not.select(state => state.data)
+    .run()
+));
+
 test('put assertion passes', () => (
   expectSaga(saga)
     .withState(storeState)
@@ -35,6 +42,17 @@ test('select assertion fails with wrong function', () => (
   expectSaga(saga)
     .withState(storeState)
     .select(state => state.data)
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative select assertion fails with correct function', () => (
+  expectSaga(saga)
+    .withState(storeState)
+    .not.select(getData)
     .run()
     .then(unreachableError)
     .catch((e) => {

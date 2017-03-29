@@ -17,9 +17,21 @@ test('call assertion passes', () => (
     .run()
 ));
 
+test('negative call assertion passes', () => (
+  expectSaga(saga)
+    .not.call(() => {})
+    .run()
+));
+
 test('call assertion with arg passes', () => (
   expectSaga(sagaWithArg, 42)
     .call(identity, 42)
+    .run()
+));
+
+test('negative call assertion with arg passes', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.call(identity, 43)
     .run()
 ));
 
@@ -33,9 +45,29 @@ test('call assertion fails', () => (
     })
 ));
 
+test('negative call assertion fails', () => (
+  expectSaga(saga)
+    .not.call(identity)
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
 test('call assertion with arg fails', () => (
   expectSaga(sagaWithArg, 42)
     .call(identity, 43)
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative call assertion with arg fails', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.call(identity, 42)
     .run()
     .then(unreachableError)
     .catch((e) => {

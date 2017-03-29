@@ -12,6 +12,18 @@ test('put assertion passes', () => (
     .run()
 ));
 
+test('negative put assertion passes with wrong type', () => (
+  expectSaga(saga)
+    .not.put({ type: 'FOO', payload: 42 })
+    .run()
+));
+
+test('negative put assertion passes with wrong payload', () => (
+  expectSaga(saga)
+    .not.put({ type: 'READY', payload: 43 })
+    .run()
+));
+
 test('put assertion fails with wrong type', () => (
   expectSaga(saga)
     .put({ type: 'FOO', payload: 42 })
@@ -22,9 +34,29 @@ test('put assertion fails with wrong type', () => (
     })
 ));
 
+test('negative put assertion fails with correct type', () => (
+  expectSaga(saga)
+    .not.put({ type: 'READY', payload: 42 })
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
 test('put assertion fails with wrong payload', () => (
   expectSaga(saga)
     .put({ type: 'READY', payload: 43 })
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative put assertion fails with correct payload', () => (
+  expectSaga(saga)
+    .not.put({ type: 'READY', payload: 42 })
     .run()
     .then(unreachableError)
     .catch((e) => {

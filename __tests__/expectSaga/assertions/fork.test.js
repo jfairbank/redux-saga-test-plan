@@ -24,15 +24,31 @@ function* sagaWithArg(value) {
   yield fork(otherSagaWithArg, value);
 }
 
+function* unusedSaga() {
+  yield put({ type: 'FORKED' });
+}
+
 test('fork assertion passes', () => (
   expectSaga(saga)
     .fork(otherSaga)
     .run()
 ));
 
+test('negative fork assertion passes', () => (
+  expectSaga(saga)
+    .not.fork(unusedSaga)
+    .run()
+));
+
 test('fork assertion with arg passes', () => (
   expectSaga(sagaWithArg, 42)
     .fork(otherSagaWithArg, 42)
+    .run()
+));
+
+test('negative fork assertion with arg passes', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.fork(otherSagaWithArg, 43)
     .run()
 ));
 
@@ -65,9 +81,29 @@ test('fork assertion fails', () => (
     })
 ));
 
+test('fork assertion fails', () => (
+  expectSaga(saga)
+    .not.fork(otherSaga)
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
 test('fork assertion with arg fails', () => (
   expectSaga(sagaWithArg, 42)
     .fork(otherSagaWithArg, 43)
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative fork assertion with arg fails', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.fork(otherSagaWithArg, 42)
     .run()
     .then(unreachableError)
     .catch((e) => {
