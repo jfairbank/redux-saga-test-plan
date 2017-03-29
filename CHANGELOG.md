@@ -1,3 +1,189 @@
+## v2.3.0
+
+### NEW features in `expectSaga`
+
+Lots of new features are now available in `expectSaga` to make testing easier!
+Please read through the awesome additions below.
+
+#### Provide mock/fake values
+
+Sometimes integration testing sagas can be laborious, especially when you have
+to mock server APIs for `call` or create fake state and selectors to use with
+`select`.
+
+To make tests simpler, Redux Saga Test Plan allows you to intercept and handle
+effect creators instead of letting Redux Saga handle them. This is similar to a
+middleware layer that Redux Saga Test Plan calls _providers_.
+
+To use providers, you can call the `provide` method. The `provide` method takes
+one argument, an object literal with effect creator names as keys and function
+handlers as arguments. Each function handler takes two arguments, the yielded
+effect and a `next` callback. You can inspect the effect and return a fake value
+based on the properties in the effect. If you don't want to handle the effect
+yourself, you can pass it on to Redux Saga by invoking the `next` callback
+parameter.
+
+Here is an example with Jest to show you how to supply a fake value for an API
+call:
+
+```js
+import { call, put, take } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
+import api from 'my-api';
+
+function* saga() {
+  const action = yield take('REQUEST_USER');
+  const id = action.payload;
+
+  const user = yield call(api.fetchUser, id);
+
+  yield put({ type: 'RECEIVE_USER', payload: user });
+}
+
+it('provides a value for the API call', () => {
+  return expectSaga(saga)
+    .provide({
+      call(effect, next) {
+        // Check for the API call to return fake value
+        if (effect.fn === api.fetchUser) {
+          const id = effect.args[0];
+          return { id, name: 'John Doe' };
+        }
+
+        // Allow Redux Saga to handle other `call` effects
+        return next();
+      },
+    })
+    .put({
+      type: 'RECEIVE_USER',
+      payload: { id: 1, name: 'John Doe' },
+    })
+    .dispatch({ type: 'REQUEST_USER', payload: 1 })
+    .run();
+});
+```
+
+#### Partial Matching Assertions
+
+Sometimes you're not interested in the exact arguments passed to a `call` effect
+creator or the payload inside an action from a `put` effect. Instead you're only
+concerned with _if_ a particular function was invoked via `call` or _if_ a
+particular action type was dispatched via `put`. You can handle these situations
+with partial matcher assertions.
+
+Here is an example that uses the convenient matcher helper methods `call.fn` and
+`put.actionType`:
+
+
+```js
+function* userSaga(id) {
+  try {
+    const user = yield call(api.fetchUser, id);
+    yield put({ type: 'RECEIVE_USER', payload: user });
+  } catch (e) {
+    yield put({ type: 'FAIL_USER', error: e });
+  }
+}
+
+it('fetches user', () => {
+  return expectSaga(userSaga)
+    .call.fn(api.fetchUser)
+    .run();
+});
+
+it('fails', () => {
+  return expectSaga(userSaga)
+    .provide({
+      call() {
+        throw new Error('Not Found');
+      },
+    })
+    .put.actionType('FAIL_USER')
+    .run();
+});
+```
+
+Notice that we can assert that the `api.fetchUser` function was called without
+specifying the arguments. We can also assert in a failure scenario that an
+action of type `FAIL_USER` was dispatched without worrying about the `error`
+property of the action.
+
+#### Negate assertions
+
+You can now negate assertions. Use the `not` property before calling an
+`assertion`. Negated assertions also work with partial matcher assertions!
+
+```js
+function* authSaga() {
+  const token = yield select(authToken);
+
+  if (token) {
+    yield call(api.setToken, token);
+  }
+}
+
+it('does not set the token', () => {
+  return expectSaga(authSaga)
+    .withState({})
+    .not.call.fn(api.setToken)
+    .run();
+});
+```
+
+#### Dispatch actions while saga is running
+
+You can now dispatch actions while a saga is running. This is useful for
+delaying actions so Redux Saga Test Plan doesn't dispatch them too quickly.
+
+```js
+function* mainSaga() {
+  // Received almost immediately
+  yield take('FOO');
+
+  // Received after 250ms
+  yield take('BAR');
+  yield put({ type: 'DONE' });
+}
+
+const delay = time => new Promise((resolve) => {
+  setTimeout(resolve, time);
+});
+
+it('can dispatch actions while running', () => {
+  const saga = expectSaga(mainSaga);
+
+  saga.put({ type: 'DONE' });
+
+  saga.dispatch({ type: 'FOO' });
+
+  const promise = saga.run({ timeout: false });
+
+  return delay(250).then(() => {
+    saga.dispatch({ type: 'BAR' });
+    return promise;
+  });
+});
+```
+
+#### Delaying dispatching actions with `.delay()`
+
+While being able to dispatch actions while the saga is running has use cases
+besides only delaying, if you just want to delay dispatched actions, you can use
+the `delay` method. It takes a delay time as its only argument.
+
+```js
+it('can delay actions', () => {
+  return expectSaga(mainSaga)
+    .put({ type: 'DONE' })
+    .dispatch({ type: 'FOO' })
+    .delay(250)
+    .dispatch({ type: 'BAR' })
+    .run({ timeout: false });
+});
+```
+
+---
+
 ## v2.2.1
 
 ### Bug Fixes
