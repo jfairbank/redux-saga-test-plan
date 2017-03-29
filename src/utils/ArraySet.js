@@ -25,16 +25,28 @@ export default class ArraySet<T> {
 
   delete(value: T): boolean {
     const index = this.findIndex(value);
+    return this._deleteAtIndex(index);
+  }
 
+  deleteBy(finder: T => boolean): boolean {
+    const index = this.findIndexBy(finder);
+    return this._deleteAtIndex(index);
+  }
+
+  findIndex(value: T): number {
+    return this.findIndexBy(item => isEqual(item, value));
+  }
+
+  findIndexBy(finder: T => boolean): boolean {
+    return findIndex(this._values, finder);
+  }
+
+  _deleteAtIndex(index: number): boolean {
     if (index !== -1) {
       this._values.splice(index, 1);
       return true;
     }
 
     return false;
-  }
-
-  findIndex(value: T): number {
-    return findIndex(this._values, item => isEqual(item, value));
   }
 }

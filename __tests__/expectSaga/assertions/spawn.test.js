@@ -28,9 +28,21 @@ test('spawn assertion passes', () => (
     .run()
 ));
 
+test('spawn matching assertion fn passes', () => (
+  expectSaga(saga)
+    .spawn.fn(otherSaga)
+    .run()
+));
+
 test('negative spawn assertion passes', () => (
   expectSaga(saga)
     .not.spawn(unusedSaga)
+    .run()
+));
+
+test('negative spawn matching assertion fn passes', () => (
+  expectSaga(saga)
+    .not.spawn.fn(unusedSaga)
     .run()
 ));
 
@@ -43,6 +55,30 @@ test('spawn assertion with arg passes', () => (
 test('negative spawn assertion with arg passes', () => (
   expectSaga(sagaWithArg, 42)
     .not.spawn(otherSagaWithArg, 43)
+    .run()
+));
+
+test('spawn.like matching fn and args passes', () => (
+  expectSaga(sagaWithArg, 42)
+    .spawn.like({ fn: otherSagaWithArg, args: [42] })
+    .run()
+));
+
+test('negative spawn.like matching fn and args passes with bad fn', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.spawn.like({ fn: unusedSaga, args: [42] })
+    .run()
+));
+
+test('negative spawn.like matching fn and args passes with bad args', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.spawn.like({ fn: otherSagaWithArg, args: [43] })
+    .run()
+));
+
+test('negative spawn.like matching fn and args passes with bad fn and args', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.spawn.like({ fn: unusedSaga, args: [43] })
     .run()
 ));
 
@@ -71,6 +107,26 @@ test('spawn assertion fails', () => (
 test('negative spawn assertion fails', () => (
   expectSaga(saga)
     .not.spawn(otherSaga)
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('spawn matching assertion fn fails', () => (
+  expectSaga(saga)
+    .spawn.fn(otherSagaWithArg)
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative spawn matching assertion fn fails', () => (
+  expectSaga(saga)
+    .not.spawn.fn(otherSaga)
     .run()
     .then(unreachableError)
     .catch((e) => {

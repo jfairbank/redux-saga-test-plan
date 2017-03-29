@@ -37,6 +37,42 @@ test('negative apply assertion with wrong arg passes', () => (
     .run()
 ));
 
+test('apply matching fn passes', () => (
+  expectSaga(sagaWithArg, 42)
+    .apply.fn(identity)
+    .run()
+));
+
+test('negative apply matching fn passes', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.apply.fn(() => {})
+    .run()
+));
+
+test('apply.like matching fn and args passes', () => (
+  expectSaga(sagaWithArg, 42)
+    .apply.like({ fn: identity, args: [42] })
+    .run()
+));
+
+test('negative apply.like matching fn and args passes with bad fn', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.apply.like({ fn: () => {}, args: [42] })
+    .run()
+));
+
+test('negative apply.like matching fn and args passes with bad args', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.apply.like({ fn: identity, args: [43] })
+    .run()
+));
+
+test('negative apply.like matching fn and args passes with bad fn and args', () => (
+  expectSaga(sagaWithArg, 42)
+    .not.apply.like({ fn: () => {}, args: [43] })
+    .run()
+));
+
 test('apply assertion fails with wrong function', () => (
   expectSaga(saga)
     .apply(context, () => {})
@@ -50,6 +86,26 @@ test('apply assertion fails with wrong function', () => (
 test('negative apply assertion fails with correct function', () => (
   expectSaga(saga)
     .not.apply(context, identity)
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('apply matching assertion fails', () => (
+  expectSaga(saga)
+    .apply.fn(() => {})
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative apply matching assertion fails', () => (
+  expectSaga(saga)
+    .not.apply.fn(identity)
     .run()
     .then(unreachableError)
     .catch((e) => {

@@ -24,10 +24,24 @@ test('select assertion passes', () => (
     .run()
 ));
 
+test('select matching assertion selector passes', () => (
+  expectSaga(saga)
+    .withState(storeState)
+    .select.selector(getData)
+    .run()
+));
+
 test('negative select assertion passes', () => (
   expectSaga(saga)
     .withState(storeState)
     .not.select(state => state.data)
+    .run()
+));
+
+test('negative select matching assertion selector passes', () => (
+  expectSaga(saga)
+    .withState(storeState)
+    .not.select.selector(state => state.data)
     .run()
 ));
 
@@ -49,10 +63,32 @@ test('select assertion fails with wrong function', () => (
     })
 ));
 
+test('select matching assertion fails with wrong function', () => (
+  expectSaga(saga)
+    .withState(storeState)
+    .select.selector(state => state.data)
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
 test('negative select assertion fails with correct function', () => (
   expectSaga(saga)
     .withState(storeState)
     .not.select(getData)
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative select matching assertion fails with correct function', () => (
+  expectSaga(saga)
+    .withState(storeState)
+    .not.select.selector(getData)
     .run()
     .then(unreachableError)
     .catch((e) => {

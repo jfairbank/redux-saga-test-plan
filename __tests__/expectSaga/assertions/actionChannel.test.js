@@ -23,6 +23,18 @@ test('negative actionChannel assertion passes', () => (
     .run()
 ));
 
+test('actionChannel matching pattern assertion passes', () => (
+  expectSaga(saga)
+    .actionChannel.pattern('FOO')
+    .run()
+));
+
+test('negative actionChannel matching pattern assertion passes', () => (
+  expectSaga(saga)
+    .not.actionChannel.pattern('BAR')
+    .run()
+));
+
 test('actionChannel works with take', () => (
   expectSaga(saga)
     .put({ type: 'DONE', payload: 42 })
@@ -43,6 +55,26 @@ test('actionChannel assertion fails', () => (
 test('negative actionChannel assertion fails', () => (
   expectSaga(saga)
     .not.actionChannel('FOO')
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('actionChannel matching assertion fails', () => (
+  expectSaga(saga)
+    .actionChannel.pattern('BAR')
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative actionChannel assertion fails', () => (
+  expectSaga(saga)
+    .not.actionChannel.pattern('FOO')
     .run()
     .then(unreachableError)
     .catch((e) => {

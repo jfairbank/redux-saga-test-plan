@@ -67,6 +67,7 @@
   "dependencies": {
     "core-js": "^2.4.1",
     "lodash.isequal": "^4.1.4",
+    "lodash.ismatch": "^4.4.0",
     "object-assign": "^4.1.0",
     "util-inspect": "^0.1.8"
   },

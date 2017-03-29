@@ -12,9 +12,21 @@ test('put.resolve assertion passes', () => (
     .run()
 ));
 
+test('put.resolve matching assertion passes', () => (
+  expectSaga(saga)
+    .put.resolve.actionType('READY')
+    .run()
+));
+
 test('negative put.resolve assertion passes with wrong type', () => (
   expectSaga(saga)
     .not.put.resolve({ type: 'FOO', payload: 42 })
+    .run()
+));
+
+test('negative put.resolve matching assertion passes with wrong type', () => (
+  expectSaga(saga)
+    .not.put.resolve.actionType('FOO')
     .run()
 ));
 
@@ -34,9 +46,19 @@ test('put.resolve assertion fails with wrong type', () => (
     })
 ));
 
-test('negative put.resolve assertion fails with correct type', () => (
+test('put.resolve matching assertion fails with wrong type', () => (
   expectSaga(saga)
-    .not.put.resolve({ type: 'READY', payload: 42 })
+    .put.resolve.actionType('FOO')
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(errorRegex);
+    })
+));
+
+test('negative put.resolve matching assertion fails with correct type', () => (
+  expectSaga(saga)
+    .not.put.resolve.actionType('READY')
     .run()
     .then(unreachableError)
     .catch((e) => {
