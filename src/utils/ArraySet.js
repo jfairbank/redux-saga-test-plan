@@ -37,7 +37,7 @@ export default class ArraySet<T> {
     return this.findIndexBy(item => isEqual(item, value));
   }
 
-  findIndexBy(finder: T => boolean): boolean {
+  findIndexBy(finder: T => boolean): number {
     return findIndex(this._values, finder);
   }
 

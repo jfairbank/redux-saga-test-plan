@@ -228,9 +228,11 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
       notifyListeners(action);
     }
 
-    if ('_delayTime' in action) {
+    if (typeof action._delayTime === 'number') {
+      const { _delayTime } = action;
+
       dispatchPromise
-        .then(() => delay(action._delayTime))
+        .then(() => delay(_delayTime))
         .then(handler);
     } else {
       dispatchPromise.then(handler);
@@ -352,6 +354,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     dispatch: apiDispatch,
     delay: apiDelay,
 
+    // $FlowFixMe
     get not() {
       negateNextAssertion = true;
       return api;
@@ -438,7 +441,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   function apiDispatch(action: Action): ExpectApi {
     let dispatchableAction;
 
-    if (delayTime != null) {
+    if (typeof delayTime === 'number') {
       dispatchableAction = assign({}, action, {
         _delayTime: delayTime,
       });
@@ -505,7 +508,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     return api;
   }
 
-  function apiDelay(time) {
+  function apiDelay(time: number): ExpectApi {
     delayTime = time;
     return api;
   }

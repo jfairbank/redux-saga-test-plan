@@ -199,6 +199,7 @@ declare type ThrottleHelperGenerator = Generator<?ThrottleHelperEffect, void, vo
 
 type Action = {
   type: string | Symbol,
+  _delayTime?: number,
 };
 
 type Reducer = (state: any, action: Action) => any;
