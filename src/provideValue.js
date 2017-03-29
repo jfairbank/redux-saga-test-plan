@@ -57,7 +57,7 @@ export const handlers = {
   [TAKE]: 'take',
 };
 
-export function checkYieldedValue(providers: Providers, value: Object) {
+export function provideValue(providers: Providers, value: Object) {
   if (providers) {
     const effectType = Array.isArray(value)
       ? PARALLEL

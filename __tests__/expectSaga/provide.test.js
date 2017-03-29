@@ -19,12 +19,17 @@ import {
 import { createMockTask } from 'redux-saga/utils';
 import { expectSaga } from '../../src';
 import { delay } from '../../src/utils/async';
-import { NO_FAKE_VALUE, handlers } from '../../src/checkYieldedValue';
+import { NO_FAKE_VALUE, handlers } from '../../src/provideValue';
 import { PARALLEL } from '../../src/keys';
 
 const fakeChannel = {
   take() {},
   close() {},
+};
+
+const fakeUser = {
+  id: 1,
+  name: 'John Doe',
 };
 
 test('uses provided value for `actionChannel`', () => {
@@ -382,7 +387,6 @@ test('uses provided value for `race`', () => {
 });
 
 test('inner providers for `race` work', () => {
-  const fakeUser = { id: 1, name: 'John Doe' };
   const fetchUser = () => delay(1000).then(() => fakeUser);
 
   function* saga() {
@@ -630,5 +634,61 @@ test('handles errors', () => {
       },
     })
     .put({ type: 'DONE', payload: error })
+    .run();
+});
+
+test('provides values in forked sagas', () => {
+  const fetchUser = () => 0;
+
+  function* fetchUserSaga() {
+    const user = yield call(fetchUser);
+    yield put({ type: 'RECEIVE_USER', payload: user });
+  }
+
+  function* saga() {
+    yield fork(fetchUserSaga);
+  }
+
+  return expectSaga(saga)
+    .provide({
+      provideInForkedTasks: true,
+
+      call({ fn }, next) {
+        if (fn === fetchUser) {
+          return fakeUser;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run();
+});
+
+test('provides values in spawned sagas', () => {
+  const fetchUser = () => 0;
+
+  function* fetchUserSaga() {
+    const user = yield call(fetchUser);
+    yield put({ type: 'RECEIVE_USER', payload: user });
+  }
+
+  function* saga() {
+    yield spawn(fetchUserSaga);
+  }
+
+  return expectSaga(saga)
+    .provide({
+      provideInForkedTasks: true,
+
+      call({ fn }, next) {
+        if (fn === fetchUser) {
+          return fakeUser;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .run();
 });

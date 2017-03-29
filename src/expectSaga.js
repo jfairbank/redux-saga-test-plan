@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable no-constant-condition */
 import { effects, runSaga, utils } from 'redux-saga';
-import { race } from 'redux-saga/effects';
+import { fork, race, spawn } from 'redux-saga/effects';
 import SagaTestError from './SagaTestError';
 import { findIndex, splitAt } from './utils/array';
 import Map from './utils/Map';
@@ -12,7 +12,7 @@ import { delay, schedule } from './utils/async';
 import identity from './utils/identity';
 import reportActualEffects from './reportActualEffects';
 import parseEffect from './parseEffect';
-import { NO_FAKE_VALUE, checkYieldedValue } from './checkYieldedValue';
+import { NO_FAKE_VALUE, provideValue } from './provideValue';
 import { mapValues } from './utils/object';
 
 import {
@@ -66,7 +66,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   let storeState: any;
 
   function useProvidedValue(value) {
-    const fakeValue = checkYieldedValue(providers, value);
+    const fakeValue = provideValue(providers, value);
 
     if (fakeValue === NO_FAKE_VALUE) {
       return value;
@@ -75,26 +75,50 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     return fakeValue;
   }
 
+  function refineYieldedValue(result) {
+    const { value } = result;
+
+    const raceEffect = asEffect.race(value);
+    const yieldedRace = is.notUndef(raceEffect);
+    const haveRaceProvider = providers && providers.race;
+
+    if (yieldedRace && !haveRaceProvider) {
+      return race(mapValues(raceEffect, useProvidedValue));
+    }
+
+    const yieldedArray = Array.isArray(value);
+    const haveParallelProvider = providers && providers.parallel;
+
+    if (yieldedArray && !haveParallelProvider) {
+      return value.map(useProvidedValue);
+    }
+
+    const forkEffect = asEffect.fork(value);
+    const yieldedFork = is.notUndef(forkEffect);
+    const provideInForkedTasks = providers && providers.provideInForkedTasks;
+    const haveForkProvider = providers && providers.fork;
+
+    if (yieldedFork && provideInForkedTasks && !forkEffect.detached && !haveForkProvider) {
+      const { args, context, fn } = forkEffect;
+      return fork(sagaWrapper, fn.apply(context, args), true);
+    }
+
+    const haveSpawnProvider = providers && providers.spawn;
+
+    if (yieldedFork && provideInForkedTasks && forkEffect.detached && !haveSpawnProvider) {
+      const { args, context, fn } = forkEffect;
+      return spawn(sagaWrapper, fn.apply(context, args));
+    }
+
+    return useProvidedValue(value);
+  }
+
   function* sagaWrapper(wrappedIterator) {
     let result = wrappedIterator.next();
 
     while (true) {
-      let { value } = result;
-      const yieldedArray = Array.isArray(value);
-      const raceEffect = asEffect.race(value);
-      const yieldedRace = is.notUndef(raceEffect);
-      const haveRaceProvider = providers && providers.race;
-      const haveParallelProvider = providers && providers.parallel;
-
       try {
-        if (yieldedRace && !haveRaceProvider) {
-          value = race(mapValues(raceEffect, useProvidedValue));
-        } else if (yieldedArray && !haveParallelProvider) {
-          value = value.map(useProvidedValue);
-        } else {
-          value = useProvidedValue(value);
-        }
-
+        const value = refineYieldedValue(result);
         const response = yield value;
 
         result = wrappedIterator.next(response);

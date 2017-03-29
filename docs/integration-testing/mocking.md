@@ -22,7 +22,7 @@ call:
 ```js
 import { call, put, take } from 'redux-saga/effects';
 import { expectSaga } from 'redux-saga-test-plan';
-import { api } from 'my-api';
+import api from 'my-api';
 
 function* saga() {
   const action = yield take('REQUEST_USER');
@@ -197,7 +197,7 @@ it('provides a value for the entire array', () => {
 ```js
 import { call, put, race, take } from 'redux-saga/effects';
 import { expectSaga } from 'redux-saga-test-plan';
-import { api } from 'my-api';
+import api from 'my-api';
 
 const delay = time => (
   new Promise(resolve => setTimeout(resolve, time))
@@ -275,6 +275,69 @@ it('can throw errors in the saga', () => {
     })
     .put({ error, type: 'FAIL_USER' })
     .dispatch({ type: 'REQUEST_USER', payload: 1 })
+    .run();
+});
+```
+
+#### Providing in forked/spawned tasks
+
+To ensure that the `fork` and `spawn` assertion methods work properly, providers
+will not automatically work inside forked/spawned tasks. To provide values
+inside forked/spawned tasks, include `provideInForkedTasks: true` as an
+additional key-value pair in the providers object literal. **Note:** Redux Saga
+Test Plan has to wrap forked/spawned sagas in a middleware saga to provide
+values in them, so the `fork` and `spawn` assertion methods won't work properly
+if you're providing values in forked/spawned tasks.
+
+```js
+import { fork, put } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
+import api from 'my-api';
+
+function* fetchUserSaga() {
+  const user = yield call(api.fetchUser);
+  yield put({ type: 'RECEIVE_USER', payload: user });
+}
+
+function* forkingSaga() {
+  yield fork(fetchUserSaga);
+}
+
+function* spawningSaga() {
+  yield spawn(fetchUserSaga);
+}
+
+it('provides values in forked sagas', () => {
+  return expectSaga(forkingSaga)
+    .provide({
+      provideInForkedTasks: true,
+
+      call({ fn }, next) {
+        if (fn === api.fetchUser) {
+          return fakeUser;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run();
+});
+
+it('provides values in spawned sagas', () => {
+  return expectSaga(spawningSaga)
+    .provide({
+      provideInForkedTasks: true,
+
+      call({ fn }, next) {
+        if (fn === api.fetchUser) {
+          return fakeUser;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .run();
 });
 ```
