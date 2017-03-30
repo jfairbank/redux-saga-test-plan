@@ -17,7 +17,7 @@ branches:
 script:
   - yarn run lint
   - yarn run typecheck
-  - yarn test
+  - yarn run test:ci
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

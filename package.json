@@ -14,6 +14,7 @@
     "lint": "eslint src/ __tests__/",
     "prepublish": "npm run clean && npm run build",
     "test": "jest",
+    "test:ci": "jest --runInBand",
     "watch:test": "npm test -- --watch",
     "typecheck": "flow",
     "docs:clean": "rimraf _book",
