@@ -34,7 +34,7 @@ it('can dispatch actions while running', async () => {
 
 it('can delay actions', () => {
   function callback(elapsed) {
-    expect(elapsed).toBeGreaterThanOrEqual(250);
+    expect(elapsed).toBeGreaterThanOrEqual(240);
   }
 
   return expectSaga(mainSaga, callback)
@@ -68,8 +68,8 @@ it('can delay multiple times', () => {
   }
 
   function callback(elapsed1, elapsed2) {
-    expect(elapsed1).toBeGreaterThanOrEqual(100);
-    expect(elapsed2).toBeGreaterThanOrEqual(150);
+    expect(elapsed1).toBeGreaterThanOrEqual(90);
+    expect(elapsed2).toBeGreaterThanOrEqual(140);
   }
 
   return expectSaga(saga, callback)
