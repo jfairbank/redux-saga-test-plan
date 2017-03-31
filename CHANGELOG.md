@@ -1,3 +1,27 @@
+## v2.3.1
+
+### Bug Fix
+
+Sagas that used the `take` effect creator with patterns besides strings and
+symbols (i.e. arrays and functions) were not receiving dispatched actions.
+Here's an example of a saga that takes an array that should work now:
+
+```js
+function* sagaTakeArray() {
+  const action = yield take(['FOO', 'BAR']);
+  yield put({ type: 'DONE', payload: action.payload });
+}
+
+it('takes action types in an array', () => {
+  return expectSaga(sagaTakeArray)
+    .put({ type: 'DONE', payload: 'foo payload' })
+    .dispatch({ type: 'FOO', payload: 'foo payload' })
+    .run();
+});
+```
+
+---
+
 ## v2.3.0
 
 ### NEW features in `expectSaga`
