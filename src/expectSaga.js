@@ -5,7 +5,7 @@ import { fork, race, spawn } from 'redux-saga/effects';
 import assign from 'object-assign';
 import isMatch from 'lodash.ismatch';
 import SagaTestError from './SagaTestError';
-import { findIndex, splitAt } from './utils/array';
+import { splitAt } from './utils/array';
 import Map from './utils/Map';
 import ArraySet from './utils/ArraySet';
 import serializeEffect from './serializeEffect';
@@ -16,6 +16,7 @@ import reportActualEffects from './reportActualEffects';
 import parseEffect from './parseEffect';
 import { NO_FAKE_VALUE, provideValue } from './provideValue';
 import { mapValues } from './utils/object';
+import findDispatchableActionIndex from './findDispatchableActionIndex';
 
 import {
   ACTION_CHANNEL,
@@ -244,8 +245,8 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   }
 
   function getDispatchableActions(effect: Object): Array<Action> {
-    const type = effect.pattern || channelsToPatterns.get(effect.channel);
-    const index = findIndex(queuedActions, a => a.type === type);
+    const pattern = effect.pattern || channelsToPatterns.get(effect.channel);
+    const index = findDispatchableActionIndex(queuedActions, pattern);
 
     if (index > -1) {
       const actions = queuedActions.splice(0, index + 1);

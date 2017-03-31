@@ -197,6 +197,8 @@ declare type ThrottleHelperGenerator = Generator<?ThrottleHelperEffect, void, vo
 
 // expectSaga
 
+type Pattern = string | (Action) => boolean | Array<Pattern>;
+
 type Action = {
   type: string | Symbol,
   _delayTime?: number,
