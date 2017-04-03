@@ -2,6 +2,7 @@
 /* eslint-disable no-constant-condition, no-underscore-dangle */
 import { effects, runSaga, utils } from 'redux-saga';
 import { fork, race, spawn } from 'redux-saga/effects';
+import { takeEveryHelper, takeLatestHelper } from 'redux-saga/lib/internal/sagaHelpers';
 import assign from 'object-assign';
 import isMatch from 'lodash.ismatch';
 import SagaTestError from '../shared/SagaTestError';
@@ -103,12 +104,30 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
     const forkEffect = asEffect.fork(value);
     const yieldedFork = is.notUndef(forkEffect);
+
+    const yieldedHelperEffect = yieldedFork && (
+      forkEffect.fn === takeEveryHelper ||
+      forkEffect.fn === takeLatestHelper
+    );
+
     const provideInForkedTasks = providers && providers.provideInForkedTasks;
     const haveForkProvider = providers && providers.fork;
 
     if (yieldedFork && provideInForkedTasks && !forkEffect.detached && !haveForkProvider) {
       const { args, context, fn } = forkEffect;
-      return fork(sagaWrapper, fn.apply(context, args), refineYieldedValue);
+
+      let finalArgs = args;
+
+      if (yieldedHelperEffect) {
+        const [patternOrChannel, worker, ...restArgs] = args;
+
+        finalArgs = [
+          patternOrChannel,
+          () => sagaWrapper(worker(...restArgs), refineYieldedValue),
+        ];
+      }
+
+      return fork(sagaWrapper, fn.apply(context, finalArgs), refineYieldedValue);
     }
 
     const haveSpawnProvider = providers && providers.spawn;

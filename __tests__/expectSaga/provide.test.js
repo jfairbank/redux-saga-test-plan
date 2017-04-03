@@ -14,6 +14,8 @@ import {
   select,
   spawn,
   take,
+  takeEvery,
+  takeLatest,
 } from 'redux-saga/effects';
 
 import { createMockTask } from 'redux-saga/utils';
@@ -691,4 +693,98 @@ test('provides values in spawned sagas', () => {
     })
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .run();
+});
+
+test('provides values in deeply forked sagas', () => {
+  const fetchUser = () => 0;
+
+  function* fetchUserSaga() {
+    const user = yield call(fetchUser);
+    yield put({ type: 'RECEIVE_USER', payload: user });
+  }
+
+  function* anotherSaga() {
+    yield fork(fetchUserSaga);
+  }
+
+  function* someSaga() {
+    yield fork(anotherSaga);
+  }
+
+  function* saga() {
+    yield fork(someSaga);
+  }
+
+  return expectSaga(saga)
+    .provide({
+      provideInForkedTasks: true,
+
+      call({ fn }, next) {
+        if (fn === fetchUser) {
+          return fakeUser;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run();
+});
+
+test('provides values in takeEvery workers', () => {
+  const fetchUser = () => 0;
+
+  function* fooSaga() {
+    const user = yield call(fetchUser);
+    yield put({ type: 'RECEIVE_USER', payload: user });
+  }
+
+  function* saga() {
+    yield takeEvery('REQUEST_USER', fooSaga, 42);
+  }
+
+  return expectSaga(saga)
+    .provide({
+      provideInForkedTasks: true,
+
+      call({ fn }, next) {
+        if (fn === fetchUser) {
+          return fakeUser;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .dispatch({ type: 'REQUEST_USER' })
+    .run({ silenceTimeout: true });
+});
+
+test('provides values in takeLatest workers', () => {
+  const fetchUser = () => 0;
+
+  function* fooSaga() {
+    const user = yield call(fetchUser);
+    yield put({ type: 'RECEIVE_USER', payload: user });
+  }
+
+  function* saga() {
+    yield takeLatest('REQUEST_USER', fooSaga);
+  }
+
+  return expectSaga(saga)
+    .provide({
+      provideInForkedTasks: true,
+
+      call({ fn }, next) {
+        if (fn === fetchUser) {
+          return fakeUser;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .dispatch({ type: 'REQUEST_USER' })
+    .run({ silenceTimeout: true });
 });
