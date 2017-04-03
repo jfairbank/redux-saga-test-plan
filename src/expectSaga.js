@@ -17,6 +17,7 @@ import parseEffect from './parseEffect';
 import { NO_FAKE_VALUE, provideValue } from './provideValue';
 import { mapValues } from './utils/object';
 import findDispatchableActionIndex from './findDispatchableActionIndex';
+import sagaWrapper from './sagaWrapper';
 
 import {
   ACTION_CHANNEL,
@@ -107,36 +108,17 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
     if (yieldedFork && provideInForkedTasks && !forkEffect.detached && !haveForkProvider) {
       const { args, context, fn } = forkEffect;
-      return fork(sagaWrapper, fn.apply(context, args), true);
+      return fork(sagaWrapper, fn.apply(context, args), refineYieldedValue);
     }
 
     const haveSpawnProvider = providers && providers.spawn;
 
     if (yieldedFork && provideInForkedTasks && forkEffect.detached && !haveSpawnProvider) {
       const { args, context, fn } = forkEffect;
-      return spawn(sagaWrapper, fn.apply(context, args));
+      return spawn(sagaWrapper, fn.apply(context, args), refineYieldedValue);
     }
 
     return useProvidedValue(value);
-  }
-
-  function* sagaWrapper(wrappedIterator) {
-    let result = wrappedIterator.next();
-
-    while (true) {
-      try {
-        const value = refineYieldedValue(result);
-        const response = yield value;
-
-        result = wrappedIterator.next(response);
-      } catch (e) {
-        result = wrappedIterator.throw(e);
-      }
-
-      if (result.done) {
-        break;
-      }
-    }
   }
 
   function defaultReducer(state = storeState) {
@@ -465,7 +447,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     isRunning = true;
     iterator = generator(...sagaArgs);
 
-    mainTask = runSaga(sagaWrapper(iterator), io);
+    mainTask = runSaga(sagaWrapper(iterator, refineYieldedValue), io);
 
     mainTaskPromise = mainTask.done
       .then(checkExpectations)
