@@ -200,7 +200,7 @@ test('times out even if promises keep getting added', async () => {
 
   const promise = Promise.race([
     expectSaga(sagas).run(200).then(() => false),
-    delay(210).then(() => true),
+    delay(250).then(() => true),
   ]);
 
   const timedOut = await promise;
