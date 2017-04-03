@@ -19,8 +19,8 @@ import {
 import { createMockTask } from 'redux-saga/utils';
 import { expectSaga } from '../../src';
 import { delay } from '../../src/utils/async';
-import { NO_FAKE_VALUE, handlers } from '../../src/provideValue';
-import { PARALLEL } from '../../src/keys';
+import { NO_FAKE_VALUE, handlers } from '../../src/expectSaga/provideValue';
+import { PARALLEL } from '../../src/shared/keys';
 
 const fakeChannel = {
   take() {},

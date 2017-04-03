@@ -1,5 +1,5 @@
 // @flow
-import { findIndex } from './utils/array';
+import { findIndex } from '../utils/array';
 
 export default function findDispatchableActionIndex(
   actions: Array<Action>,

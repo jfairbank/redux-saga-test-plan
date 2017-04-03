@@ -1,5 +1,5 @@
 // @flow
-import { HELPER } from './keys';
+import { HELPER } from '../shared/keys';
 
 export default function isHelper(generator: mixed): boolean {
   return (

@@ -1,5 +1,5 @@
 // @flow
-import SagaTestError from './SagaTestError';
+import SagaTestError from '../shared/SagaTestError';
 import validateEffects from './validateEffects';
 
 export default function assertSameEffect(

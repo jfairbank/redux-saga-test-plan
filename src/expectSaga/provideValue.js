@@ -16,7 +16,7 @@ import {
   RACE,
   SELECT,
   TAKE,
-} from './keys';
+} from '../shared/keys';
 
 const { asEffect } = utils;
 

@@ -1,6 +1,6 @@
 // @flow
 import { takeEvery, takeLatest } from 'redux-saga';
-import validateHelperNamesMatch from '../src/validateHelperNamesMatch';
+import validateHelperNamesMatch from '../src/testSaga/validateHelperNamesMatch';
 
 function* backgroundSaga() {
   yield 42;

@@ -3,7 +3,7 @@ import { delay, eventChannel } from 'redux-saga';
 import { actionChannel, call, fork, take } from 'redux-saga/effects';
 import validateThrottleHelper, {
   fakeChannelCreator,
-} from '../src/validateThrottleHelper';
+} from '../src/testSaga/validateThrottleHelper';
 
 function* yieldNullActionChannel() {
   yield null;

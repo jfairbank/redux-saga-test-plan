@@ -31,10 +31,10 @@ import {
   RACE,
   SELECT,
   TAKE,
-} from './keys';
+} from '../shared/keys';
 
-import SagaTestError from './SagaTestError';
-import identity from './utils/identity';
+import SagaTestError from '../shared/SagaTestError';
+import identity from '../utils/identity';
 import createErrorMessage from './createErrorMessage';
 import assertSameEffect from './assertSameEffect';
 import validateTakeHelper from './validateTakeHelper';

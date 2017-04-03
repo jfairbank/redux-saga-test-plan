@@ -3,7 +3,7 @@ import isEqual from 'lodash.isequal';
 import createErrorMessage from './createErrorMessage';
 import serializeTakePattern from './serializeTakePattern';
 import getFunctionName from './getFunctionName';
-import { ACTION_CHANNEL, CALL, FORK } from './keys';
+import { ACTION_CHANNEL, CALL, FORK } from '../shared/keys';
 
 export const fakeChannelCreator = () => () => {};
 

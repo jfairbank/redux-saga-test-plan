@@ -1,8 +1,8 @@
 import { call } from 'redux-saga/effects';
-import reportActualEffects from '../../src/reportActualEffects';
+import reportActualEffects from '../../src/expectSaga/reportActualEffects';
 import ArraySet from '../../src/utils/ArraySet';
 import identity from '../../src/utils/identity';
-import serializeEffect from '../../src/serializeEffect';
+import serializeEffect from '../../src/shared/serializeEffect';
 
 test('returns empty string with no values', () => {
   const store = new ArraySet();

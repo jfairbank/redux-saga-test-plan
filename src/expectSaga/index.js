@@ -4,18 +4,18 @@ import { effects, runSaga, utils } from 'redux-saga';
 import { fork, race, spawn } from 'redux-saga/effects';
 import assign from 'object-assign';
 import isMatch from 'lodash.ismatch';
-import SagaTestError from './SagaTestError';
-import { splitAt } from './utils/array';
-import Map from './utils/Map';
-import ArraySet from './utils/ArraySet';
-import serializeEffect from './serializeEffect';
-import { warn } from './utils/logging';
-import { delay, schedule } from './utils/async';
-import identity from './utils/identity';
+import SagaTestError from '../shared/SagaTestError';
+import { splitAt } from '../utils/array';
+import Map from '../utils/Map';
+import ArraySet from '../utils/ArraySet';
+import serializeEffect from '../shared/serializeEffect';
+import { warn } from '../utils/logging';
+import { delay, schedule } from '../utils/async';
+import identity from '../utils/identity';
 import reportActualEffects from './reportActualEffects';
 import parseEffect from './parseEffect';
 import { NO_FAKE_VALUE, provideValue } from './provideValue';
-import { mapValues } from './utils/object';
+import { mapValues } from '../utils/object';
 import findDispatchableActionIndex from './findDispatchableActionIndex';
 import sagaWrapper from './sagaWrapper';
 
@@ -29,7 +29,7 @@ import {
   RACE,
   SELECT,
   TAKE,
-} from './keys';
+} from '../shared/keys';
 
 const { asEffect, is } = utils;
 

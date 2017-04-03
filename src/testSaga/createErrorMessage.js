@@ -1,5 +1,5 @@
 // @flow
-import serializeEffect from './serializeEffect';
+import serializeEffect from '../shared/serializeEffect';
 
 export default function createErrorMessage(
   header: string,

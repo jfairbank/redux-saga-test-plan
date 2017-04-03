@@ -1,7 +1,7 @@
 // @flow
 import isEqual from 'lodash.isequal';
 import createErrorMessage from './createErrorMessage';
-import { TAKE, FORK } from './keys';
+import { TAKE, FORK } from '../shared/keys';
 import getFunctionName from './getFunctionName';
 import serializeTakePattern from './serializeTakePattern';
 

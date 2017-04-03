@@ -1,8 +1,8 @@
 // @flow
 import { eventChannel } from 'redux-saga';
 import { call } from 'redux-saga/effects';
-import { CALL } from '../src/keys';
-import validateEffects from '../src/validateEffects';
+import { CALL } from '../src/shared/keys';
+import validateEffects from '../src/testSaga/validateEffects';
 
 const identity = value => value;
 
