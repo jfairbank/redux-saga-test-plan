@@ -1,3 +1,13 @@
+## v2.3.2
+
+### Bug Fix
+
+The internal `sagaWrapper` implementation used by `expectSaga` required a
+dependency on `regeneratorRuntime`. `sagaWrapper` was rewritten to explicitly
+utilize [fsm-iterator](https://github.com/jfairbank/fsm-iterator) instead.
+
+---
+
 ## v2.3.1
 
 ### Bug Fix
