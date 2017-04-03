@@ -1,3 +1,17 @@
+## v2.3.3
+
+### Bug Fix
+
+Providers now work with workers given to `takeEvery` and `takeLatest` if you
+supply the `provideInForkedTasks` option to `expectSaga.provide`.
+
+**Note:** this applies only to the `takeEvery` and `takeLatest` effect creators
+from the `redux-saga/effects` module. The `takeEvery` and `takeLatest` saga
+helpers from the `redux-saga` module are deprecated and therefore unsupported by
+Redux Saga Test Plan.
+
+---
+
 ## v2.3.2
 
 ### Bug Fix
