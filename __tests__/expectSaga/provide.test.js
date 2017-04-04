@@ -734,13 +734,18 @@ test('provides values in deeply forked sagas', () => {
 test('provides values in takeEvery workers', () => {
   const fetchUser = () => 0;
 
-  function* fooSaga() {
+  function* fooSaga(arg1, arg2, action) {
     const user = yield call(fetchUser);
-    yield put({ type: 'RECEIVE_USER', payload: user });
+
+    yield put({
+      type: 'RECEIVE_USER',
+      payload: user,
+      meta: { action, args: [arg1, arg2] },
+    });
   }
 
   function* saga() {
-    yield takeEvery('REQUEST_USER', fooSaga, 42);
+    yield takeEvery('REQUEST_USER', fooSaga, 42, 'hello');
   }
 
   return expectSaga(saga)
@@ -755,7 +760,14 @@ test('provides values in takeEvery workers', () => {
         return next();
       },
     })
-    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .put({
+      type: 'RECEIVE_USER',
+      payload: fakeUser,
+      meta: {
+        action: { type: 'REQUEST_USER' },
+        args: [42, 'hello'],
+      },
+    })
     .dispatch({ type: 'REQUEST_USER' })
     .run({ silenceTimeout: true });
 });
@@ -763,13 +775,18 @@ test('provides values in takeEvery workers', () => {
 test('provides values in takeLatest workers', () => {
   const fetchUser = () => 0;
 
-  function* fooSaga() {
+  function* fooSaga(arg1, arg2, action) {
     const user = yield call(fetchUser);
-    yield put({ type: 'RECEIVE_USER', payload: user });
+
+    yield put({
+      type: 'RECEIVE_USER',
+      payload: user,
+      meta: { action, args: [arg1, arg2] },
+    });
   }
 
   function* saga() {
-    yield takeLatest('REQUEST_USER', fooSaga);
+    yield takeLatest('REQUEST_USER', fooSaga, 42, 'hello');
   }
 
   return expectSaga(saga)
@@ -784,7 +801,14 @@ test('provides values in takeLatest workers', () => {
         return next();
       },
     })
-    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .put({
+      type: 'RECEIVE_USER',
+      payload: fakeUser,
+      meta: {
+        action: { type: 'REQUEST_USER' },
+        args: [42, 'hello'],
+      },
+    })
     .dispatch({ type: 'REQUEST_USER' })
     .run({ silenceTimeout: true });
 });

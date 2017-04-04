@@ -123,7 +123,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
         finalArgs = [
           patternOrChannel,
-          () => sagaWrapper(worker(...restArgs), refineYieldedValue),
+          action => sagaWrapper(worker(...restArgs, action), refineYieldedValue),
         ];
       }
 
