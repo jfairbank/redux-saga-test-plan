@@ -14,7 +14,7 @@ export default function sagaWrapper(
   return fsmIterator(INIT, {
     [INIT](_, fsm) {
       try {
-        const value = refineYieldedValue(result);
+        const value = refineYieldedValue(result.value);
 
         return {
           value,

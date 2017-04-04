@@ -84,9 +84,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     return fakeValue;
   }
 
-  function refineYieldedValue(result) {
-    const { value } = result;
-
+  function refineYieldedValue(value) {
     const raceEffect = asEffect.race(value);
     const yieldedRace = is.notUndef(raceEffect);
     const haveRaceProvider = providers && providers.race;
@@ -99,7 +97,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     const haveParallelProvider = providers && providers.parallel;
 
     if (yieldedArray && !haveParallelProvider) {
-      return value.map(useProvidedValue);
+      return value.map(refineYieldedValue);
     }
 
     const forkEffect = asEffect.fork(value);
