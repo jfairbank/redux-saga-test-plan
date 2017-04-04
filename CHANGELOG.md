@@ -1,3 +1,19 @@
+## v2.3.4
+
+### Bug Fixes
+
+* `takeEvery`/`takeLatest` workers now receive the dispatched action that
+  triggered them when using the `provideInForkedTasks` option.
+* Yielding `takeEvery`/`takeLatest` inside an array now works with the
+  `provideInForkedTasks` option.
+
+**Note:** these fixes only apply to the `takeEvery` and `takeLatest` effect
+creators from the `redux-saga/effects` module. The `takeEvery` and `takeLatest`
+saga helpers from the `redux-saga` module are deprecated and therefore
+unsupported by Redux Saga Test Plan.
+
+---
+
 ## v2.3.3
 
 ### Bug Fix
