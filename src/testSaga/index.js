@@ -1,5 +1,4 @@
 // @flow
-import isEqual from 'lodash.isequal';
 import assign from 'object-assign';
 
 import {
@@ -33,6 +32,7 @@ import {
   TAKE,
 } from '../shared/keys';
 
+import isEqual from '../utils/isEqual';
 import SagaTestError from '../shared/SagaTestError';
 import identity from '../utils/identity';
 import createErrorMessage from './createErrorMessage';
