@@ -1,3 +1,11 @@
+## v2.3.5
+
+### Bug Fix
+
+Providers now work with composed/nested sagas invoked via the `call` effect.
+
+---
+
 ## v2.3.4
 
 ### Bug Fixes
