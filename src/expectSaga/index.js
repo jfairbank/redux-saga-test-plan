@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable no-constant-condition, no-underscore-dangle */
 import { effects, runSaga, utils } from 'redux-saga';
-import { fork, race, spawn } from 'redux-saga/effects';
+import { call, fork, race, spawn } from 'redux-saga/effects';
 import { takeEveryHelper, takeLatestHelper } from 'redux-saga/lib/internal/sagaHelpers';
 import assign from 'object-assign';
 import isMatch from 'lodash.ismatch';
@@ -33,7 +33,7 @@ import {
   TAKE,
 } from '../shared/keys';
 
-const { asEffect } = utils;
+const { asEffect, is } = utils;
 
 const INIT_ACTION = { type: '@@redux-saga-test-plan/INIT' };
 
@@ -127,6 +127,27 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
         }
 
         return useProvidedValue(value);
+      }
+
+      case type === CALL: {
+        const providedValue = useProvidedValue(value);
+
+        if (providedValue !== value) {
+          return providedValue;
+        }
+
+        // TODO: This is hacky. Need a better way to manually add effects to
+        // effect stores.
+        processEffect({ effect: value });
+
+        const { context, fn, args } = effect;
+        const result = fn.apply(context, args);
+
+        if (is.iterator(result)) {
+          return call(sagaWrapper, result, refineYieldedValue);
+        }
+
+        return result;
       }
 
       default:

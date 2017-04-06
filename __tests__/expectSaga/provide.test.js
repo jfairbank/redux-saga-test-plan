@@ -871,3 +871,73 @@ test('provides values in parallel takeEvery workers', () => {
     .dispatch({ type: 'REQUEST_OTHER' })
     .run({ silenceTimeout: true });
 });
+
+test('provides values in deeply called sagas', () => {
+  const fetchUser = () => 0;
+
+  function* fetchUserSaga() {
+    const user = yield call(fetchUser);
+    yield put({ type: 'RECEIVE_USER', payload: user });
+  }
+
+  function* anotherSaga() {
+    yield call(fetchUserSaga);
+  }
+
+  function* someSaga() {
+    yield call(anotherSaga);
+  }
+
+  function* saga() {
+    yield call(someSaga);
+  }
+
+  return expectSaga(saga)
+    .provide({
+      call({ fn }, next) {
+        if (fn === fetchUser) {
+          return fakeUser;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run();
+});
+
+test('provides values in deeply forked and called sagas', () => {
+  const fetchUser = () => 0;
+
+  function* fetchUserSaga() {
+    const user = yield call(fetchUser);
+    yield put({ type: 'RECEIVE_USER', payload: user });
+  }
+
+  function* anotherSaga() {
+    yield fork(fetchUserSaga);
+  }
+
+  function* someSaga() {
+    yield call(anotherSaga);
+  }
+
+  function* saga() {
+    yield fork(someSaga);
+  }
+
+  return expectSaga(saga)
+    .provide({
+      provideInForkedTasks: true,
+
+      call({ fn }, next) {
+        if (fn === fetchUser) {
+          return fakeUser;
+        }
+
+        return next();
+      },
+    })
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run();
+});
