@@ -59,10 +59,7 @@ export const handlers = {
 
 export function provideValue(providers: Providers, value: Object) {
   if (providers) {
-    const effectType = Array.isArray(value)
-      ? PARALLEL
-      : parseEffect(value);
-
+    const effectType = parseEffect(value).type;
     const handler = handlers[effectType];
 
     if (typeof handler === 'string' && handler in providers) {

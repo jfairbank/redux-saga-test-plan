@@ -25,6 +25,7 @@ import {
   CALL,
   CPS,
   FORK,
+  PARALLEL,
   PROMISE,
   PUT,
   RACE,
@@ -32,12 +33,16 @@ import {
   TAKE,
 } from '../shared/keys';
 
-const { asEffect, is } = utils;
+const { asEffect } = utils;
 
 const INIT_ACTION = { type: '@@redux-saga-test-plan/INIT' };
 
 function extractState(reducer: Reducer, initialState?: any): any {
   return initialState || reducer(undefined, INIT_ACTION);
+}
+
+function isHelper(fn: Function): boolean {
+  return fn === takeEveryHelper || fn === takeLatestHelper;
 }
 
 export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): ExpectApi {
@@ -85,57 +90,48 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   }
 
   function refineYieldedValue(value) {
-    const raceEffect = asEffect.race(value);
-    const yieldedRace = is.notUndef(raceEffect);
-    const haveRaceProvider = providers && providers.race;
+    const parsedEffect = parseEffect(value);
+    const localProviders = providers || {};
+    const { type, effect } = parsedEffect;
 
-    if (yieldedRace && !haveRaceProvider) {
-      return race(mapValues(raceEffect, useProvidedValue));
-    }
+    const { provideInForkedTasks } = localProviders;
 
-    const yieldedArray = Array.isArray(value);
-    const haveParallelProvider = providers && providers.parallel;
+    switch (true) {
+      case type === RACE && !localProviders.race:
+        return race(mapValues(effect, useProvidedValue));
 
-    if (yieldedArray && !haveParallelProvider) {
-      return value.map(refineYieldedValue);
-    }
+      case type === PARALLEL && !localProviders.parallel:
+        return parsedEffect.effects.map(refineYieldedValue);
 
-    const forkEffect = asEffect.fork(value);
-    const yieldedFork = is.notUndef(forkEffect);
+      case type === FORK: {
+        const { args, detached, context, fn } = effect;
+        const yieldedHelperEffect = isHelper(fn);
 
-    const yieldedHelperEffect = yieldedFork && (
-      forkEffect.fn === takeEveryHelper ||
-      forkEffect.fn === takeLatestHelper
-    );
+        if (provideInForkedTasks && !detached && !localProviders.fork) {
+          let finalArgs = args;
 
-    const provideInForkedTasks = providers && providers.provideInForkedTasks;
-    const haveForkProvider = providers && providers.fork;
+          if (yieldedHelperEffect) {
+            const [patternOrChannel, worker, ...restArgs] = args;
 
-    if (yieldedFork && provideInForkedTasks && !forkEffect.detached && !haveForkProvider) {
-      const { args, context, fn } = forkEffect;
+            finalArgs = [
+              patternOrChannel,
+              action => sagaWrapper(worker(...restArgs, action), refineYieldedValue),
+            ];
+          }
 
-      let finalArgs = args;
+          return fork(sagaWrapper, fn.apply(context, finalArgs), refineYieldedValue);
+        }
 
-      if (yieldedHelperEffect) {
-        const [patternOrChannel, worker, ...restArgs] = args;
+        if (provideInForkedTasks && detached && !localProviders.spawn) {
+          return spawn(sagaWrapper, fn.apply(context, args), refineYieldedValue);
+        }
 
-        finalArgs = [
-          patternOrChannel,
-          action => sagaWrapper(worker(...restArgs, action), refineYieldedValue),
-        ];
+        return useProvidedValue(value);
       }
 
-      return fork(sagaWrapper, fn.apply(context, finalArgs), refineYieldedValue);
+      default:
+        return useProvidedValue(value);
     }
-
-    const haveSpawnProvider = providers && providers.spawn;
-
-    if (yieldedFork && provideInForkedTasks && forkEffect.detached && !haveSpawnProvider) {
-      const { args, context, fn } = forkEffect;
-      return spawn(sagaWrapper, fn.apply(context, args), refineYieldedValue);
-    }
-
-    return useProvidedValue(value);
   }
 
   function defaultReducer(state = storeState) {
@@ -256,14 +252,14 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   }
 
   function processEffect(event: Object): void {
-    const effectType = parseEffect(event.effect);
+    const parsedEffect = parseEffect(event.effect);
 
     // Using string literal for flow
-    if (effectType === 'NONE') {
+    if (parsedEffect.type === 'NONE') {
       return;
     }
 
-    const effectStore = effectStores[effectType];
+    const effectStore = effectStores[parsedEffect.type];
 
     if (!effectStore) {
       return;
@@ -271,16 +267,14 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
     effectStore.add(event.effect);
 
-    switch (effectType) {
+    switch (parsedEffect.type) {
       case FORK: {
-        const effect = asEffect.fork(event.effect);
-        outstandingForkEffects.set(event.effectId, effect);
+        outstandingForkEffects.set(event.effectId, parsedEffect.effect);
         break;
       }
 
       case TAKE: {
-        const effect = asEffect.take(event.effect);
-        const actions = getDispatchableActions(effect);
+        const actions = getDispatchableActions(parsedEffect.effect);
 
         const [reducerActions, [sagaAction]] = splitAt(actions, -1);
 
@@ -296,8 +290,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
       }
 
       case ACTION_CHANNEL: {
-        const effect = asEffect.actionChannel(event.effect);
-        outstandingActionChannelEffects.set(event.effectId, effect);
+        outstandingActionChannelEffects.set(event.effectId, parsedEffect.effect);
         break;
       }
 

@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable no-cond-assign */
 import { utils } from 'redux-saga';
 
 import {
@@ -11,6 +12,7 @@ import {
   FORK,
   JOIN,
   NONE,
+  PARALLEL,
   PROMISE,
   PUT,
   RACE,
@@ -20,48 +22,53 @@ import {
 
 const { asEffect, is } = utils;
 
-export default function parseEffect(effect: Object): string {
+export default function parseEffect(effect: Object): Object {
+  let parsedEffect;
+
   switch (true) {
     case is.promise(effect):
-      return PROMISE;
+      return { type: PROMISE, promise: effect };
 
-    case is.notUndef(asEffect.take(effect)):
-      return TAKE;
+    case is.notUndef(parsedEffect = asEffect.take(effect)):
+      return { type: TAKE, effect: parsedEffect };
 
-    case is.notUndef(asEffect.put(effect)):
-      return PUT;
+    case is.notUndef(parsedEffect = asEffect.put(effect)):
+      return { type: PUT, effect: parsedEffect };
 
-    case is.notUndef(asEffect.race(effect)):
-      return RACE;
+    case is.notUndef(parsedEffect = asEffect.race(effect)):
+      return { type: RACE, effect: parsedEffect };
 
-    case is.notUndef(asEffect.call(effect)):
-      return CALL;
+    case is.notUndef(parsedEffect = asEffect.call(effect)):
+      return { type: CALL, effect: parsedEffect };
 
-    case is.notUndef(asEffect.cancel(effect)):
-      return CANCEL;
+    case is.notUndef(parsedEffect = asEffect.cancel(effect)):
+      return { type: CANCEL, effect: parsedEffect };
 
-    case is.notUndef(asEffect.cancelled(effect)):
-      return CANCELLED;
+    case is.notUndef(parsedEffect = asEffect.cancelled(effect)):
+      return { type: CANCELLED, effect: parsedEffect };
 
-    case is.notUndef(asEffect.cps(effect)):
-      return CPS;
+    case is.notUndef(parsedEffect = asEffect.cps(effect)):
+      return { type: CPS, effect: parsedEffect };
 
-    case is.notUndef(asEffect.flush(effect)):
-      return FLUSH;
+    case is.notUndef(parsedEffect = asEffect.flush(effect)):
+      return { type: FLUSH, effect: parsedEffect };
 
-    case is.notUndef(asEffect.fork(effect)):
-      return FORK;
+    case is.notUndef(parsedEffect = asEffect.fork(effect)):
+      return { type: FORK, effect: parsedEffect };
 
-    case is.notUndef(asEffect.join(effect)):
-      return JOIN;
+    case is.notUndef(parsedEffect = asEffect.join(effect)):
+      return { type: JOIN, effect: parsedEffect };
 
-    case is.notUndef(asEffect.select(effect)):
-      return SELECT;
+    case is.notUndef(parsedEffect = asEffect.select(effect)):
+      return { type: SELECT, effect: parsedEffect };
 
-    case is.notUndef(asEffect.actionChannel(effect)):
-      return ACTION_CHANNEL;
+    case is.notUndef(parsedEffect = asEffect.actionChannel(effect)):
+      return { type: ACTION_CHANNEL, effect: parsedEffect };
+
+    case Array.isArray(effect):
+      return { type: PARALLEL, effects: effect };
 
     default:
-      return NONE;
+      return { type: NONE };
   }
 }
