@@ -117,6 +117,13 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
         const yieldedHelperEffect = isHelper(fn);
 
         if (provideInForkedTasks && !detached && !localProviders.fork) {
+          // Because we wrap the `fork`, we need to manually store the effect,
+          // so assertions on the `fork` work.
+          processEffect({
+            effectId: nextSagaId(),
+            effect: value,
+          });
+
           let finalArgs = args;
 
           if (yieldedHelperEffect) {
@@ -132,6 +139,13 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
         }
 
         if (provideInForkedTasks && detached && !localProviders.spawn) {
+          // Because we wrap the `spawn`, we need to manually store the effect,
+          // so assertions on the `spawn` work.
+          processEffect({
+            effectId: nextSagaId(),
+            effect: value,
+          });
+
           return spawn(sagaWrapper, fn.apply(context, args), refineYieldedValue);
         }
 
