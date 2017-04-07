@@ -12,6 +12,7 @@ branches:
   only:
     - master
     - dev
+    - minor
     - /^greenkeeper.*$/
 
 script:
