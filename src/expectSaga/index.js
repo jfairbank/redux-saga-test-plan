@@ -13,6 +13,8 @@ import serializeEffect from '../shared/serializeEffect';
 import { warn } from '../utils/logging';
 import { delay, schedule } from '../utils/async';
 import identity from '../utils/identity';
+import noop from '../utils/noop';
+import deprecate from '../utils/deprecate';
 import reportActualEffects from './reportActualEffects';
 import parseEffect from './parseEffect';
 import { NO_FAKE_VALUE, provideValue } from './provideValue';
@@ -45,6 +47,12 @@ function extractState(reducer: Reducer, initialState?: any): any {
 function isHelper(fn: Function): boolean {
   return fn === takeEveryHelper || fn === takeLatestHelper;
 }
+
+const deprecatedProvideInForkedTasks = deprecate(
+  noop,
+  'expectSaga can provide values to forked tasks by default now. ' +
+  'You can safely remove the provideInForkedTasks option from your providers.',
+);
 
 export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): ExpectApi {
   const effectStores = {
@@ -103,7 +111,9 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     const localProviders = providers || {};
     const { type, effect } = parsedEffect;
 
-    const { provideInForkedTasks } = localProviders;
+    if (localProviders.provideInForkedTasks) {
+      deprecatedProvideInForkedTasks();
+    }
 
     switch (true) {
       case type === RACE && !localProviders.race:
@@ -116,7 +126,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
         const { args, detached, context, fn } = effect;
         const yieldedHelperEffect = isHelper(fn);
 
-        if (provideInForkedTasks && !detached && !localProviders.fork) {
+        if (!detached && !localProviders.fork) {
           // Because we wrap the `fork`, we need to manually store the effect,
           // so assertions on the `fork` work.
           processEffect({
@@ -138,7 +148,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
           return fork(sagaWrapper, fn.apply(context, finalArgs), refineYieldedValue);
         }
 
-        if (provideInForkedTasks && detached && !localProviders.spawn) {
+        if (detached && !localProviders.spawn) {
           // Because we wrap the `spawn`, we need to manually store the effect,
           // so assertions on the `spawn` work.
           processEffect({

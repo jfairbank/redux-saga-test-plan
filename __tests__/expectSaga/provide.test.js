@@ -22,7 +22,8 @@ import { createMockTask } from 'redux-saga/utils';
 import { expectSaga } from '../../src';
 import { delay } from '../../src/utils/async';
 import { NO_FAKE_VALUE, handlers } from '../../src/expectSaga/provideValue';
-import { PARALLEL } from '../../src/shared/keys';
+import { FORK, PARALLEL } from '../../src/shared/keys';
+import { warn } from '../../src/utils/logging';
 
 const fakeChannel = {
   take() {},
@@ -33,6 +34,8 @@ const fakeUser = {
   id: 1,
   name: 'John Doe',
 };
+
+jest.mock('../../src/utils/logging');
 
 test('uses provided value for `actionChannel`', () => {
   function* saga() {
@@ -653,8 +656,6 @@ test('provides values in forked sagas', () => {
 
   return expectSaga(saga)
     .provide({
-      provideInForkedTasks: true,
-
       call({ fn }, next) {
         if (fn === fetchUser) {
           return fakeUser;
@@ -681,8 +682,6 @@ test('provides values in spawned sagas', () => {
 
   return expectSaga(saga)
     .provide({
-      provideInForkedTasks: true,
-
       call({ fn }, next) {
         if (fn === fetchUser) {
           return fakeUser;
@@ -717,8 +716,6 @@ test('provides values in deeply forked sagas', () => {
 
   return expectSaga(saga)
     .provide({
-      provideInForkedTasks: true,
-
       call({ fn }, next) {
         if (fn === fetchUser) {
           return fakeUser;
@@ -750,8 +747,6 @@ test('provides values in takeEvery workers', () => {
 
   return expectSaga(saga)
     .provide({
-      provideInForkedTasks: true,
-
       call({ fn }, next) {
         if (fn === fetchUser) {
           return fakeUser;
@@ -791,8 +786,6 @@ test('provides values in takeLatest workers', () => {
 
   return expectSaga(saga)
     .provide({
-      provideInForkedTasks: true,
-
       call({ fn }, next) {
         if (fn === fetchUser) {
           return fakeUser;
@@ -842,8 +835,6 @@ test('provides values in parallel takeEvery workers', () => {
 
   return expectSaga(saga)
     .provide({
-      provideInForkedTasks: true,
-
       call({ fn }, next) {
         if (fn === fetchUser) {
           return fakeUser;
@@ -928,8 +919,6 @@ test('provides values in deeply forked and called sagas', () => {
 
   return expectSaga(saga)
     .provide({
-      provideInForkedTasks: true,
-
       call({ fn }, next) {
         if (fn === fetchUser) {
           return fakeUser;
@@ -985,4 +974,34 @@ test('assert on effects with provided values', () => {
       },
     })
     .run();
+});
+
+test('test coverage for FORK handler', () => {
+  const actual = handlers[FORK]({}, {});
+  expect(actual).toBe(NO_FAKE_VALUE);
+});
+
+test('provideInForkedTasks is deprecated', async () => {
+  warn.mockClear();
+
+  function* saga() {
+    yield put({ type: 'DONE' });
+  }
+
+  function createTest() {
+    return expectSaga(saga)
+      .provide({ provideInForkedTasks: true })
+      .put({ type: 'DONE' })
+      .run();
+  }
+
+  await Promise.all([
+    createTest(),
+    createTest(),
+  ]);
+
+  const [[message]] = warn.mock.calls;
+
+  expect(warn).toHaveBeenCalledTimes(1);
+  expect(message).toMatch(/remove the provideInForkedTasks/);
 });
