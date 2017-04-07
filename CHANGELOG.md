@@ -1,3 +1,31 @@
+## v2.3.6
+
+### Bug Fix
+
+Return values from sagas now work with the `call` effect with `expectSaga`.
+
+```js
+import { call, put } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
+
+it('returns values from other sagas', () => {
+  function* otherSaga() {
+    return { hello: 'world' }; // <-- this now works in tests
+  }
+
+  function* saga() {
+    const result = yield call(otherSaga);
+    yield put({ type: 'RESULT', payload: result });
+  }
+
+  return expectSaga(saga)
+    .put({ type: 'RESULT', payload: { hello: 'world' } })
+    .run();
+});
+```
+
+---
+
 ## v2.3.5
 
 ### Bug Fix
