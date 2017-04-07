@@ -14,6 +14,13 @@ export default function sagaWrapper(
   return fsmIterator(INIT, {
     [INIT](_, fsm) {
       try {
+        if (result.done) {
+          return {
+            value: result.value,
+            done: true,
+          };
+        }
+
         const value = refineYieldedValue(result.value);
 
         return {
@@ -33,7 +40,7 @@ export default function sagaWrapper(
     [LOOP](_, fsm) {
       if (result.done) {
         return {
-          value: undefined,
+          value: result.value,
           done: true,
         };
       }
