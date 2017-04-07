@@ -19,6 +19,7 @@ import { NO_FAKE_VALUE, provideValue } from './provideValue';
 import { mapValues } from '../utils/object';
 import findDispatchableActionIndex from './findDispatchableActionIndex';
 import sagaWrapper from './sagaWrapper';
+import sagaIdFactory from './sagaIdFactory';
 
 import {
   ACTION_CHANNEL,
@@ -66,6 +67,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   const outstandingActionChannelEffects = new Map();
   const channelsToPatterns = new Map();
   const dispatchPromise = Promise.resolve();
+  const nextSagaId = sagaIdFactory();
 
   let stopDirty = false;
   let negateNextAssertion = false;
@@ -80,13 +82,20 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   let storeState: any;
 
   function useProvidedValue(value) {
-    const fakeValue = provideValue(providers, value);
+    const providedValue = provideValue(providers, value);
 
-    if (fakeValue === NO_FAKE_VALUE) {
+    if (providedValue === NO_FAKE_VALUE) {
       return value;
     }
 
-    return fakeValue;
+    // Because we are providing a return value and not hitting redux-saga, we
+    // need to manually store the effect so assertions on the effect work.
+    processEffect({
+      effectId: nextSagaId(),
+      effect: value,
+    });
+
+    return providedValue;
   }
 
   function refineYieldedValue(value) {
@@ -136,9 +145,12 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
           return providedValue;
         }
 
-        // TODO: This is hacky. Need a better way to manually add effects to
-        // effect stores.
-        processEffect({ effect: value });
+        // Because we manually consume the `call`, we need to manually store
+        // the effect, so assertions on the `call` work.
+        processEffect({
+          effectId: nextSagaId(),
+          effect: value,
+        });
 
         const { context, fn, args } = effect;
         const result = fn.apply(context, args);

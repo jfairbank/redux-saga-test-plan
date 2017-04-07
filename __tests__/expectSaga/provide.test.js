@@ -941,3 +941,36 @@ test('provides values in deeply forked and called sagas', () => {
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .run();
 });
+
+test('assert on effects with provided values', () => {
+  const fetchUser = () => 0;
+  const getDog = () => 0;
+
+  const fakeDog = {
+    name: 'Tucker',
+    age: 11,
+  };
+
+  function* saga(id) {
+    const user = yield call(fetchUser, id);
+    const dog = yield select(getDog);
+
+    yield put({ type: 'DONE', payload: { user, dog } });
+  }
+
+  return expectSaga(saga, 1)
+    .provide({
+      call: () => fakeUser,
+      select: () => fakeDog,
+    })
+    .call(fetchUser, 1)
+    .select(getDog)
+    .put({
+      type: 'DONE',
+      payload: {
+        user: fakeUser,
+        dog: fakeDog,
+      },
+    })
+    .run();
+});
