@@ -20,8 +20,8 @@ import {
 
 const { asEffect } = utils;
 
-export const NO_FAKE_VALUE = Object.create(null);
-export const noFakeValue = () => NO_FAKE_VALUE;
+export const NEXT = Object.create(null);
+export const next = () => NEXT;
 
 export const handlers = {
   [ACTION_CHANNEL]: 'actionChannel',
@@ -34,22 +34,22 @@ export const handlers = {
     const effect = asEffect.fork(value);
 
     if (providers.fork && !effect.detached) {
-      return providers.fork(effect, noFakeValue);
+      return providers.fork(effect, next);
     }
 
     if (providers.spawn && effect.detached) {
-      return providers.spawn(effect, noFakeValue);
+      return providers.spawn(effect, next);
     }
 
-    return NO_FAKE_VALUE;
+    return NEXT;
   },
   [JOIN]: 'join',
   [PARALLEL](providers, value) {
     if (providers.parallel) {
-      return providers.parallel(value, noFakeValue);
+      return providers.parallel(value, next);
     }
 
-    return NO_FAKE_VALUE;
+    return NEXT;
   },
   [PUT]: 'put',
   [RACE]: 'race',
@@ -64,7 +64,7 @@ export function provideValue(providers: Providers, value: Object) {
 
     if (typeof handler === 'string' && handler in providers) {
       const effect = asEffect[handler](value);
-      return providers[handler](effect, noFakeValue);
+      return providers[handler](effect, next);
     }
 
     if (typeof handler === 'function') {
@@ -72,5 +72,5 @@ export function provideValue(providers: Providers, value: Object) {
     }
   }
 
-  return NO_FAKE_VALUE;
+  return NEXT;
 }

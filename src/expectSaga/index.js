@@ -17,7 +17,7 @@ import noop from '../utils/noop';
 import deprecate from '../utils/deprecate';
 import reportActualEffects from './reportActualEffects';
 import parseEffect from './parseEffect';
-import { NO_FAKE_VALUE, provideValue } from './provideValue';
+import { NEXT, provideValue } from './provideValue';
 import { mapValues } from '../utils/object';
 import findDispatchableActionIndex from './findDispatchableActionIndex';
 import sagaWrapper from './sagaWrapper';
@@ -92,7 +92,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   function useProvidedValue(value) {
     const providedValue = provideValue(providers, value);
 
-    if (providedValue === NO_FAKE_VALUE) {
+    if (providedValue === NEXT) {
       return value;
     }
 

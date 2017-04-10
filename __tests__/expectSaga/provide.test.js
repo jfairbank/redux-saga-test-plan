@@ -21,7 +21,7 @@ import {
 import { createMockTask } from 'redux-saga/utils';
 import { expectSaga } from '../../src';
 import { delay } from '../../src/utils/async';
-import { NO_FAKE_VALUE, handlers } from '../../src/expectSaga/provideValue';
+import { NEXT, handlers } from '../../src/expectSaga/provideValue';
 import { FORK, PARALLEL } from '../../src/shared/keys';
 import { warn } from '../../src/utils/logging';
 
@@ -615,7 +615,7 @@ test('inner providers for `parallel` work', () => {
 
 test('test coverage for PARALLEL handler', () => {
   const actual = handlers[PARALLEL]({}, {});
-  expect(actual).toBe(NO_FAKE_VALUE);
+  expect(actual).toBe(NEXT);
 });
 
 test('handles errors', () => {
@@ -978,7 +978,7 @@ test('assert on effects with provided values', () => {
 
 test('test coverage for FORK handler', () => {
   const actual = handlers[FORK]({}, {});
-  expect(actual).toBe(NO_FAKE_VALUE);
+  expect(actual).toBe(NEXT);
 });
 
 test('provideInForkedTasks is deprecated', async () => {

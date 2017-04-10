@@ -215,21 +215,25 @@ type TimeoutConfig = {
 
 type Task = { done: Promise<*> };
 
+type ProviderNext = Object;
+type ProviderNextF = () => ProviderNext;
+type Provider = (effect: any, next: ProviderNextF) => any;
+
 type Providers = {
-  actionChannel?: Function,
-  call?: Function,
-  cancel?: Function,
-  cancelled?: Function,
-  cps?: Function,
-  flush?: Function,
-  fork?: Function,
-  join?: Function,
-  parallel?: Function,
-  put?: Function,
-  race?: Function,
-  select?: Function,
-  spawn?: Function,
-  take?: Function,
+  actionChannel?: Provider,
+  call?: Provider,
+  cancel?: Provider,
+  cancelled?: Provider,
+  cps?: Provider,
+  flush?: Provider,
+  fork?: Provider,
+  join?: Provider,
+  parallel?: Provider,
+  put?: Provider,
+  race?: Provider,
+  select?: Provider,
+  spawn?: Provider,
+  take?: Provider,
 };
 
 type ExpectApi = {
