@@ -22,7 +22,7 @@ import { mapValues } from '../utils/object';
 import findDispatchableActionIndex from './findDispatchableActionIndex';
 import sagaWrapper from './sagaWrapper';
 import sagaIdFactory from './sagaIdFactory';
-import composeProviders from './composeProviders';
+import { coalesceProviders } from './providers';
 
 import {
   ACTION_CHANNEL,
@@ -49,28 +49,6 @@ function isHelper(fn: Function): boolean {
   return fn === takeEveryHelper || fn === takeLatestHelper;
 }
 
-function applyProviders(providerFns: Array<Provider>): Provider {
-  return composeProviders(...providerFns);
-}
-
-function coalesceProviders(providers: Array<Providers>): Providers {
-  const collected = providers.reduce((topMemo, providersObject) => (
-    Object.keys(providersObject).reduce((memo, key) => {
-      const provider = providersObject[key];
-
-      if (key in memo) {
-        memo[key].push(provider);
-      } else {
-        // eslint-disable-next-line no-param-reassign
-        memo[key] = [provider];
-      }
-
-      return memo;
-    }, topMemo)
-  ), {});
-
-  return mapValues(collected, applyProviders);
-}
 
 const deprecatedProvideInForkedTasks = deprecate(
   noop,

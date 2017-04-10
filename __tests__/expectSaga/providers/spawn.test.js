@@ -1,27 +1,36 @@
 // @flow
 import { call, put, spawn } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
+import * as m from '../../../src/expectSaga/matchers';
 
 const fakeUser = {
   id: 1,
   name: 'John Doe',
 };
 
-jest.mock('../../../src/utils/logging');
+const fakeTask = { hello: 'world' };
+const fetchUser = () => 0;
 
-test('uses provided value for `spawn`', () => {
-  const fakeTask = { hello: 'world' };
+function* otherSaga() {
+  yield 42;
+}
 
-  function* otherSaga() {
-    yield 42;
-  }
+function* sagaOne() {
+  const task = yield spawn(otherSaga);
+  yield put({ type: 'DONE', payload: task });
+}
 
-  function* saga() {
-    const task = yield spawn(otherSaga);
-    yield put({ type: 'DONE', payload: task });
-  }
+function* fetchUserSaga() {
+  const user = yield call(fetchUser);
+  yield put({ type: 'RECEIVE_USER', payload: user });
+}
 
-  return expectSaga(saga)
+function* sagaTwo() {
+  yield spawn(fetchUserSaga);
+}
+
+test('uses provided value for `spawn`', () => (
+  expectSaga(sagaOne)
     .provide({
       spawn({ fn }, next) {
         if (fn === otherSaga) {
@@ -32,24 +41,49 @@ test('uses provided value for `spawn`', () => {
       },
     })
     .put({ type: 'DONE', payload: fakeTask })
-    .run();
-});
+    .run()
+));
+
+test('uses static provided values from redux-saga/effects', () => (
+  expectSaga(sagaOne)
+    .provide([
+      [spawn(otherSaga), fakeTask],
+    ])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run()
+));
+
+test('uses static provided values from matchers', () => (
+  expectSaga(sagaOne)
+    .provide([
+      [m.spawn(otherSaga), fakeTask],
+    ])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run()
+));
+
+test('uses partial static provided values from matchers', () => (
+  expectSaga(sagaOne)
+    .provide([
+      [m.spawn.fn(otherSaga), fakeTask],
+    ])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run()
+));
 
 test('test coverage for no `spawn`', () => {
-  const fakeTask = { hello: 'world' };
-
-  function* otherSaga() {
+  function* localOtherSaga() {
     yield put({ type: 'DONE' });
   }
 
-  function* saga() {
-    yield spawn(otherSaga);
+  function* localSaga() {
+    yield spawn(localOtherSaga);
   }
 
-  return expectSaga(saga)
+  return expectSaga(localSaga)
     .provide({
       fork({ fn }, next) {
-        if (fn === otherSaga) {
+        if (fn === localOtherSaga) {
           return fakeTask;
         }
 
@@ -60,19 +94,8 @@ test('test coverage for no `spawn`', () => {
     .run();
 });
 
-test('provides values in spawned sagas', () => {
-  const fetchUser = () => 0;
-
-  function* fetchUserSaga() {
-    const user = yield call(fetchUser);
-    yield put({ type: 'RECEIVE_USER', payload: user });
-  }
-
-  function* saga() {
-    yield spawn(fetchUserSaga);
-  }
-
-  return expectSaga(saga)
+test('provides values in spawned sagas', () => (
+  expectSaga(sagaTwo)
     .provide({
       call({ fn }, next) {
         if (fn === fetchUser) {
@@ -83,5 +106,32 @@ test('provides values in spawned sagas', () => {
       },
     })
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
-    .run();
-});
+    .run()
+));
+
+test('uses static provided values in spawned sagas from redux-saga/effects', () => (
+  expectSaga(sagaTwo)
+    .provide([
+      [call(fetchUser), fakeUser],
+    ])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run()
+));
+
+test('uses static provided values in spawned sagas from matchers', () => (
+  expectSaga(sagaTwo)
+    .provide([
+      [m.call(fetchUser), fakeUser],
+    ])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run()
+));
+
+test('uses partial static provided values in spawned sagas from matchers', () => (
+  expectSaga(sagaTwo)
+    .provide([
+      [m.call.fn(fetchUser), fakeUser],
+    ])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run()
+));

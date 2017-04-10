@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "files": [
     "src",
-    "lib"
+    "lib",
+    "matchers.js"
   ],
   "scripts": {
     "build": "babel src --out-dir lib",

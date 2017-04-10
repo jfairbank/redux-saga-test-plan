@@ -1,17 +1,26 @@
 // @flow
 import { put, take } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
+import * as m from '../../../src/expectSaga/matchers';
 
-test('provides actions for `take`', () => {
-  function* saga() {
-    const action = yield take('HELLO');
-    const otherAction = yield take('WORLD');
-    const payload = action.payload + otherAction.payload;
+function* takeSaga() {
+  const action = yield take('HELLO');
+  const otherAction = yield take('WORLD');
+  const payload = action.payload + otherAction.payload;
 
-    yield put({ payload, type: 'DONE' });
-  }
+  yield put({ payload, type: 'DONE' });
+}
 
-  return expectSaga(saga)
+function* takeMaybeSaga() {
+  const action = yield take.maybe('HELLO');
+  const otherAction = yield take.maybe('WORLD');
+  const payload = action.payload + otherAction.payload;
+
+  yield put({ payload, type: 'DONE' });
+}
+
+test('provides actions for `take`', () => (
+  expectSaga(takeSaga)
     .provide({
       take({ pattern }, next) {
         if (pattern === 'HELLO') {
@@ -23,19 +32,31 @@ test('provides actions for `take`', () => {
     })
     .put({ type: 'DONE', payload: 43 })
     .dispatch({ type: 'WORLD', payload: 1 })
-    .run();
-});
+    .run()
+));
 
-test('provides actions for `take.maybe`', () => {
-  function* saga() {
-    const action = yield take.maybe('HELLO');
-    const otherAction = yield take.maybe('WORLD');
-    const payload = action.payload + otherAction.payload;
+test('`take` uses static provided values from redux-saga/effects', () => (
+  expectSaga(takeSaga)
+    .provide([
+      [take('HELLO'), { type: 'HELLO', payload: 42 }],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .dispatch({ type: 'WORLD', payload: 1 })
+    .run()
+));
 
-    yield put({ payload, type: 'DONE' });
-  }
+test('`take` uses static provided values from matchers', () => (
+  expectSaga(takeSaga)
+    .provide([
+      [m.take('HELLO'), { type: 'HELLO', payload: 42 }],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .dispatch({ type: 'WORLD', payload: 1 })
+    .run()
+));
 
-  return expectSaga(saga)
+test('provides actions for `take.maybe`', () => (
+  expectSaga(takeMaybeSaga)
     .provide({
       take({ maybe, pattern }, next) {
         if (maybe && pattern === 'HELLO') {
@@ -47,5 +68,25 @@ test('provides actions for `take.maybe`', () => {
     })
     .put({ type: 'DONE', payload: 43 })
     .dispatch({ type: 'WORLD', payload: 1 })
-    .run();
-});
+    .run()
+));
+
+test('`take.maybe` uses static provided values from redux-saga/effects', () => (
+  expectSaga(takeMaybeSaga)
+    .provide([
+      [take.maybe('HELLO'), { type: 'HELLO', payload: 42 }],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .dispatch({ type: 'WORLD', payload: 1 })
+    .run()
+));
+
+test('`take.maybe` uses static provided values from matchers', () => (
+  expectSaga(takeMaybeSaga)
+    .provide([
+      [m.take.maybe('HELLO'), { type: 'HELLO', payload: 42 }],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .dispatch({ type: 'WORLD', payload: 1 })
+    .run()
+));

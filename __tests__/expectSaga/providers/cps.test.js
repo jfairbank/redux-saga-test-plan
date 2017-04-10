@@ -1,19 +1,20 @@
 // @flow
 import { cps, put } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
+import * as m from '../../../src/expectSaga/matchers';
 
-test('uses provided value for `cps`', () => {
-  const handler = (cb) => cb(null, 1);
-  const otherHandler = () => 0;
+const handler = (cb) => cb(null, 1);
+const otherHandler = () => 0;
 
-  function* saga() {
-    const value = yield cps(handler);
-    const otherValue = yield cps(otherHandler, 21);
+function* saga() {
+  const value = yield cps(handler);
+  const otherValue = yield cps(otherHandler, 21);
 
-    yield put({ type: 'DONE', payload: value + otherValue });
-  }
+  yield put({ type: 'DONE', payload: value + otherValue });
+}
 
-  return expectSaga(saga)
+test('uses provided value for `cps`', () => (
+  expectSaga(saga)
     .provide({
       cps({ fn, args: [value] }, next) {
         if (fn === otherHandler) {
@@ -24,5 +25,32 @@ test('uses provided value for `cps`', () => {
       },
     })
     .put({ type: 'DONE', payload: 43 })
-    .run();
-});
+    .run()
+));
+
+test('uses static provided values from redux-saga/effects', () => (
+  expectSaga(saga)
+    .provide([
+      [cps(otherHandler, 21), 42],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .run()
+));
+
+test('uses static provided values from matchers', () => (
+  expectSaga(saga)
+    .provide([
+      [m.cps(otherHandler, 21), 42],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .run()
+));
+
+test('uses partial static provided values from matchers', () => (
+  expectSaga(saga)
+    .provide([
+      [m.cps.fn(otherHandler), 42],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .run()
+));

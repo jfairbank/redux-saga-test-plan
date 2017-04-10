@@ -1,23 +1,24 @@
 // @flow
 import { call, put } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
+import * as m from '../../../src/expectSaga/matchers';
 
 const fakeUser = {
   id: 1,
   name: 'John Doe',
 };
 
-test('uses provided value for `call`', () => {
-  const apiFunction = () => 0;
-  const otherApiFunction = () => 1;
+const apiFunction = () => 0;
+const otherApiFunction = () => 1;
 
-  function* saga() {
-    const value = yield call(apiFunction, 21);
-    const otherValue = yield call(otherApiFunction);
-    yield put({ type: 'DONE', payload: value + otherValue });
-  }
+function* saga() {
+  const value = yield call(apiFunction, 21);
+  const otherValue = yield call(otherApiFunction);
+  yield put({ type: 'DONE', payload: value + otherValue });
+}
 
-  return expectSaga(saga)
+test('uses provided value for `call`', () => (
+  expectSaga(saga)
     .provide({
       call({ fn, args: [arg] }, next) {
         if (fn === apiFunction) {
@@ -28,22 +29,21 @@ test('uses provided value for `call`', () => {
       },
     })
     .put({ type: 'DONE', payload: 43 })
-    .run();
-});
+    .run()
+));
 
 test('test coverage for no `call`', () => {
-  const apiFunction = () => 21;
+  const localApiFunction = () => 21;
 
-  function* saga() {
-    const value = yield call(apiFunction);
-
+  function* localSaga() {
+    const value = yield call(localApiFunction);
     yield put({ type: 'DONE', payload: value * 2 });
   }
 
-  return expectSaga(saga)
+  return expectSaga(localSaga)
     .provide({
       fork({ fn }, next) {
-        if (fn === apiFunction) {
+        if (fn === localApiFunction) {
           return 10;
         }
 
@@ -70,11 +70,11 @@ test('provides values in deeply called sagas', () => {
     yield call(anotherSaga);
   }
 
-  function* saga() {
+  function* localSaga() {
     yield call(someSaga);
   }
 
-  return expectSaga(saga)
+  return expectSaga(localSaga)
     .provide({
       call({ fn }, next) {
         if (fn === fetchUser) {
@@ -87,3 +87,30 @@ test('provides values in deeply called sagas', () => {
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .run();
 });
+
+test('uses static provided values from redux-saga/effects', () => (
+  expectSaga(saga)
+    .provide([
+      [call(apiFunction, 21), 42],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .run()
+));
+
+test('uses static provided values from matchers', () => (
+  expectSaga(saga)
+    .provide([
+      [m.call(apiFunction, 21), 42],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .run()
+));
+
+test('uses partial static provided values from matchers', () => (
+  expectSaga(saga)
+    .provide([
+      [m.call.fn(apiFunction), 42],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .run()
+));

@@ -4,6 +4,7 @@ import { expectSaga } from '../../../src';
 import { NEXT, handlers } from '../../../src/expectSaga/provideValue';
 import { FORK } from '../../../src/shared/keys';
 import { warn } from '../../../src/utils/logging';
+import * as m from '../../../src/expectSaga/matchers';
 
 const fakeUser = {
   id: 1,
@@ -12,19 +13,29 @@ const fakeUser = {
 
 jest.mock('../../../src/utils/logging');
 
-test('uses provided value for `fork`', () => {
-  const fakeTask = { hello: 'world' };
+const fakeTask = { hello: 'world' };
+const fetchUser = () => 0;
 
-  function* otherSaga() {
-    yield 42;
-  }
+function* otherSaga() {
+  yield 42;
+}
 
-  function* saga() {
-    const task = yield fork(otherSaga);
-    yield put({ type: 'DONE', payload: task });
-  }
+function* sagaOne() {
+  const task = yield fork(otherSaga);
+  yield put({ type: 'DONE', payload: task });
+}
 
-  return expectSaga(saga)
+function* fetchUserSaga() {
+  const user = yield call(fetchUser);
+  yield put({ type: 'RECEIVE_USER', payload: user });
+}
+
+function* sagaTwo() {
+  yield fork(fetchUserSaga);
+}
+
+test('uses provided value for `fork`', () => (
+  expectSaga(sagaOne)
     .provide({
       fork({ fn }, next) {
         if (fn === otherSaga) {
@@ -35,22 +46,38 @@ test('uses provided value for `fork`', () => {
       },
     })
     .put({ type: 'DONE', payload: fakeTask })
-    .run();
-});
+    .run()
+));
 
-test('provides values in forked sagas', () => {
-  const fetchUser = () => 0;
+test('uses static provided values from redux-saga/effects', () => (
+  expectSaga(sagaOne)
+    .provide([
+      [fork(otherSaga), fakeTask],
+    ])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run()
+));
 
-  function* fetchUserSaga() {
-    const user = yield call(fetchUser);
-    yield put({ type: 'RECEIVE_USER', payload: user });
-  }
+test('uses static provided values from matchers', () => (
+  expectSaga(sagaOne)
+    .provide([
+      [m.fork(otherSaga), fakeTask],
+    ])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run()
+));
 
-  function* saga() {
-    yield fork(fetchUserSaga);
-  }
+test('uses partial static provided values from matchers', () => (
+  expectSaga(sagaOne)
+    .provide([
+      [m.fork.fn(otherSaga), fakeTask],
+    ])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run()
+));
 
-  return expectSaga(saga)
+test('provides values in forked sagas', () => (
+  expectSaga(sagaTwo)
     .provide({
       call({ fn }, next) {
         if (fn === fetchUser) {
@@ -61,17 +88,37 @@ test('provides values in forked sagas', () => {
       },
     })
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
-    .run();
-});
+    .run()
+));
+
+test('uses static provided values in forked sagas from redux-saga/effects', () => (
+  expectSaga(sagaTwo)
+    .provide([
+      [call(fetchUser), fakeUser],
+    ])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run()
+));
+
+test('uses static provided values in forked sagas from matchers', () => (
+  expectSaga(sagaTwo)
+    .provide([
+      [m.call(fetchUser), fakeUser],
+    ])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run()
+));
+
+test('uses partial static provided values in forked sagas from matchers', () => (
+  expectSaga(sagaTwo)
+    .provide([
+      [m.call.fn(fetchUser), fakeUser],
+    ])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run()
+));
 
 test('provides values in deeply forked sagas', () => {
-  const fetchUser = () => 0;
-
-  function* fetchUserSaga() {
-    const user = yield call(fetchUser);
-    yield put({ type: 'RECEIVE_USER', payload: user });
-  }
-
   function* anotherSaga() {
     yield fork(fetchUserSaga);
   }
@@ -80,11 +127,11 @@ test('provides values in deeply forked sagas', () => {
     yield fork(anotherSaga);
   }
 
-  function* saga() {
+  function* localSaga() {
     yield fork(someSaga);
   }
 
-  return expectSaga(saga)
+  return expectSaga(localSaga)
     .provide({
       call({ fn }, next) {
         if (fn === fetchUser) {
@@ -99,13 +146,6 @@ test('provides values in deeply forked sagas', () => {
 });
 
 test('provides values in deeply forked and called sagas', () => {
-  const fetchUser = () => 0;
-
-  function* fetchUserSaga() {
-    const user = yield call(fetchUser);
-    yield put({ type: 'RECEIVE_USER', payload: user });
-  }
-
   function* anotherSaga() {
     yield fork(fetchUserSaga);
   }
@@ -114,11 +154,11 @@ test('provides values in deeply forked and called sagas', () => {
     yield call(anotherSaga);
   }
 
-  function* saga() {
+  function* localSaga() {
     yield fork(someSaga);
   }
 
-  return expectSaga(saga)
+  return expectSaga(localSaga)
     .provide({
       call({ fn }, next) {
         if (fn === fetchUser) {
@@ -140,12 +180,12 @@ test('test coverage for FORK handler', () => {
 test('provideInForkedTasks is deprecated', async () => {
   warn.mockClear();
 
-  function* saga() {
+  function* localSaga() {
     yield put({ type: 'DONE' });
   }
 
   function createTest() {
-    return expectSaga(saga)
+    return expectSaga(localSaga)
       .provide({ provideInForkedTasks: true })
       .put({ type: 'DONE' })
       .run();
