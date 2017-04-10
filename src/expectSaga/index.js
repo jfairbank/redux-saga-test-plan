@@ -22,6 +22,7 @@ import { mapValues } from '../utils/object';
 import findDispatchableActionIndex from './findDispatchableActionIndex';
 import sagaWrapper from './sagaWrapper';
 import sagaIdFactory from './sagaIdFactory';
+import composeProviders from './composeProviders';
 
 import {
   ACTION_CHANNEL,
@@ -46,6 +47,29 @@ function extractState(reducer: Reducer, initialState?: any): any {
 
 function isHelper(fn: Function): boolean {
   return fn === takeEveryHelper || fn === takeLatestHelper;
+}
+
+function applyProviders(providerFns: Array<Provider>): Provider {
+  return composeProviders(...providerFns);
+}
+
+function coalesceProviders(providers: Array<Providers>): Providers {
+  const collected = providers.reduce((topMemo, providersObject) => (
+    Object.keys(providersObject).reduce((memo, key) => {
+      const provider = providersObject[key];
+
+      if (key in memo) {
+        memo[key].push(provider);
+      } else {
+        // eslint-disable-next-line no-param-reassign
+        memo[key] = [provider];
+      }
+
+      return memo;
+    }, topMemo)
+  ), {});
+
+  return mapValues(collected, applyProviders);
 }
 
 const deprecatedProvideInForkedTasks = deprecate(
@@ -553,8 +577,11 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     return api;
   }
 
-  function provide(newProviders) {
-    providers = newProviders;
+  function provide(newProviders: Providers | Array<Providers>) {
+    providers = Array.isArray(newProviders)
+      ? coalesceProviders(newProviders)
+      : newProviders;
+
     return api;
   }
 
