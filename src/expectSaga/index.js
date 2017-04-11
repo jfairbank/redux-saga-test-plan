@@ -1,10 +1,12 @@
 // @flow
 /* eslint-disable no-constant-condition, no-underscore-dangle */
+import inspect from 'util-inspect';
 import { effects, runSaga, utils } from 'redux-saga';
 import { call, fork, race, spawn } from 'redux-saga/effects';
 import { takeEveryHelper, takeLatestHelper } from 'redux-saga/lib/internal/sagaHelpers';
 import assign from 'object-assign';
 import isMatch from 'lodash.ismatch';
+import isEqual from 'lodash.isequal';
 import SagaTestError from '../shared/SagaTestError';
 import { splitAt } from '../utils/array';
 import Map from '../utils/Map';
@@ -88,7 +90,15 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   let mainTaskPromise;
   let providers;
 
+  let actualReturnValue;
+  let expectedReturnValue;
+  let expectReturnValue = false;
+
   let storeState: any;
+
+  function setReturnValue(value: any): void {
+    actualReturnValue = value;
+  }
 
   function useProvidedValue(value) {
     function addEffect() {
@@ -410,6 +420,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     withState,
     withReducer,
     provide,
+    returns,
     dispatch: apiDispatch,
     delay: apiDelay,
 
@@ -495,6 +506,35 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
         throw new SagaTestError(errorMessage);
       }
     });
+
+    if (expectReturnValue) {
+      if (!negateNextAssertion && !isEqual(expectedReturnValue, actualReturnValue)) {
+        const serializedActual = inspect(actualReturnValue, { depth: 3 });
+        const serializedExpected = inspect(expectedReturnValue, { depth: 3 });
+
+        const errorMessage = `
+Expected to return:
+-------------------
+${serializedExpected}
+
+But returned instead:
+---------------------
+${serializedActual}
+`;
+
+        throw new SagaTestError(errorMessage);
+      } else if (negateNextAssertion && isEqual(expectedReturnValue, actualReturnValue)) {
+        const serializedExpected = inspect(expectedReturnValue, { depth: 3 });
+
+        const errorMessage = `
+Did not expect to return:
+-------------------------
+${serializedExpected}
+`;
+
+        throw new SagaTestError(errorMessage);
+      }
+    }
   }
 
   function apiDispatch(action: Action): ExpectApi {
@@ -523,7 +563,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     isRunning = true;
     iterator = generator(...sagaArgs);
 
-    mainTask = runSaga(sagaWrapper(iterator, refineYieldedValue), io);
+    mainTask = runSaga(sagaWrapper(iterator, refineYieldedValue, setReturnValue), io);
 
     mainTaskPromise = mainTask.done
       .then(checkExpectations)
@@ -567,6 +607,12 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
       ? coalesceProviders(newProviders)
       : newProviders;
 
+    return api;
+  }
+
+  function returns(value: any): ExpectApi {
+    expectReturnValue = true;
+    expectedReturnValue = value;
     return api;
   }
 

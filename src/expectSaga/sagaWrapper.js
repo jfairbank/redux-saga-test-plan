@@ -8,17 +8,26 @@ const LOOP = 'LOOP';
 export default function sagaWrapper(
   wrappedIterator: Generator<*, *, *>,
   refineYieldedValue: Function,
+  onReturn: ?Function,
 ): Generator<*, *, *> {
   let result = wrappedIterator.next();
+
+  function complete() {
+    if (typeof onReturn === 'function') {
+      onReturn(result.value);
+    }
+
+    return {
+      value: result.value,
+      done: true,
+    };
+  }
 
   return fsmIterator(INIT, {
     [INIT](_, fsm) {
       try {
         if (result.done) {
-          return {
-            value: result.value,
-            done: true,
-          };
+          return complete();
         }
 
         const value = refineYieldedValue(result.value);
@@ -39,10 +48,7 @@ export default function sagaWrapper(
 
     [LOOP](_, fsm) {
       if (result.done) {
-        return {
-          value: result.value,
-          done: true,
-        };
+        return complete();
       }
 
       return fsm[INIT](undefined, fsm);
