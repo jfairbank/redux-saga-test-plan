@@ -1,20 +1,21 @@
 // @flow
 import { call, put } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
+import { dynamic, throwError } from '../../../src/expectSaga/providers';
 
-test('handles errors', () => {
-  const errorFunction = () => 0;
-  const error = new Error('Whoops...');
+const errorFunction = () => 0;
+const error = new Error('Whoops...');
 
-  function* saga() {
-    try {
-      yield call(errorFunction);
-    } catch (e) {
-      yield put({ type: 'DONE', payload: e });
-    }
+function* saga() {
+  try {
+    yield call(errorFunction);
+  } catch (e) {
+    yield put({ type: 'DONE', payload: e });
   }
+}
 
-  return expectSaga(saga)
+test('handles errors', () => (
+  expectSaga(saga)
     .provide({
       call({ fn }) {
         if (fn === errorFunction) {
@@ -23,5 +24,26 @@ test('handles errors', () => {
       },
     })
     .put({ type: 'DONE', payload: error })
-    .run();
-});
+    .run()
+));
+
+test('handles dynamically thrown errors', () => (
+  expectSaga(saga)
+    .provide([
+      [
+        call(errorFunction),
+        dynamic(() => { throw error; }),
+      ],
+    ])
+    .put({ type: 'DONE', payload: error })
+    .run()
+));
+
+test('handles statically provided errors', () => (
+  expectSaga(saga)
+    .provide([
+      [call(errorFunction), throwError(error)],
+    ])
+    .put({ type: 'DONE', payload: error })
+    .run()
+));

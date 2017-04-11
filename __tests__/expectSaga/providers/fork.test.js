@@ -5,6 +5,7 @@ import { NEXT, handlers } from '../../../src/expectSaga/provideValue';
 import { FORK } from '../../../src/shared/keys';
 import { warn } from '../../../src/utils/logging';
 import * as m from '../../../src/expectSaga/matchers';
+import { dynamic } from '../../../src/expectSaga/providers';
 
 const fakeUser = {
   id: 1,
@@ -76,6 +77,27 @@ test('uses partial static provided values from matchers', () => (
     .run()
 ));
 
+test('uses dynamic values for static providers', () => (
+  expectSaga(sagaOne)
+    .provide([
+      [m.fork.fn(otherSaga), dynamic(() => fakeTask)],
+    ])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run()
+));
+
+test('dynamic values have access to effect', () => (
+  expectSaga(sagaOne)
+    .provide([
+      [m.fork.fn(otherSaga), dynamic(({ fn }) => {
+        expect(fn).toBe(otherSaga);
+        return fakeTask;
+      })],
+    ])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run()
+));
+
 test('provides values in forked sagas', () => (
   expectSaga(sagaTwo)
     .provide({
@@ -113,6 +135,27 @@ test('uses partial static provided values in forked sagas from matchers', () => 
   expectSaga(sagaTwo)
     .provide([
       [m.call.fn(fetchUser), fakeUser],
+    ])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run()
+));
+
+test('forked sagas dynamic values for static providers', () => (
+  expectSaga(sagaTwo)
+    .provide([
+      [m.call.fn(fetchUser), dynamic(() => fakeUser)],
+    ])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run()
+));
+
+test('forked sagas dynamic values have access to effect', () => (
+  expectSaga(sagaTwo)
+    .provide([
+      [m.call.fn(fetchUser), dynamic(({ fn }) => {
+        expect(fn).toBe(fetchUser);
+        return fakeUser;
+      })],
     ])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .run()

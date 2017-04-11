@@ -1,10 +1,16 @@
 // @flow
 import isEqual from 'lodash.isequal';
 import isMatch from 'lodash.ismatch';
-import { NEXT } from './provideValue';
-import { isPartialMatcher } from './matchers/helpers';
-import parseEffect from './parseEffect';
-import { mapValues } from '../utils/object';
+import { NEXT } from '../provideValue';
+import { isPartialMatcher } from '../matchers/helpers';
+import parseEffect from '../parseEffect';
+import { mapValues } from '../../utils/object';
+
+export const DYNAMIC_PROVIDER = '@@redux-saga-test-plan/dynamic-provider';
+
+function isDynamicallyProvidedValue(value: any): boolean {
+  return !!value && typeof value === 'object' && DYNAMIC_PROVIDER in value;
+}
 
 export function composeProviders(...providers: Array<Provider>): Provider {
   return (effect, next) => {
@@ -52,11 +58,15 @@ export function coalesceProviders(providers: Array<Providers>): Providers {
       }
 
       if (parsedEffect.providerKey && parsedEffect.effect) {
-        addToCollected(parsedEffect.providerKey, (actualEffect, next) => (
-          comparer(actualEffect, parsedEffect.effect)
-            ? providedValue
-            : next()
-        ));
+        addToCollected(parsedEffect.providerKey, (actualEffect, next) => {
+          const pass = comparer(actualEffect, parsedEffect.effect);
+
+          if (isDynamicallyProvidedValue(providedValue) && pass) {
+            return providedValue.fn(actualEffect, next);
+          }
+
+          return pass ? providedValue : next();
+        });
       }
     } else {
       Object.keys(providersObject).forEach((providerKey) => {

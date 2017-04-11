@@ -2,6 +2,7 @@
 import { actionChannel, flush, put } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
 import * as m from '../../../src/expectSaga/matchers';
+import { dynamic } from '../../../src/expectSaga/providers';
 
 const fakeChannel = {
   take() {},
@@ -48,6 +49,30 @@ test('uses static provided values from matchers', () => (
   expectSaga(saga)
     .provide([
       [m.flush(fakeChannel), 'flushed'],
+      actionChannelProvider,
+    ])
+    .put({ type: 'DONE', payload: 'flushed' })
+    .run()
+));
+
+test('uses dynamic values for static providers', () => (
+  expectSaga(saga)
+    .provide([
+      [m.flush(fakeChannel), dynamic(() => 'flushed')],
+      actionChannelProvider,
+    ])
+    .put({ type: 'DONE', payload: 'flushed' })
+    .run()
+));
+
+test('dynamic values have access to channel', () => (
+  expectSaga(saga)
+    .provide([
+      [m.flush(fakeChannel), dynamic((channel) => {
+        expect(channel).toBe(fakeChannel);
+        return 'flushed';
+      })],
+
       actionChannelProvider,
     ])
     .put({ type: 'DONE', payload: 'flushed' })

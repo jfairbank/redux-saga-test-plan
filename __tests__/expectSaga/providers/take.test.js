@@ -2,6 +2,7 @@
 import { put, take } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
 import * as m from '../../../src/expectSaga/matchers';
+import { dynamic } from '../../../src/expectSaga/providers';
 
 function* takeSaga() {
   const action = yield take('HELLO');
@@ -55,6 +56,29 @@ test('`take` uses static provided values from matchers', () => (
     .run()
 ));
 
+test('`take` uses dynamic values for static providers', () => (
+  expectSaga(takeSaga)
+    .provide([
+      [m.take('HELLO'), dynamic(() => ({ type: 'HELLO', payload: 42 }))],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .dispatch({ type: 'WORLD', payload: 1 })
+    .run()
+));
+
+test('`take` dynamic values have access to effect', () => (
+  expectSaga(takeSaga)
+    .provide([
+      [m.take('HELLO'), dynamic(({ pattern }) => {
+        expect(pattern).toBe('HELLO');
+        return { type: 'HELLO', payload: 42 };
+      })],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .dispatch({ type: 'WORLD', payload: 1 })
+    .run()
+));
+
 test('provides actions for `take.maybe`', () => (
   expectSaga(takeMaybeSaga)
     .provide({
@@ -85,6 +109,29 @@ test('`take.maybe` uses static provided values from matchers', () => (
   expectSaga(takeMaybeSaga)
     .provide([
       [m.take.maybe('HELLO'), { type: 'HELLO', payload: 42 }],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .dispatch({ type: 'WORLD', payload: 1 })
+    .run()
+));
+
+test('`take.maybe` uses dynamic values for static providers', () => (
+  expectSaga(takeMaybeSaga)
+    .provide([
+      [m.take.maybe('HELLO'), dynamic(() => ({ type: 'HELLO', payload: 42 }))],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .dispatch({ type: 'WORLD', payload: 1 })
+    .run()
+));
+
+test('`take.maybe` dynamic values have access to effect', () => (
+  expectSaga(takeMaybeSaga)
+    .provide([
+      [m.take.maybe('HELLO'), dynamic(({ pattern }) => {
+        expect(pattern).toBe('HELLO');
+        return { type: 'HELLO', payload: 42 };
+      })],
     ])
     .put({ type: 'DONE', payload: 43 })
     .dispatch({ type: 'WORLD', payload: 1 })

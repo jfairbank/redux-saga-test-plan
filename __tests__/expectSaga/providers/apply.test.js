@@ -2,6 +2,7 @@
 import { apply, put } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
 import * as m from '../../../src/expectSaga/matchers';
+import { dynamic } from '../../../src/expectSaga/providers';
 
 const context = {};
 const apiFunction = () => 0;
@@ -53,5 +54,23 @@ test('uses partial static provided values from matchers', () => (
       [m.apply.fn(apiFunction), 42],
     ])
     .put({ type: 'DONE', payload: 43 })
+    .run()
+));
+
+test('uses dynamic values for static providers', () => (
+  expectSaga(saga)
+    .provide([
+      [m.apply.fn(apiFunction), dynamic(() => 42)],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .run()
+));
+
+test('dynamic values have access to effect', () => (
+  expectSaga(saga)
+    .provide([
+      [m.apply.fn(apiFunction), dynamic(effect => effect.args[0] * 3)],
+    ])
+    .put({ type: 'DONE', payload: 64 })
     .run()
 ));

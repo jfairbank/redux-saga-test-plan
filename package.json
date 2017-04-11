@@ -6,7 +6,8 @@
   "files": [
     "src",
     "lib",
-    "matchers.js"
+    "matchers.js",
+    "providers.js"
   ],
   "scripts": {
     "build": "babel src --out-dir lib",

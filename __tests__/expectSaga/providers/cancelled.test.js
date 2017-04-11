@@ -2,6 +2,7 @@
 import { cancelled, put } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
 import * as m from '../../../src/expectSaga/matchers';
+import { dynamic } from '../../../src/expectSaga/providers';
 
 function* saga() {
   if (yield cancelled()) {
@@ -33,6 +34,15 @@ test('uses static provided values from matchers', () => (
   expectSaga(saga)
     .provide([
       [m.cancelled(), true],
+    ])
+    .put({ type: 'CANCELLED' })
+    .run()
+));
+
+test('uses dynamic values for static providers', () => (
+  expectSaga(saga)
+    .provide([
+      [m.cancelled(), dynamic(() => true)],
     ])
     .put({ type: 'CANCELLED' })
     .run()

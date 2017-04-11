@@ -2,6 +2,7 @@
 import { cps, put } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
 import * as m from '../../../src/expectSaga/matchers';
+import { dynamic } from '../../../src/expectSaga/providers';
 
 const handler = (cb) => cb(null, 1);
 const otherHandler = () => 0;
@@ -52,5 +53,23 @@ test('uses partial static provided values from matchers', () => (
       [m.cps.fn(otherHandler), 42],
     ])
     .put({ type: 'DONE', payload: 43 })
+    .run()
+));
+
+test('uses dynamic values for static providers', () => (
+  expectSaga(saga)
+    .provide([
+      [m.cps.fn(otherHandler), dynamic(() => 42)],
+    ])
+    .put({ type: 'DONE', payload: 43 })
+    .run()
+));
+
+test('dynamic values have access to effect', () => (
+  expectSaga(saga)
+    .provide([
+      [m.cps.fn(otherHandler), dynamic(effect => effect.args[0] * 3)],
+    ])
+    .put({ type: 'DONE', payload: 64 })
     .run()
 ));

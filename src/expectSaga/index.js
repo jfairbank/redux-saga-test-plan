@@ -22,7 +22,7 @@ import { mapValues } from '../utils/object';
 import findDispatchableActionIndex from './findDispatchableActionIndex';
 import sagaWrapper from './sagaWrapper';
 import sagaIdFactory from './sagaIdFactory';
-import { coalesceProviders } from './providers';
+import { coalesceProviders } from './providers/helpers';
 
 import {
   ACTION_CHANNEL,
@@ -48,7 +48,6 @@ function extractState(reducer: Reducer, initialState?: any): any {
 function isHelper(fn: Function): boolean {
   return fn === takeEveryHelper || fn === takeLatestHelper;
 }
-
 
 const deprecatedProvideInForkedTasks = deprecate(
   noop,

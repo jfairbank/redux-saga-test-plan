@@ -1,6 +1,8 @@
 // @flow
 import { call, put, select } from 'redux-saga/effects';
-import { composeProviders, expectSaga, matchers as m } from '../../../src';
+import { expectSaga } from '../../../src';
+import * as m from '../../../src/expectSaga/matchers';
+import { composeProviders, dynamic } from '../../../src/expectSaga/providers';
 
 const findUser = () => null;
 const findDog = () => null;
@@ -145,3 +147,31 @@ test('provides for effects yielded in parallel', () => (
     })
     .run()
 ));
+
+test('works with multiple dynamic providers', () => {
+  const fn = a => a + 2;
+
+  function* someSaga() {
+    const x = yield call(fn, 4);
+    const y = yield call(fn, 6);
+    const z = yield call(fn, 8);
+
+    yield put({ type: 'DONE', payload: x + y + z });
+  }
+
+  const provideDouble = ({ args: [a] }, next) => (
+    a === 6 ? a * 2 : next()
+  );
+
+  const provideTriple = ({ args: [a] }, next) => (
+    a > 4 ? a * 3 : next()
+  );
+
+  return expectSaga(someSaga)
+    .provide([
+      [m.call.fn(fn), dynamic(provideDouble)],
+      [m.call.fn(fn), dynamic(provideTriple)],
+    ])
+    .put({ type: 'DONE', payload: 42 })
+    .run();
+});

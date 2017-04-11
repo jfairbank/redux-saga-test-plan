@@ -2,6 +2,7 @@
 import { put, select } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
 import * as m from '../../../src/expectSaga/matchers';
+import { dynamic } from '../../../src/expectSaga/providers';
 
 const getValue = () => 0;
 const getOtherValue = state => state.otherValue;
@@ -54,6 +55,29 @@ test('uses partial static provided values from matchers', () => (
     .withState({ otherValue: 22 })
     .provide([
       [m.select.selector(getValue), 20],
+    ])
+    .put({ type: 'DONE', payload: 42 })
+    .run()
+));
+
+test('uses dynamic values for static providers', () => (
+  expectSaga(saga)
+    .withState({ otherValue: 22 })
+    .provide([
+      [m.select.selector(getValue), dynamic(() => 20)],
+    ])
+    .put({ type: 'DONE', payload: 42 })
+    .run()
+));
+
+test('dynamic values have access to effect', () => (
+  expectSaga(saga)
+    .withState({ otherValue: 22 })
+    .provide([
+      [m.select.selector(getValue), dynamic(({ selector }) => {
+        expect(selector).toBe(getValue);
+        return 20;
+      })],
     ])
     .put({ type: 'DONE', payload: 42 })
     .run()

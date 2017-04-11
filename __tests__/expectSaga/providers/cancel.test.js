@@ -3,6 +3,7 @@ import { cancel, fork, put } from 'redux-saga/effects';
 import { createMockTask } from 'redux-saga/utils';
 import { expectSaga } from '../../../src';
 import * as m from '../../../src/expectSaga/matchers';
+import { dynamic } from '../../../src/expectSaga/providers';
 
 function* backgroundSaga() {
   yield 42;
@@ -54,6 +55,34 @@ test('uses static provided values from matchers', () => {
   return expectSaga(saga)
     .provide([
       [m.cancel(fakeTask), 'cancelled'],
+      forkProvider(fakeTask),
+    ])
+    .put({ type: 'DONE', payload: 'cancelled' })
+    .run();
+});
+
+test('uses dynamic values for static providers', () => {
+  const fakeTask = createMockTask();
+
+  return expectSaga(saga)
+    .provide([
+      [m.cancel(fakeTask), dynamic(() => 'cancelled')],
+      forkProvider(fakeTask),
+    ])
+    .put({ type: 'DONE', payload: 'cancelled' })
+    .run();
+});
+
+test('dynamic values have access to task', () => {
+  const fakeTask = createMockTask();
+
+  return expectSaga(saga)
+    .provide([
+      [m.cancel(fakeTask), dynamic((task) => {
+        expect(task).toBe(fakeTask);
+        return 'cancelled';
+      })],
+
       forkProvider(fakeTask),
     ])
     .put({ type: 'DONE', payload: 'cancelled' })

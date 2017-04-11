@@ -3,5 +3,5 @@ import expectSaga from './expectSaga';
 
 export default testSaga;
 export { testSaga, expectSaga };
-export { composeProviders } from './expectSaga/providers';
 export * as matchers from './expectSaga/matchers';
+export * as providers from './expectSaga/providers';
