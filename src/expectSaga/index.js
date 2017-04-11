@@ -91,20 +91,28 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   let storeState: any;
 
   function useProvidedValue(value) {
-    const providedValue = provideValue(providers, value);
-
-    if (providedValue === NEXT) {
-      return value;
+    function addEffect() {
+      // Because we are providing a return value and not hitting redux-saga, we
+      // need to manually store the effect so assertions on the effect work.
+      processEffect({
+        effectId: nextSagaId(),
+        effect: value,
+      });
     }
 
-    // Because we are providing a return value and not hitting redux-saga, we
-    // need to manually store the effect so assertions on the effect work.
-    processEffect({
-      effectId: nextSagaId(),
-      effect: value,
-    });
+    try {
+      const providedValue = provideValue(providers, value);
 
-    return providedValue;
+      if (providedValue === NEXT) {
+        return value;
+      }
+
+      addEffect();
+      return providedValue;
+    } catch (e) {
+      addEffect();
+      throw e;
+    }
   }
 
   function refineYieldedValue(value) {

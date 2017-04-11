@@ -52,3 +52,23 @@ test('assert on effects with provided values', () => {
     })
     .run();
 });
+
+test('assert on effects that provide thrown error', () => {
+  const fn = () => ({});
+  const error = new Error('error');
+
+  function* saga() {
+    try {
+      yield call(fn);
+    } catch (e) {
+      yield put({ type: 'ERROR', error: e });
+    }
+  }
+
+  return expectSaga(saga)
+    .provide({
+      call() { throw error; },
+    })
+    .call(fn)
+    .run();
+});
