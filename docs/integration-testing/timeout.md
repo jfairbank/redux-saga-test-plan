@@ -14,14 +14,16 @@ function* mainSaga() {
   }
 }
 
-expectSaga(mainSaga)
-  .put({ type: 'DATA', payload: 42 })
-  .dispatch({ type: 'READY', payload: 42 })
+it('times out', () => {
+  return expectSaga(mainSaga)
+    .put({ type: 'DATA', payload: 42 })
+    .dispatch({ type: 'READY', payload: 42 })
 
-  // saga never terminates on its own
-  // implicit timeout of 250ms will cancel saga
-  // and print warning message to console
-  .run();
+    // saga never terminates on its own
+    // implicit timeout of 250ms will cancel saga
+    // and print warning message to console
+    .run();
+});
 ```
 
 ### Silencing Warnings
@@ -32,13 +34,15 @@ it to time out. Therefore, to silence the warning message, you can pass into the
 `run` method an object with the `silenceTimeout` property set to `true`.
 
 ```js
-expectSaga(mainSaga)
-  .put({ type: 'DATA', payload: 42 })
-  .dispatch({ type: 'READY', payload: 42 })
+it('can be silenced', () => {
+  return expectSaga(mainSaga)
+    .put({ type: 'DATA', payload: 42 })
+    .dispatch({ type: 'READY', payload: 42 })
 
-  // no warning message will be printed
-  // this is useful if you expect the saga to time out
-  .run({ silenceTimeout: true });
+    // no warning message will be printed
+    // this is useful if you expect the saga to time out
+    .run({ silenceTimeout: true });
+});
 ```
 
 ### Adjusting Timeout
@@ -62,12 +66,14 @@ function* mainSaga() {
   yield put({ type: 'HELLO' });
 }
 
-expectSaga(mainSaga)
-  .put({ type: 'HELLO' })
+it('can have a different timeout length', () => {
+  return expectSaga(mainSaga)
+    .put({ type: 'HELLO' })
 
-  // saga will take at least 300ms,
-  // so time out after 500ms to be safe
-  .run(500);
+    // saga will take at least 300ms,
+    // so time out after 500ms to be safe
+    .run(500);
+});
 ```
 
 Alternatively, you can opt out of the timeout behavior and force `expectSaga` to
@@ -76,9 +82,11 @@ method. **WARNING:** this won't work with sagas with infinite loops because the
 saga will never finish on its own.
 
 ```js
-expectSaga(mainSaga)
-  .put({ type: 'HELLO' })
+it('never times out', () => {
+  return expectSaga(mainSaga)
+    .put({ type: 'HELLO' })
 
-  // wait until the saga finishes on its own
-  .run(false);
+    // wait until the saga finishes on its own
+    .run(false);
+});
 ```

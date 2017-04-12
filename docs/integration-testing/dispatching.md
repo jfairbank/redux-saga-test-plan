@@ -18,17 +18,19 @@ function* mainSaga(x, y) {
   yield put({ type: 'DONE' });
 }
 
-expectSaga(mainSaga, 40, 2)
-  // note that assertions don't have to be in order
-  .put({ type: 'DONE' })
-  .put({ type: 'ADD', payload: 42 })
+it('handles dispatching actions', () => {
+  return expectSaga(mainSaga, 40, 2)
+    // note that assertions don't have to be in order
+    .put({ type: 'DONE' })
+    .put({ type: 'ADD', payload: 42 })
 
-  // dispatch any actions your saga will `take`
-  // dispatched actions MUST be in order
-  .dispatch({ type: 'HELLO' })
-  .dispatch({ type: 'WORLD' })
+    // dispatch any actions your saga will `take`
+    // dispatched actions MUST be in order
+    .dispatch({ type: 'HELLO' })
+    .dispatch({ type: 'WORLD' })
 
-  .run();
+    .run();
+});
 ```
 
 ## Dispatch actions while saga is running

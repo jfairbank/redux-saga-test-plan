@@ -6,7 +6,7 @@ concerned with _if_ a particular function was invoked via `call` or _if_ a
 particular action type was dispatched via `put`. You can handle these situations
 with partial matcher assertions.
 
-The following assertions now have a `like` method along with convenient helper
+The following assertions have a `like` method along with convenient helper
 methods for partially matching assertions:
 
 - `actionChannel`
@@ -108,6 +108,7 @@ function* saga(id) {
     meta: { hello: 'world' },
   });
 
+  // This will be matched
   yield put({
     type: 'FOO',
     payload: 43,

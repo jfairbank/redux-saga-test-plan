@@ -21,3 +21,19 @@ Redux Saga. You can reference effect creators in Redux Saga's docs
 - `select(selector, ...args)`
 - `actionChannel(pattern, [buffer])`
 - `race(effects)`
+
+You can assert the return value of a saga via the `returns` method. This only
+works for the top-level saga under test, meaning other sagas that are invoked
+via `call`, `fork`, or `spawn` won't report their return value.
+
+```js
+function* saga() {
+  return { hello: 'world' };
+}
+
+it('returns a greeting', () => {
+  return expectSaga(saga)
+    .returns({ hello: 'world' })
+    .run();
+});
+```
