@@ -19,7 +19,7 @@ methods for partially matching assertions:
 - `select`
 - `spawn`
 
-**Note:** the `like` method requires knowledge of the properties on effects such
+**NOTE:** the `like` method requires knowledge of the properties on effects such
 as the `fn` property of `call` and the `action` property of `put`. Essentially,
 `like` allows you to match effects with certain properties without worrying
 about the other properties. Therefore, you can match a `call` by `fn` without
