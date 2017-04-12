@@ -1,3 +1,289 @@
+## v2.4.0
+
+### DEPRECATION in `expectSaga`
+
+Providers now automatically work in forked/spawned sagas, meaning the
+`provideInForkedTasks` option is no longer needed. If you are still using the
+option, Redux Saga Test Plan will print a warning message, letting you know that
+you can safely remove it. More details are provided later in these release
+notes, but the internal limitation that necessitated the `provideInForkedTasks`
+option has been fixed.
+
+### NEW features in `expectSaga`
+
+Lots of new features are now available in `expectSaga` to make testing easier!
+Please read through the awesome additions below.
+
+#### Static Providers
+
+You can now provide mock values in a terser manner via static providers. Pass in
+an array of tuple pairs (array pairs) into the `provide` method. For each pair,
+the first element should be a matcher for matching the effect and the second
+effect should be the mock value you want to provide. You can use effect creators
+from `redux-saga/effects` as matchers or import matchers from
+`redux-saga-test-plan/matchers`. The benefit of using Redux Saga Test Plan's
+matchers is that they also offer partial matching. For example, you can use
+`call.fn` to match any calls to a function without regard to its arguments.
+
+```js
+import { call, put, select } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
+import * as matchers from 'redux-saga-test-plan/matchers';
+import api from 'my-api';
+import * as selectors from 'my-selectors';
+
+function* saga() {
+  const id = yield select(selectors.getId);
+  const user = yield call(api.fetchUser, id);
+
+  yield put({ type: 'RECEIVE_USER', payload: user });
+}
+
+it('provides a value for the API call', () => {
+  return expectSaga(saga)
+    .provide([
+      // Use the `select` effect creator from Redux Saga to match
+      [select(selectors.getId), 42],
+
+      // Use the `call.fn` matcher from Redux Saga Test Plan
+      [matchers.call.fn(api.fetchUser), { id: 42, name: 'John Doe' }],
+    ])
+    .put({
+      type: 'RECEIVE_USER',
+      payload: { id: 42, name: 'John Doe' },
+    })
+    .run();
+});
+```
+
+#### Throw Errors with Static Providers
+
+You can simulate errors with static providers via the `throwError` function from
+the `redux-saga-test-plan/providers` module. When providing an error, wrap it
+with a call to `throwError` to let Redux Saga Test Plan know that you want to
+simulate a thrown error.
+
+```js
+import { call, put } from 'redux-saga/effects';
+import * as matchers from 'redux-saga-test-plan/matchers';
+import { throwError } from 'redux-saga-test-plan/providers';
+import api from 'my-api';
+
+function* userSaga(id) {
+  try {
+    const user = yield call(api.fetchUser, id);
+    yield put({ type: 'RECEIVE_USER', payload: user });
+  } catch (e) {
+    yield put({ type: 'FAIL_USER', error: e });
+  }
+}
+
+it('handles errors', () => {
+  const error = new Error('error');
+
+  return expectSaga(userSaga)
+    .provide([
+      [matchers.call.fn(api.fetchUser), throwError(error)],
+    ])
+    .put({ type: 'FAIL_USER', error })
+    .run();
+});
+```
+
+#### Multiple object providers
+
+If you prefer to use the object providers syntax, you can now supply multiple
+object providers via a couple methods. The easiest way is to pass in an array of
+object providers to the `provide` method. Provider functions will be composed
+according to the effect type, meaning the provider functions in the first object
+will be called before subsequent provider functions in the array.
+
+Because provider functions are composed, they are similar to middleware. The
+`next` function argument inside provider functions allows you to delegate to the
+next provider in the middleware stack. If no more providers are available, then
+`next` will delegate to Redux Saga to handle the effect as normal.
+
+```js
+import { call, put, select } from 'redux-saga/effects';
+import api from 'my-api';
+import * as selectors from 'my-selectors';
+
+function* saga() {
+  const user = yield call(api.findUser, 1);
+  const dog = yield call(api.findDog);
+  const greeting = yield call(api.findGreeting);
+  const otherData = yield select(selectors.getOtherData);
+
+  yield put({
+    type: 'DONE',
+    payload: { user, dog, greeting, otherData },
+  });
+}
+
+const fakeUser = { name: 'John Doe' };
+const fakeDog = { name: 'Tucker' };
+const fakeOtherData = { foo: 'bar' };
+
+const provideUser = ({ fn, args: [id] }, next) => (
+  fn === api.findUser ? fakeUser : next()
+);
+
+const provideDog = ({ fn }, next) => (
+  fn === api.findDog ? fakeDog : next()
+);
+
+const provideOtherData = ({ selector }, next) => (
+  selector === selectors.getOtherData ? fakeOtherData : next()
+);
+
+it('takes multiple providers and composes them', () => {
+  return expectSaga(saga)
+    .provide([
+      { call: provideUser, select: provideOtherData },
+      { call: provideDog },
+    ])
+    .put({
+      type: 'DONE',
+      payload: {
+        user: fakeUser,
+        dog: fakeDog,
+        greeting: 'hello',
+        otherData: fakeOtherData,
+      },
+    })
+    .run();
+});
+```
+
+An alternative to supplying multiple provider objects is to only pass one object
+into `provide` and use the `composeProviders` function to compose multiple
+provider functions for a specific effect. You can import the `composeProviders`
+function from the `redux-saga-test-plan/providers` module. The provider
+functions are composed from left to right.
+
+```js
+import { composeProviders } from 'redux-saga-test-plan/providers';
+
+it('takes multiple providers and composes them', () => {
+  return expectSaga(saga)
+    .provide({
+      call: composeProviders(
+        provideUser,
+        provideDog
+      ),
+
+      select: provideOtherData,
+    })
+    .put({
+      type: 'DONE',
+      payload: {
+        user: fakeUser,
+        dog: fakeDog,
+        greeting: 'hello',
+        otherData: fakeOtherData,
+      },
+    })
+    .run();
+});
+```
+
+#### Static Providers with Dynamic Values
+
+Static providers can provide dynamic values too. Instead of supplying a static
+value, you can supply a function that produces the value. This function takes as
+arguments the effect as well as the `next` function in case you want to the next
+provider or Redux Saga to handle the effect. Additionally, you must wrap the
+function with a call to the `dynamic` function from the
+`redux-saga-test-plan/providers` module.
+
+```js
+import { call, put } from 'redux-saga/effects';
+import * as matchers from 'redux-saga-test-plan/matchers';
+import { dynamic } from 'redux-saga-test-plan/providers';
+
+const add2 = a => a + 2;
+
+function* someSaga() {
+  const x = yield call(add2, 4);
+  const y = yield call(add2, 6);
+  const z = yield call(add2, 8);
+
+  yield put({ type: 'DONE', payload: x + y + z });
+}
+
+const provideDoubleIf6 = ({ args: [a] }, next) => (
+  a === 6 ? a * 2 : next()
+);
+
+const provideTripleIfGt4 = ({ args: [a] }, next) => (
+  a > 4 ? a * 3 : next()
+);
+
+it('works with dynamic static providers', () => {
+  return expectSaga(someSaga)
+    .provide([
+      [matchers.call.fn(add2), dynamic(provideDoubleIf6)],
+      [matchers.call.fn(add2), dynamic(provideTripleIfGt4)],
+    ])
+    .put({ type: 'DONE', payload: 42 })
+    .run();
+});
+```
+
+#### Assert Effects with Provided Values
+
+Prior to v2.4.0, if you provided a value for a particular effect, then you were
+unable to also assert that your saga yielded that particular effect. This is now
+fixed, so you can assert on these effects. One use case for this is if you
+wanted to provide a value for any API call but also assert that your saga called
+the API function with certain arguments.
+
+```js
+import { call, put } from 'redux-saga/effects';
+import * as matchers from 'redux-saga-test-plan/matchers';
+import api from 'my-api';
+
+function* userSaga(id) {
+  const user = yield call(api.fetchUser, id);
+  yield put({ type: 'RECEIVE_USER', payload: user });
+}
+
+it('handles errors', () => {
+  const id = 42;
+  const fakeUser = { id, name: 'John Doe' };
+
+  return expectSaga(userSaga, id)
+    .provide([
+      // Provide `fakeUser` for the function call
+      [matchers.call.fn(api.fetchUser), fakeUser],
+    ])
+    // Still assert that the function was called with the `id`
+    .call(api.fetchUser, id)
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run();
+});
+```
+
+#### Assert Return Values
+
+You can assert the return value of a saga via the `returns` method. This only
+works for the top-level saga under test, meaning other sagas that are invoked
+via `call`, `fork`, or `spawn` won't report their return value.
+
+```js
+function* saga() {
+  return { hello: 'world' };
+}
+
+it('returns a greeting', () => {
+  return expectSaga(saga)
+    .returns({ hello: 'world' })
+    .run();
+});
+```
+
+---
+
 ## v2.3.6
 
 ### Bug Fix
@@ -117,7 +403,7 @@ middleware layer that Redux Saga Test Plan calls _providers_.
 
 To use providers, you can call the `provide` method. The `provide` method takes
 one argument, an object literal with effect creator names as keys and function
-handlers as arguments. Each function handler takes two arguments, the yielded
+handlers as values. Each function handler takes two arguments, the yielded
 effect and a `next` callback. You can inspect the effect and return a fake value
 based on the properties in the effect. If you don't want to handle the effect
 yourself, you can pass it on to Redux Saga by invoking the `next` callback
