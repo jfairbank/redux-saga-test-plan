@@ -1,3 +1,15 @@
+## v2.4.1
+
+### Bug Fixes
+
+* Effects nested in a `race` effect weren't being properly handled to ensure
+  that nested generator functions could receive provided values.
+* Tested sagas were being blocked by redux-saga if function calls or providers
+  returned falsy values that weren't `null` or `undefined`. Check #94 for more
+  context.
+
+---
+
 ## v2.4.0
 
 ### DEPRECATION in `expectSaga`
