@@ -5,6 +5,27 @@ const INIT = 'INIT';
 const NEXT = 'NEXT';
 const LOOP = 'LOOP';
 
+const FALSY = '@@redux-saga-test-plan/falsy';
+
+// Tagging falsy values that aren't null or undefined because
+// redux-saga blocks when they are yielded.
+// https://github.com/jfairbank/redux-saga-test-plan/issues/94
+function wrapFalsy(value) {
+  if (!value && value != null) {
+    return { [FALSY]: true, value };
+  }
+
+  return value;
+}
+
+function unwrapFalsy(value) {
+  if (value && typeof value === 'object' && value[FALSY]) {
+    return value.value;
+  }
+
+  return value;
+}
+
 export default function sagaWrapper(
   wrappedIterator: Generator<*, *, *>,
   refineYieldedValue: Function,
@@ -30,7 +51,11 @@ export default function sagaWrapper(
           return complete();
         }
 
-        const value = refineYieldedValue(result.value);
+        let value = refineYieldedValue(result.value);
+
+        value = Array.isArray(value)
+          ? value.map(wrapFalsy)
+          : wrapFalsy(value);
 
         return {
           value,
@@ -42,7 +67,11 @@ export default function sagaWrapper(
     },
 
     [NEXT](response, fsm) {
-      result = wrappedIterator.next(response);
+      const finalResponse = Array.isArray(response)
+        ? response.map(unwrapFalsy)
+        : unwrapFalsy(response);
+
+      result = wrappedIterator.next(finalResponse);
       return fsm[LOOP](undefined, fsm);
     },
 
