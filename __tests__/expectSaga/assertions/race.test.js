@@ -57,7 +57,7 @@ test('cancel branch wins', () => (
   expectSaga(saga, slowFetchData)
     .put({ type: 'DONE', success: false })
     .dispatch({ type: 'CANCEL' })
-    .run()
+    .run(600)
 ));
 
 test('race assertion fails with wrong cancel', () => (

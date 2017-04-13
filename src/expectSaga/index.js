@@ -136,7 +136,12 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
     switch (true) {
       case type === RACE && !localProviders.race:
-        return race(mapValues(effect, useProvidedValue));
+        processEffect({
+          effectId: nextSagaId(),
+          effect: value,
+        });
+
+        return race(mapValues(effect, refineYieldedValue));
 
       case type === PARALLEL && !localProviders.parallel:
         return parsedEffect.effects.map(refineYieldedValue);

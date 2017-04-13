@@ -187,7 +187,7 @@ test('dynamic values have access to effect', () => {
 });
 
 test('inner providers for `race` work', () => {
-  const fetchUser = () => delay(1000).then(() => fakeUser);
+  const fetchUser = () => delay(250).then(() => fakeUser);
 
   const promise1 = expectSaga(sagaTwo, fetchUser)
     .provide({
@@ -201,7 +201,7 @@ test('inner providers for `race` work', () => {
     })
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .dispatch({ type: 'REQUEST_USER' })
-    .run();
+    .run(false);
 
   const promise2 = expectSaga(sagaTwo, fetchUser)
     .provide({
@@ -215,7 +215,7 @@ test('inner providers for `race` work', () => {
     })
     .put({ type: 'TIMEOUT' })
     .dispatch({ type: 'REQUEST_USER' })
-    .run();
+    .run(false);
 
   return Promise.all([
     promise1,
@@ -224,7 +224,7 @@ test('inner providers for `race` work', () => {
 });
 
 test('inner static providers from redux-saga/effects for `race` work', () => {
-  const fetchUser = () => delay(1000).then(() => fakeUser);
+  const fetchUser = () => delay(250).then(() => fakeUser);
 
   const promise1 = expectSaga(sagaTwo, fetchUser)
     .provide([
@@ -232,7 +232,7 @@ test('inner static providers from redux-saga/effects for `race` work', () => {
     ])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
-    .run();
+    .run(false);
 
   const promise2 = expectSaga(sagaTwo, fetchUser)
     .provide([
@@ -240,7 +240,7 @@ test('inner static providers from redux-saga/effects for `race` work', () => {
     ])
     .put({ type: 'TIMEOUT' })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
-    .run();
+    .run(false);
 
   return Promise.all([
     promise1,
@@ -249,7 +249,7 @@ test('inner static providers from redux-saga/effects for `race` work', () => {
 });
 
 test('inner static providers from matchers for `race` work', () => {
-  const fetchUser = () => delay(1000).then(() => fakeUser);
+  const fetchUser = () => delay(250).then(() => fakeUser);
 
   const promise1 = expectSaga(sagaTwo, fetchUser)
     .provide([
@@ -257,7 +257,7 @@ test('inner static providers from matchers for `race` work', () => {
     ])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
-    .run();
+    .run(false);
 
   const promise2 = expectSaga(sagaTwo, fetchUser)
     .provide([
@@ -265,7 +265,7 @@ test('inner static providers from matchers for `race` work', () => {
     ])
     .put({ type: 'TIMEOUT' })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
-    .run();
+    .run(false);
 
   return Promise.all([
     promise1,
@@ -274,7 +274,7 @@ test('inner static providers from matchers for `race` work', () => {
 });
 
 test('inner static providers use dynamic values for static providers', () => {
-  const fetchUser = () => delay(1000).then(() => fakeUser);
+  const fetchUser = () => delay(250).then(() => fakeUser);
 
   const promise1 = expectSaga(sagaTwo, fetchUser)
     .provide([
@@ -282,7 +282,7 @@ test('inner static providers use dynamic values for static providers', () => {
     ])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
-    .run();
+    .run(false);
 
   const promise2 = expectSaga(sagaTwo, fetchUser)
     .provide([
@@ -290,7 +290,7 @@ test('inner static providers use dynamic values for static providers', () => {
     ])
     .put({ type: 'TIMEOUT' })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
-    .run();
+    .run(false);
 
   return Promise.all([
     promise1,
@@ -299,7 +299,7 @@ test('inner static providers use dynamic values for static providers', () => {
 });
 
 test('inner static providers dynamic values have access to effect', () => {
-  const fetchUser = () => delay(1000).then(() => fakeUser);
+  const fetchUser = () => delay(250).then(() => fakeUser);
 
   const promise1 = expectSaga(sagaTwo, fetchUser)
     .provide([
@@ -312,7 +312,7 @@ test('inner static providers dynamic values have access to effect', () => {
     ])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
-    .run();
+    .run(false);
 
   const promise2 = expectSaga(sagaTwo, fetchUser)
     .provide([
@@ -325,7 +325,7 @@ test('inner static providers dynamic values have access to effect', () => {
     ])
     .put({ type: 'TIMEOUT' })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
-    .run();
+    .run(false);
 
   return Promise.all([
     promise1,
