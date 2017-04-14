@@ -1,3 +1,14 @@
+## v2.4.2
+
+### Bug Fixes
+
+* `expectSaga`
+  * Ensure that the task object for forked/spawned `sagaWrapper` tasks has the
+    same name as the wrapped saga. Check #96 for more context.
+  * Ensure that forked/spawned sagas can detect cancellation.
+
+---
+
 ## v2.4.1
 
 ### Bug Fixes
