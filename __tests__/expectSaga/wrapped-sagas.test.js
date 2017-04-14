@@ -77,20 +77,6 @@ test('wrapped sagas return a task with a name referring to the spawned saga', ()
     .run();
 });
 
-test('providers receive task with name referring to forked saga', () => {
-  const saga = createRegularSaga(fork);
-
-  return expectSaga(saga)
-    .provide({
-      cancel(task, next) {
-        expect(task.name).toBe('foo');
-        return next();
-      },
-    })
-    .returns('regularBackgroundSaga')
-    .run();
-});
-
 test('wrapped sagas return a task with a name referring to the parallel forked saga', () => {
   const saga = createParallelSaga(fork);
 
