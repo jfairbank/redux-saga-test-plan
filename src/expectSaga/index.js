@@ -22,7 +22,7 @@ import parseEffect from './parseEffect';
 import { NEXT, provideValue } from './provideValue';
 import { mapValues } from '../utils/object';
 import findDispatchableActionIndex from './findDispatchableActionIndex';
-import sagaWrapper from './sagaWrapper';
+import createSagaWrapper from './sagaWrapper';
 import sagaIdFactory from './sagaIdFactory';
 import { coalesceProviders } from './providers/helpers';
 
@@ -42,6 +42,7 @@ import {
 const { asEffect, is } = utils;
 
 const INIT_ACTION = { type: '@@redux-saga-test-plan/INIT' };
+const defaultSagaWrapper = createSagaWrapper();
 
 function extractState(reducer: Reducer, initialState?: any): any {
   return initialState || reducer(undefined, INIT_ACTION);
@@ -165,11 +166,15 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
             finalArgs = [
               patternOrChannel,
-              action => sagaWrapper(worker(...restArgs, action), refineYieldedValue),
+              action => defaultSagaWrapper(worker(...restArgs, action), refineYieldedValue),
             ];
           }
 
-          return fork(sagaWrapper, fn.apply(context, finalArgs), refineYieldedValue);
+          return fork(
+            createSagaWrapper(fn.name),
+            fn.apply(context, finalArgs),
+            refineYieldedValue,
+          );
         }
 
         if (detached && !localProviders.spawn) {
@@ -180,7 +185,11 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
             effect: value,
           });
 
-          return spawn(sagaWrapper, fn.apply(context, args), refineYieldedValue);
+          return spawn(
+            createSagaWrapper(fn.name),
+            fn.apply(context, args),
+            refineYieldedValue,
+          );
         }
 
         return useProvidedValue(value);
@@ -204,7 +213,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
         const result = fn.apply(context, args);
 
         if (is.iterator(result)) {
-          return call(sagaWrapper, result, refineYieldedValue);
+          return call(defaultSagaWrapper, result, refineYieldedValue);
         }
 
         return result;
@@ -565,6 +574,8 @@ ${serializedExpected}
   }
 
   function start(): ExpectApi {
+    const sagaWrapper = createSagaWrapper(generator.name);
+
     isRunning = true;
     iterator = generator(...sagaArgs);
 

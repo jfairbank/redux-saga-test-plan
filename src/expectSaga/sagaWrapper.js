@@ -26,66 +26,72 @@ function unwrapFalsy(value) {
   return value;
 }
 
-export default function sagaWrapper(
-  wrappedIterator: Generator<*, *, *>,
-  refineYieldedValue: Function,
-  onReturn: ?Function,
-): Generator<*, *, *> {
-  let result = wrappedIterator.next();
+export default function createSagaWrapper(name: string = 'sagaWrapper'): Function {
+  function sagaWrapper(
+    wrappedIterator: Generator<*, *, *>,
+    refineYieldedValue: Function,
+    onReturn: ?Function,
+  ): Generator<*, *, *> {
+    let result = wrappedIterator.next();
 
-  function complete() {
-    if (typeof onReturn === 'function') {
-      onReturn(result.value);
+    function complete() {
+      if (typeof onReturn === 'function') {
+        onReturn(result.value);
+      }
+
+      return {
+        value: result.value,
+        done: true,
+      };
     }
 
-    return {
-      value: result.value,
-      done: true,
-    };
-  }
+    return fsmIterator(INIT, {
+      [INIT](_, fsm) {
+        try {
+          if (result.done) {
+            return complete();
+          }
 
-  return fsmIterator(INIT, {
-    [INIT](_, fsm) {
-      try {
+          let value = refineYieldedValue(result.value);
+
+          value = Array.isArray(value)
+            ? value.map(wrapFalsy)
+            : wrapFalsy(value);
+
+          return {
+            value,
+            next: NEXT,
+          };
+        } catch (e) {
+          return fsm.throw(e, fsm);
+        }
+      },
+
+      [NEXT](response, fsm) {
+        const finalResponse = Array.isArray(response)
+          ? response.map(unwrapFalsy)
+          : unwrapFalsy(response);
+
+        result = wrappedIterator.next(finalResponse);
+        return fsm[LOOP](undefined, fsm);
+      },
+
+      [LOOP](_, fsm) {
         if (result.done) {
           return complete();
         }
 
-        let value = refineYieldedValue(result.value);
+        return fsm[INIT](undefined, fsm);
+      },
 
-        value = Array.isArray(value)
-          ? value.map(wrapFalsy)
-          : wrapFalsy(value);
+      throw(e, fsm) {
+        result = wrappedIterator.throw(e);
+        return fsm[LOOP](undefined, fsm);
+      },
+    });
+  }
 
-        return {
-          value,
-          next: NEXT,
-        };
-      } catch (e) {
-        return fsm.throw(e, fsm);
-      }
-    },
+  Object.defineProperty(sagaWrapper, 'name', { value: name });
 
-    [NEXT](response, fsm) {
-      const finalResponse = Array.isArray(response)
-        ? response.map(unwrapFalsy)
-        : unwrapFalsy(response);
-
-      result = wrappedIterator.next(finalResponse);
-      return fsm[LOOP](undefined, fsm);
-    },
-
-    [LOOP](_, fsm) {
-      if (result.done) {
-        return complete();
-      }
-
-      return fsm[INIT](undefined, fsm);
-    },
-
-    throw(e, fsm) {
-      result = wrappedIterator.throw(e);
-      return fsm[LOOP](undefined, fsm);
-    },
-  });
+  return sagaWrapper;
 }
