@@ -1,6 +1,6 @@
 {
   "name": "redux-saga-test-plan",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "Powerful test helpers for Redux Saga",
   "main": "lib/index.js",
   "files": [
