@@ -63,6 +63,7 @@
     "eslint-plugin-import": "^2.1.0",
     "flow-bin": "^0.37.0",
     "gitbook-cli": "^2.3.0",
+    "immutable": "^3.8.1",
     "jest": "^18.1.0",
     "redux": "^3.6.0",
     "redux-saga": "^0.14.6",
@@ -71,7 +72,7 @@
   "dependencies": {
     "core-js": "^2.4.1",
     "fsm-iterator": "^1.0.0",
-    "lodash.isequal": "^4.5.0",
+    "lodash.isequalwith": "^4.4.0",
     "lodash.ismatch": "^4.4.0",
     "object-assign": "^4.1.0",
     "util-inspect": "^0.1.8"

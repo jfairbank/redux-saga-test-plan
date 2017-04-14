@@ -1,5 +1,5 @@
 // @flow
-import isEqual from 'lodash.isequal';
+import isEqual from '../utils/isEqual';
 import createErrorMessage from './createErrorMessage';
 import { TAKE, FORK } from '../shared/keys';
 import getFunctionName from './getFunctionName';

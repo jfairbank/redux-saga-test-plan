@@ -1,6 +1,6 @@
 // @flow
 /* eslint-disable no-underscore-dangle */
-import isEqual from 'lodash.isequal';
+import isEqual from './isEqual';
 import { findIndex } from './array';
 
 export default class ArraySet<T> {

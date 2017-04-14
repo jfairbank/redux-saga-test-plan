@@ -1,5 +1,5 @@
 // @flow
-import isEqual from 'lodash.isequal';
+import isEqual from '../utils/isEqual';
 import createErrorMessage from './createErrorMessage';
 import serializeTakePattern from './serializeTakePattern';
 import getFunctionName from './getFunctionName';
