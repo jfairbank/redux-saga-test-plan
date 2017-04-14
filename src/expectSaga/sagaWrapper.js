@@ -84,6 +84,11 @@ export default function createSagaWrapper(name: string = 'sagaWrapper'): Functio
         return fsm[INIT](undefined, fsm);
       },
 
+      return(value, fsm) {
+        result = wrappedIterator.return(value);
+        return fsm[LOOP](undefined, fsm);
+      },
+
       throw(e, fsm) {
         result = wrappedIterator.throw(e);
         return fsm[LOOP](undefined, fsm);

@@ -1,11 +1,16 @@
 import {
+  call,
+  cancel,
+  cancelled,
   fork,
   put,
   race,
   spawn,
+  take,
 } from 'redux-saga/effects';
 
 import { expectSaga } from '../../src';
+import { delay } from '../../src/utils/async';
 
 function* regularBackgroundSaga() {
   yield put({ type: 'DONE' });
@@ -24,6 +29,36 @@ const createParallelSaga = effectCreator => function* saga() {
 const createRaceSaga = effectCreator => function* saga() {
   const { saga: task } = yield race({ saga: effectCreator(regularBackgroundSaga) });
   return task.name;
+};
+
+function* cancelledBackgroundSaga() {
+  try {
+    yield take('WAIT');
+  } finally {
+    if (yield cancelled()) {
+      yield put({ type: 'DONE', payload: 'cancelled' });
+    } else {
+      yield put({ type: 'DONE', payload: 'not cancelled' });
+    }
+  }
+}
+
+const createCancelSaga = effectCreator => function* saga() {
+  const task = yield effectCreator(cancelledBackgroundSaga);
+  yield call(delay, 50);
+  yield cancel(task);
+};
+
+const createCancelParallelSaga = effectCreator => function* saga() {
+  const [task] = yield [effectCreator(cancelledBackgroundSaga)];
+  yield call(delay, 50);
+  yield cancel(task);
+};
+
+const createCancelRaceSaga = effectCreator => function* saga() {
+  const { saga: task } = yield race({ saga: effectCreator(cancelledBackgroundSaga) });
+  yield call(delay, 50);
+  yield cancel(task);
 };
 
 test('wrapped sagas return a task with a name referring to the forked saga', () => {
@@ -71,5 +106,53 @@ test('wrapped sagas return a task with a name referring to the race spawned saga
 
   return expectSaga(saga)
     .returns('regularBackgroundSaga')
+    .run();
+});
+
+test('wrapped forked sagas can detect cancellation', () => {
+  const saga = createCancelSaga(fork);
+
+  return expectSaga(saga)
+    .put({ type: 'DONE', payload: 'cancelled' })
+    .run();
+});
+
+test('wrapped spawned sagas can detect cancellation', () => {
+  const saga = createCancelSaga(spawn);
+
+  return expectSaga(saga)
+    .put({ type: 'DONE', payload: 'cancelled' })
+    .run();
+});
+
+test('wrapped parallel forked sagas can detect cancellation', () => {
+  const saga = createCancelParallelSaga(fork);
+
+  return expectSaga(saga)
+    .put({ type: 'DONE', payload: 'cancelled' })
+    .run();
+});
+
+test('wrapped parallel spawned sagas can detect cancellation', () => {
+  const saga = createCancelParallelSaga(spawn);
+
+  return expectSaga(saga)
+    .put({ type: 'DONE', payload: 'cancelled' })
+    .run();
+});
+
+test('wrapped race forked sagas can detect cancellation', () => {
+  const saga = createCancelRaceSaga(fork);
+
+  return expectSaga(saga)
+    .put({ type: 'DONE', payload: 'cancelled' })
+    .run();
+});
+
+test('wrapped race spawned sagas can detect cancellation', () => {
+  const saga = createCancelRaceSaga(spawn);
+
+  return expectSaga(saga)
+    .put({ type: 'DONE', payload: 'cancelled' })
     .run();
 });
