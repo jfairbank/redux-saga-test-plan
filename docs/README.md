@@ -4,7 +4,7 @@
 [![Travis branch](https://img.shields.io/travis/jfairbank/redux-saga-test-plan/master.svg?style=flat-square)](https://travis-ci.org/jfairbank/redux-saga-test-plan)
 [![Codecov](https://img.shields.io/codecov/c/github/jfairbank/redux-saga-test-plan.svg?style=flat-square)](https://codecov.io/gh/jfairbank/redux-saga-test-plan)
 
-#### Powerful test helpers for Redux Saga.
+#### Test Redux Saga with an easy plan.
 
 Redux Saga Test Plan makes testing sagas a breeze. Whether you need to test
 exact effects and their ordering or just test your saga `put`'s a specific
@@ -27,89 +27,193 @@ run. For this, use the `expectSaga` test function.
 
 ### Simple Example
 
+Import the `expectSaga` function and pass in your saga function as an argument.
+Any additional arguments to `expectSaga` will become arguments to the saga
+function. The return value is a chainable API with assertions for the different
+effect creators available in Redux Saga.
+
+In the example below, we test that the `userSaga` successfully `put`s a
+`RECEIVE_USER` action with the `fakeUser` as the payload. We call `expectSaga`
+with the `userSaga` and supply an `api` object as an argument to `userSaga`. We
+assert the expected `put` effect via the `put` assertion method. Then, we call
+the `dispatch` method with a `REQUEST_USER` action that contains the user id
+payload. The `dispatch` method will supply actions to `take` effects. Finally,
+we start the test by calling the `run` method which returns a `Promise`. Tests
+with `expectSaga` will always run asynchronously, so the returned `Promise`
+resolves when the saga finishes or when `expectSaga` forces a timeout. If you're
+using a test runner like Jest, you can return the `Promise` inside your Jest
+test so Jest knows when the test is complete.
+
 ```js
+import { call, put, take } from 'redux-saga/effects';
 import { expectSaga } from 'redux-saga-test-plan';
 
-function identity(value) {
-  return value;
-}
+function* userSaga(api) {
+  const action = yield take('REQUEST_USER');
+  const user = yield call(api.fetchUser, action.payload);
 
-function* mainSaga(x, y) {
-  const action = yield take('HELLO');
-
-  yield put({ type: 'ADD', payload: x + y });
-  yield call(identity, action);
+  yield put({ type: 'RECEIVE_USER', payload: user });
 }
 
 it('just works!', () => {
-  return expectSaga(mainSaga, 40, 2)
-    // assert that the saga will eventually yield `put`
-    // with the expected action
-    .put({ type: 'ADD', payload: 42 })
+  const api = {
+    fetchUser: id => ({ id, name: 'Tucker' }),
+  };
 
-    // dispatch any actions your saga will `take`
-    .dispatch({ type: 'HELLO' })
+  return expectSaga(userSaga, api)
+    // Assert that the `put` will eventually happen.
+    .put({
+      type: 'RECEIVE_USER',
+      payload: { id: 42, name: 'Tucker' },
+    })
 
-    // run it
+    // Dispatch any actions that the saga will `take`.
+    .dispatch({ type: 'REQUEST_USER', payload: 42 })
+
+    // Start the test. Returns a Promise.
     .run();
 });
 ```
 
-### Example with Reducer
+### Mocking with Providers
+
+`expectSaga` runs your saga with Redux Saga, so it will try to resolve effects
+just like Redux Saga would in your application. This is great for integration
+testing, but sometimes it can be laborious to bootstrap your entire application
+for tests or mock things like server APIs. In those cases, you can use
+_providers_ which are perfect for mocking values directly with `expectSaga`.
+Providers are similar to middleware that allow you to intercept effects before
+they reach Redux Saga. You can choose to return a mock value instead of allowing
+Redux Saga to handle the effect, or you can pass on the effect to other
+providers or eventually Redux Saga.
+
+`expectSaga` has two flavors of providers, _static providers_ and _dynamic
+providers_. Static providers are easier to compose and reuse, but dynamic
+providers give you more flexibility with non-deterministic effects. Here is one
+example below using static providers. There are more examples of providers [in
+the
+docs](http://redux-saga-test-plan.jeremyfairbank.com/integration-testing/mocking/).
 
 ```js
+import { call, put, take } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
+import * as matchers from 'redux-saga-test-plan/matchers';
+import { throwError } from 'redux-saga-test-plan/providers';
+import api from 'my-api';
+
+function* userSaga() {
+  try {
+    const action = yield take('REQUEST_USER');
+    const user = yield call(api.fetchUser, action.payload);
+    const pet = yield call(api.fetchPet, user.petId);
+
+    yield put({
+      type: 'RECEIVE_USER',
+      payload: { user, pet },
+    });
+  } catch (e) {
+    yield put({ type: 'FAIL_USER', error: e });
+  }
+}
+
+it('fetches the user', () => {
+  const fakeUser = { name: 'Jeremy', petId: 20 };
+  const fakeDog = { name: 'Tucker' };
+
+  return expectSaga(userSaga, api)
+    .provide([
+      [call(api.fetchUser, 42), fakeUser],
+      [matchers.fn(api.fetchPet), fakeDog],
+    ])
+    .put({
+      type: 'RECEIVE_USER',
+      payload: { user: fakeUser, pet: fakeDog },
+    })
+    .dispatch({ type: 'REQUEST_USER', payload: 42 })
+    .run();
+});
+
+it('handles errors', () => {
+  const error = new Error('error');
+
+  return expectSaga(userSaga, api)
+    .provide([
+      [matchers.call.fn(api.fetchUser), throwError(error)],
+    ])
+    .put({ type: 'FAIL_USER', error })
+    .dispatch({ type: 'REQUEST_USER', payload: 42 })
+    .run();
+});
+```
+
+Notice we pass in an array of tuple pairs (or array pairs) that contain a
+matcher and a fake value. You can use the effect creators from Redux Saga or
+matchers from the `redux-saga-test-plan/matchers` module to match effects. The
+bonus of using Redux Saga Test Plan's matchers is that they offer special
+partial matchers like `call.fn` which matches by the function without worrying
+about the specific `args` contained in the actual `call` effect. Notice in the
+second test that we can also simulate errors with the `throwError` function from
+the `redux-saga-test-plan/providers` module. This is perfect for simulating
+server problems.
+
+### Example with Reducer
+
+One good use case for integration testing is testing your reducer too. You can
+hook up your reducer to your test by calling the `withReducer` method with your
+reducer function.
+
+```js
+import { call, select } from 'redux-saga/effects';
 import { expectSaga } from 'redux-saga-test-plan';
 
 const HAVE_BIRTHDAY = 'HAVE_BIRTHDAY';
-const AGE_BEFORE = 'AGE_BEFORE';
-const AGE_AFTER = 'AGE_AFTER';
+const UPDATE_DOG = 'UPDATE_DOG';
 
-const initialDog = {
-  name: 'Tucker',
-  age: 11,
+const initialState = {
+  dog: {
+    name: 'Tucker',
+    age: 11,
+  },
 };
 
-function dogReducer(state = initialDog, action) {
+function reducer(state = initialState, action) {
   if (action.type === HAVE_BIRTHDAY) {
     return {
       ...state,
-      age: state.age + 1,
+      dog: {
+        ...state.dog,
+        age: state.age + 1,
+      },
     };
   }
 
   return state;
 }
 
-function getAge(state) {
-  return state.age;
-}
+const getDog = state => state.dog;
 
-function* saga() {
-  const ageBefore = yield select(getAge);
-
-  yield put({ type: AGE_BEFORE, payload: ageBefore });
-
-  yield take(HAVE_BIRTHDAY);
-
-  const ageAfter = yield select(getAge);
-
-  yield put({ type: AGE_AFTER, payload: ageAfter });
+function* saga(api) {
+  const dog = yield select(getDog);
+  yield call(api.updateDog, dog);
 }
 
 it('handles reducers', () => {
-  return expectSaga(saga)
-    .withReducer(dogReducer)
+  const api = { updateDog() {} };
 
-    .put({ type: AGE_BEFORE, payload: 11 })
-    .put({ type: AGE_AFTER, payload: 12 })
+  return expectSaga(saga, api)
+    .withReducer(reducer)
+
+    .call(api.updateDog, {
+      name: 'Tucker',
+      age: 12,
+    })
 
     .dispatch({ type: HAVE_BIRTHDAY })
+    .dispatch({ type: UPDATE_DOG })
 
     .run();
 });
 ```
-
-Yes, it's that simple to test with `expectSaga`.
 
 ## Unit Testing
 
