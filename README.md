@@ -123,7 +123,7 @@ it('fetches the user', () => {
   return expectSaga(userSaga, api)
     .provide([
       [call(api.fetchUser, 42), fakeUser],
-      [matchers.fn(api.fetchPet), fakeDog],
+      [matchers.call.fn(api.fetchPet), fakeDog],
     ])
     .put({
       type: 'RECEIVE_USER',
@@ -163,7 +163,7 @@ hook up your reducer to your test by calling the `withReducer` method with your
 reducer function.
 
 ```js
-import { call, select } from 'redux-saga/effects';
+import { call, select, take } from 'redux-saga/effects';
 import { expectSaga } from 'redux-saga-test-plan';
 
 const HAVE_BIRTHDAY = 'HAVE_BIRTHDAY';
@@ -182,7 +182,7 @@ function reducer(state = initialState, action) {
       ...state,
       dog: {
         ...state.dog,
-        age: state.age + 1,
+        age: state.dog.age + 1,
       },
     };
   }
@@ -193,6 +193,7 @@ function reducer(state = initialState, action) {
 const getDog = state => state.dog;
 
 function* saga(api) {
+  yield take(UPDATE_DOG);
   const dog = yield select(getDog);
   yield call(api.updateDog, dog);
 }
