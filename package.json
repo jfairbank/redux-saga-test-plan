@@ -10,7 +10,7 @@
     "providers.js"
   ],
   "scripts": {
-    "build": "babel src --out-dir lib",
+    "build": "babel src --out-dir lib --ignore __mocks__",
     "check": "npm run lint && npm run typecheck && npm test",
     "clean": "rimraf lib",
     "lint": "eslint src/ __tests__/",
