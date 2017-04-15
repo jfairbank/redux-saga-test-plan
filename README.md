@@ -4,7 +4,7 @@
 [![Travis branch](https://img.shields.io/travis/jfairbank/redux-saga-test-plan/master.svg?style=flat-square)](https://travis-ci.org/jfairbank/redux-saga-test-plan)
 [![Codecov](https://img.shields.io/codecov/c/github/jfairbank/redux-saga-test-plan.svg?style=flat-square)](https://codecov.io/gh/jfairbank/redux-saga-test-plan)
 
-#### Powerful test helpers for Redux Saga.
+#### Test Redux Saga with an easy plan.
 
 Redux Saga Test Plan makes testing sagas a breeze. Whether you need to test
 exact effects and their ordering or just test your saga `put`'s a specific
