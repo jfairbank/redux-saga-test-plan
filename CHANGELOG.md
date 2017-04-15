@@ -1,3 +1,9 @@
+## v2.4.3
+
+Update docs with some examples.
+
+---
+
 ## v2.4.2
 
 ### Bug Fixes
