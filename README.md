@@ -101,7 +101,7 @@ import * as matchers from 'redux-saga-test-plan/matchers';
 import { throwError } from 'redux-saga-test-plan/providers';
 import api from 'my-api';
 
-function* userSaga() {
+function* userSaga(api) {
   try {
     const action = yield take('REQUEST_USER');
     const user = yield call(api.fetchUser, action.payload);
