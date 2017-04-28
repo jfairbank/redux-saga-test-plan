@@ -1,3 +1,20 @@
+## v2.4.4
+
+### Bug Fix
+
+Attempting to rename the `sagaWrapper` function in `expectSaga` to the name of a
+forked saga caused a thrown error in PhantomJS. This is a bug in PhantomJS that
+will likely never be fixed:
+[issue](https://github.com/ariya/phantomjs/issues/14310). Accordingly, Redux
+Saga Test Plan catches the thrown error now.
+
+**NOTE:** this means that you **can't** depend on the task `name` property being
+correct in PhantomJS. For `expectSaga` to work properly, it necessarily has to
+wrap forked sagas with `sagaWrapper` in order to intercept effects with
+providers.
+
+---
+
 ## v2.4.3
 
 Update docs with some examples.
