@@ -322,3 +322,13 @@ it('provides values in spawned sagas', () => {
 
 For some more contrived examples of providers, look in the
 [repo tests](https://github.com/jfairbank/redux-saga-test-plan/tree/master/__tests__/expectSaga/providers).
+
+## Caveats
+
+For providers to work, `expectSaga` will necessarily wrap forked/spawned sagas
+with an intermediary generator called `sagaWrapper` in order to intercept
+effects. To ensure that your saga receives back a task object with a correct
+`name` property, Redux Saga Test Plan will attempt to rename the `sagaWrapper`
+function to the name of a forked saga. This works in almost all JavaScript
+environments but will fail in PhantomJS. Therefore, you **can't** depend on the
+task `name` property being correct in PhantomJS.

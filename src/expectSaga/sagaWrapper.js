@@ -96,7 +96,10 @@ export default function createSagaWrapper(name: string = 'sagaWrapper'): Functio
     });
   }
 
-  Object.defineProperty(sagaWrapper, 'name', { value: name });
+  try {
+    Object.defineProperty(sagaWrapper, 'name', { value: name });
+  // eslint-disable-next-line no-empty
+  } catch (e) {}
 
   return sagaWrapper;
 }
