@@ -239,7 +239,7 @@ function* mainSaga(x, y) {
 const action = { type: 'TEST' };
 
 it('works with unit tests', () => {
-  testSaga(mainSaga, 40, 2);
+  testSaga(mainSaga, 40, 2)
     // advance saga with `next()`
     .next()
 
