@@ -13,6 +13,16 @@ action at some point, Redux Saga Test Plan has you covered.
 Redux Saga Test Plan aims to embrace both integration testing and unit testing
 approaches to make testing your sagas easy.
 
+## Table of Contents
+
+* [Integration Testing](#integration-testing)
+  * [Simple Example](#simple-example)
+  * [Mocking with Providers](#mocking-with-providers)
+  * [Example with Reducer](#example-with-reducer)
+* [Unit Testing](#unit-testing)
+* [Install](#install)
+* [Getting Started](#getting-started)
+
 ## Integration Testing
 
 **Requires global `Promise` to be available**
@@ -267,6 +277,11 @@ it('works with unit tests', () => {
 
 ## Install
 
+### Redux Saga v0.15
+
+The current version of Redux Saga Test Plan **v3** only supports **v0.15**
+of Redux Saga.
+
 Install with yarn or npm.
 
 ```
@@ -275,6 +290,28 @@ yarn add redux-saga-test-plan --dev
 
 ```
 npm install --save-dev redux-saga-test-plan
+```
+
+### Redux Saga v0.14
+
+If you're still using Redux Saga v0.14, the
+[upgrade](https://github.com/redux-saga/redux-saga/releases/tag/v0.15.0) to
+v0.15 should be effortless.
+
+If you can't upgrade from v0.14, though, then you can use the latest **v2** of
+Redux Saga Test Plan.
+
+**NOTE:** newer features will only be added to **v3** of Redux Saga Test Plan,
+so you should upgrade Redux Saga if you're able.
+
+Install with yarn or npm.
+
+```
+yarn add redux-saga-test-plan@^2.0 --dev
+```
+
+```
+npm install --save-dev redux-saga-test-plan@^2.0
 ```
 
 ## Getting Started
