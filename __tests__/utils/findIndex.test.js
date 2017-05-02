@@ -1,6 +1,6 @@
 delete Array.prototype.findIndex;
 
-const { findIndex } = require('../../src/utils/array');
+const { findIndex } = require('utils/array');
 
 const array = ['foo', 'bar', 'baz'];
 

@@ -1,6 +1,6 @@
 // @flow
 import { call, put } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
+import expectSaga from 'expectSaga';
 
 const apiFunction = () => 0;
 const otherApiFunction = () => 1;

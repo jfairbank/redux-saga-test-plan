@@ -1,5 +1,5 @@
 import { cps, put } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
+import expectSaga from 'expectSaga';
 import { errorRegex, unreachableError } from './_helper';
 
 const DEFAULT_VALUE = 'default value';

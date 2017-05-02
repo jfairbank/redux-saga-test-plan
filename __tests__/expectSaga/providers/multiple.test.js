@@ -1,8 +1,8 @@
 // @flow
 import { call, put, select } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
-import * as m from '../../../src/expectSaga/matchers';
-import { composeProviders, dynamic } from '../../../src/expectSaga/providers';
+import expectSaga from 'expectSaga';
+import * as m from 'expectSaga/matchers';
+import { composeProviders, dynamic } from 'expectSaga/providers';
 
 const findUser = () => null;
 const findDog = () => null;

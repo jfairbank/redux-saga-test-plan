@@ -1,5 +1,5 @@
 import { put, take } from 'redux-saga/effects';
-import { expectSaga } from '../../src';
+import expectSaga from 'expectSaga';
 
 const FOO_SYMBOL = Symbol('Foo');
 

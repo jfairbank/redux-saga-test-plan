@@ -4,7 +4,7 @@ const local = typeof window !== 'undefined'
 
 delete local.setImmediate;
 
-const { schedule } = require('../../src/utils/async');
+const { schedule } = require('utils/async');
 
 test('runs a task and resolves with result', async () => {
   const result = await schedule(() => 42);

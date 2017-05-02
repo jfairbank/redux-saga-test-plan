@@ -1,7 +1,7 @@
 // @flow
 import { put } from 'redux-saga/effects';
-import createErrorMessage from '../src/testSaga/createErrorMessage';
-import serializeEffect from '../src/shared/serializeEffect';
+import createErrorMessage from 'testSaga/createErrorMessage';
+import serializeEffect from 'shared/serializeEffect';
 
 const header = 'hello world';
 const stepNumber = 2;

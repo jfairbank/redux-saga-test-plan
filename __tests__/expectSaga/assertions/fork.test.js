@@ -1,8 +1,8 @@
 import { fork, put, takeEvery } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
+import expectSaga from 'expectSaga';
 import { errorRegex, unreachableError } from './_helper';
 
-jest.mock('../../../src/utils/logging');
+jest.mock('utils/logging');
 
 function* otherSaga() {
   yield put({ type: 'FORKED' });

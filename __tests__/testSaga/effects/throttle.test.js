@@ -1,6 +1,6 @@
 // @flow
 import { call, throttle } from 'redux-saga/effects';
-import { testSaga } from '../../../src';
+import testSaga from 'testSaga';
 
 function identity(value) {
   return value;

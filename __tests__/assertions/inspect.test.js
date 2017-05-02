@@ -1,5 +1,5 @@
 // @flow
-import testSaga from '../../src/testSaga';
+import testSaga from 'testSaga';
 
 function* saga() {
   yield 42;

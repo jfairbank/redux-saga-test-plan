@@ -1,6 +1,6 @@
 // @flow
 import { put, select, take } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
+import expectSaga from 'expectSaga';
 import { errorRegex, unreachableError } from '../assertions/_helper';
 
 const HAVE_BIRTHDAY = 'HAVE_BIRTHDAY';

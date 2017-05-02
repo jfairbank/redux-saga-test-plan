@@ -1,8 +1,8 @@
 import { actionChannel, put, take } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
+import expectSaga from 'expectSaga';
 import { errorRegex, unreachableError } from './_helper';
 
-jest.mock('../../../src/utils/logging');
+jest.mock('utils/logging');
 
 function* saga() {
   const channel = yield actionChannel('FOO');

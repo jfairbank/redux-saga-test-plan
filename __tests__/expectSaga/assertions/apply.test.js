@@ -1,6 +1,6 @@
 import { apply } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
-import identity from '../../../src/utils/identity';
+import expectSaga from 'expectSaga';
+import identity from 'utils/identity';
 import { errorRegex, unreachableError } from './_helper';
 
 const context = { hello: 'world' };

@@ -1,6 +1,6 @@
 import { call, race, put, take } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
-import { delay } from '../../../src/utils/async';
+import expectSaga from 'expectSaga';
+import { delay } from 'utils/async';
 import { errorRegex, unreachableError } from './_helper';
 
 function quickFetchData() {

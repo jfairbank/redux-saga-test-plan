@@ -1,9 +1,8 @@
 /* eslint-disable require-yield */
-// @flow
 import { call, fork, spawn } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
+import expectSaga from 'expectSaga';
+import { delay } from 'utils/async';
 import { unreachableError } from './_helper';
-import { delay } from '../../../src/utils/async';
 
 function* saga() {
   return { foo: 'bar' };

@@ -1,10 +1,10 @@
 /* eslint-disable no-constant-condition */
 import { take, takeEvery, fork, join, put, spawn } from 'redux-saga/effects';
-import { warn } from '../../src/utils/logging';
-import { delay } from '../../src/utils/async';
-import { expectSaga } from '../../src';
+import { warn } from 'utils/logging';
+import { delay } from 'utils/async';
+import expectSaga from 'expectSaga';
 
-jest.mock('../../src/utils/logging');
+jest.mock('utils/logging');
 
 test('does not throw with non-effects', () => {
   function* saga() {

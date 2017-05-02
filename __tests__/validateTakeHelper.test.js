@@ -1,6 +1,6 @@
 // @flow
 import { fork, take } from 'redux-saga/effects';
-import validateTakeHelper from '../src/testSaga/validateTakeHelper';
+import validateTakeHelper from 'testSaga/validateTakeHelper';
 
 function* yieldNullTake() {
   yield null;

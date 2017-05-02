@@ -1,13 +1,13 @@
 // @flow
 import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
+import expectSaga from 'expectSaga';
 
 const fakeUser = {
   id: 1,
   name: 'John Doe',
 };
 
-jest.mock('../../../src/utils/logging');
+jest.mock('utils/logging');
 
 test('provides values in takeEvery workers', () => {
   const fetchUser = () => 0;

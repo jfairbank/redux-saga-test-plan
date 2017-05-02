@@ -1,6 +1,6 @@
 // @flow
 import { put } from 'redux-saga/effects';
-import { testSaga } from '../../../src';
+import testSaga from 'testSaga';
 
 function* mainSaga() {
   yield put.resolve({ type: 'FOO' });

@@ -1,6 +1,6 @@
 /* eslint-disable require-yield */
 import { call, put } from 'redux-saga/effects';
-import expectSaga from '../../src/expectSaga';
+import expectSaga from 'expectSaga';
 
 test('returns values from other sagas', () => {
   function* anotherSaga() {

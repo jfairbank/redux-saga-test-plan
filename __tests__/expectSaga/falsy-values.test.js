@@ -1,5 +1,5 @@
 import { call, put, race } from 'redux-saga/effects';
-import { expectSaga } from '../../src';
+import expectSaga from 'expectSaga';
 
 const returnFalse = () => false;
 const returnNull = () => null;

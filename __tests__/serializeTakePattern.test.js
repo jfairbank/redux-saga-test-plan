@@ -1,4 +1,4 @@
-import serializeTakePattern from '../src/testSaga/serializeTakePattern';
+import serializeTakePattern from 'testSaga/serializeTakePattern';
 
 test('arrays', () => {
   expect(serializeTakePattern([])).toBe('[]');

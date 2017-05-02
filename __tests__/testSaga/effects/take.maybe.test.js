@@ -1,6 +1,6 @@
 // @flow
 import { take } from 'redux-saga/effects';
-import { testSaga } from '../../../src';
+import testSaga from 'testSaga';
 
 function* mainSaga() {
   yield take.maybe('FOO');

@@ -1,7 +1,7 @@
 // @flow
 import { call } from 'redux-saga/effects';
-import { testSaga } from '../../../src';
-import identity from '../../../src/utils/identity';
+import testSaga from 'testSaga';
+import identity from 'utils/identity';
 
 const context = {
   identity,

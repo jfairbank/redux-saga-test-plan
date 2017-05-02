@@ -1,7 +1,7 @@
 // @flow
 import { takeEvery, takeLatest } from 'redux-saga';
 import { call } from 'redux-saga/effects';
-import { testSaga } from '../../src';
+import testSaga from 'testSaga';
 
 function identity(value) {
   return value;

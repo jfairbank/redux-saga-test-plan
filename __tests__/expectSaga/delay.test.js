@@ -1,6 +1,6 @@
 import { put, take } from 'redux-saga/effects';
-import { delay } from '../../src/utils/async';
-import { expectSaga } from '../../src';
+import { delay } from 'utils/async';
+import expectSaga from 'expectSaga';
 
 function* mainSaga(callback) {
   const before = process.hrtime();

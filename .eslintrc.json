@@ -12,7 +12,15 @@
     "plugin:flowtype/recommended"
   ],
   "settings": {
-    "import/resolver": "node"
+    "import/resolver": {
+      "node": {
+        "moduleDirectory": [
+          "node_modules",
+          "src",
+          "__tests__"
+        ]
+      }
+    }
   },
   "rules": {
     "arrow-parens": 0,

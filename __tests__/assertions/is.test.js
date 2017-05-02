@@ -1,5 +1,5 @@
 // @flow
-import testSaga from '../../src/testSaga';
+import testSaga from 'testSaga';
 
 test('handles primitive values', () => {
   function* mainSaga() {

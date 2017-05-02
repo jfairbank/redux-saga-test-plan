@@ -1,10 +1,10 @@
 // @flow
 import { all, call, put, take } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
-import { NEXT, handlers } from '../../../src/expectSaga/provideValue';
-import { ALL } from '../../../src/shared/keys';
-import * as m from '../../../src/expectSaga/matchers';
-import { dynamic } from '../../../src/expectSaga/providers';
+import expectSaga from 'expectSaga';
+import { NEXT, handlers } from 'expectSaga/provideValue';
+import { ALL } from 'shared/keys';
+import * as m from 'expectSaga/matchers';
+import { dynamic } from 'expectSaga/providers';
 
 const apiFunction = () => 0;
 

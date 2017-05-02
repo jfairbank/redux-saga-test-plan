@@ -1,10 +1,10 @@
 // @flow
 import { call, fork, put } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
-import { NEXT, handlers } from '../../../src/expectSaga/provideValue';
-import { FORK } from '../../../src/shared/keys';
-import * as m from '../../../src/expectSaga/matchers';
-import { dynamic } from '../../../src/expectSaga/providers';
+import expectSaga from 'expectSaga';
+import { NEXT, handlers } from 'expectSaga/provideValue';
+import { FORK } from 'shared/keys';
+import * as m from 'expectSaga/matchers';
+import { dynamic } from 'expectSaga/providers';
 
 const fakeUser = {
   id: 1,

@@ -1,7 +1,7 @@
 // @flow
 import { call, put } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
-import { dynamic, throwError } from '../../../src/expectSaga/providers';
+import expectSaga from 'expectSaga';
+import { dynamic, throwError } from 'expectSaga/providers';
 
 const errorFunction = () => 0;
 const error = new Error('Whoops...');

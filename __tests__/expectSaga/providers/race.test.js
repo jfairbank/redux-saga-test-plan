@@ -1,9 +1,9 @@
 // @flow
 import { call, put, race, take } from 'redux-saga/effects';
-import { expectSaga } from '../../../src';
-import { delay } from '../../../src/utils/async';
-import * as m from '../../../src/expectSaga/matchers';
-import { dynamic } from '../../../src/expectSaga/providers';
+import expectSaga from 'expectSaga';
+import { delay } from 'utils/async';
+import * as m from 'expectSaga/matchers';
+import { dynamic } from 'expectSaga/providers';
 
 const fakeUser = {
   id: 1,
