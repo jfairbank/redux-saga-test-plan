@@ -53,6 +53,7 @@ it('provides a value for the API call', () => {
 Even though you'll probably never need them all, you can supply a provider for
 almost every effect creator\*:
 
+- `all` \*\*
 - `actionChannel`
 - `call`
 - `cancel`
@@ -61,7 +62,6 @@ almost every effect creator\*:
 - `flush`
 - `fork`
 - `join`
-- `parallel` (handle yielded arrays)
 - `put`
 - `race`
 - `select`
@@ -75,6 +75,11 @@ must handle `apply` effects with the `call` provider function.
 \*To handle `take.maybe` and `put.resolve`, use the `take` and `put` providers,
 respectively. You can inspect `take` effects for the `maybe` property and `put`
 effects for the `resolve` property.
+
+\** `all` will provide values for a yielded `all` effect as well as a yielded
+array. **NOTE:** yielding an array is deprecated in Redux Saga, so this
+functionality will be removed when Redux Saga removes support for yielded
+arrays.
 
 ## Other Examples
 
@@ -115,9 +120,82 @@ it('provides a value for the selector', () => {
 });
 ```
 
-### Parallel Effects
+### Parallel Effects via `all`
 
-Providers work on effects yielded inside an array:
+Providers work on effects yielded inside an `all` effect.
+
+```js
+import { all, put, select } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
+import { selectors } from 'my-selectors';
+
+function* saga() {
+  const [name, age] = yield all([
+    select(selectors.getName),
+    select(selectors.getAge),
+  ]);
+
+  yield put({ type: 'USER', payload: { name, age } });
+}
+
+it('provides values for effects inside arrays', () => {
+  return expectSaga(saga)
+    .provide({
+      select({ selector }, next) {
+        if (selector === selectors.getName) {
+          return 'Tucker';
+        }
+
+        if (selector === selectors.getAge) {
+          return 11;
+        }
+
+        return next();
+      },
+    })
+    .put({
+      type: 'USER',
+      payload: { name: 'Tucker', age: 11 },
+    })
+    .run();
+});
+```
+
+Or you can provide a value for the entire array of effects via the `all`
+provider:
+
+```js
+import { put, select } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
+import { selectors } from 'my-selectors';
+
+function* saga() {
+  const [name, age] = yield [
+    select(selectors.getName),
+    select(selectors.getAge),
+  ];
+
+  yield put({ type: 'USER', payload: { name, age } });
+}
+
+it('provides a value for the entire array', () => {
+  return expectSaga(saga)
+    .provide({
+      all: () => ['Tucker', 11],
+    })
+    .put({
+      type: 'USER',
+      payload: { name: 'Tucker', age: 11 },
+    })
+    .run();
+});
+```
+
+### Parallel Effects via an Array
+
+Providers work on effects yielded inside an array. **NOTE:** yielding an array
+is deprecated in Redux Saga, so this functionality will be removed when Redux
+Saga removes support for yielded arrays.
 
 ```js
 import { put, select } from 'redux-saga/effects';
@@ -156,7 +234,8 @@ it('provides values for effects inside arrays', () => {
 });
 ```
 
-Or you can provide a value for the entire array of effects:
+Or you can provide a value for the entire array of effects via the `all`
+provider:
 
 ```js
 import { put, select } from 'redux-saga/effects';
@@ -175,7 +254,7 @@ function* saga() {
 it('provides a value for the entire array', () => {
   return expectSaga(saga)
     .provide({
-      parallel: () => ['Tucker', 11],
+      all: () => ['Tucker', 11],
     })
     .put({
       type: 'USER',

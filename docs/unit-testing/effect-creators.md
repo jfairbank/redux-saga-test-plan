@@ -26,6 +26,7 @@ Saga. You can reference them in Redux Saga's docs
 - `actionChannel(pattern, [buffer])`
 - `flush(channel)`
 - `cancelled()`
+- `all([...effects])`
 - `race(effects)`
 - `takem(pattern)` **DEPRECATED:** Use `take.maybe`
 - `takem(channel)` **DEPRECATED:** Use `take.maybe`

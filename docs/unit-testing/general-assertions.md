@@ -1,12 +1,11 @@
 # General Assertions
 
-Other general assertions and helpers available are `is`, `parallel`, `isDone`,
-`returns`, and `inspect`.
+Other general assertions and helpers available are `is`, `isDone`, `returns`,
+and `inspect`.
 
 | Assertion  | Description                                                          |
 | ---------- | -------------------------------------------------------------------- |
 | `is`       | General purpose deep equal assertion                                 |
-| `parallel` | Parallel effects assertion                                           |
 | `isDone`   | Assert at end of saga                                                |
 | `returns`  | Assert saga returns a value and is done                              |
 | `inspect`  | Inspect the next yielded value for more fine-grained, custom testing |
@@ -17,11 +16,6 @@ Other general assertions and helpers available are `is`, `parallel`, `isDone`,
 import { take } from 'redux-saga/effects';
 
 function* mainSaga() {
-  yield [
-    take('HELLO'),
-    take('WORLD'),
-  ];
-
   yield 42;
   yield { foo: { bar: 'baz' } };
 }
@@ -29,12 +23,6 @@ function* mainSaga() {
 let saga = testSaga(mainSaga);
 
 saga
-  .next()
-  .parallel([
-    take('HELLO'),
-    take('WORLD'),
-  ])
-
   .next()
   .is(42)
   

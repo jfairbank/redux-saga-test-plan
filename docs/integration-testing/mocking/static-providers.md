@@ -244,9 +244,43 @@ it('works with dynamic static providers', () => {
 
 ## Other Examples
 
-### Parallel Effects
+### Parallel Effects via `all`
 
-Providers work on effects yielded inside an array:
+Providers work on effects yielded inside an `all` effect:
+
+```js
+import { put, select } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
+import { selectors } from 'my-selectors';
+
+function* saga() {
+  const [name, age] = yield all([
+    select(selectors.getName),
+    select(selectors.getAge),
+  ]);
+
+  yield put({ type: 'USER', payload: { name, age } });
+}
+
+it('provides values for effects inside arrays', () => {
+  return expectSaga(saga)
+    .provide([
+      [select(selectors.getName), 'Tucker'],
+      [select(selectors.getAge), 11],
+    ])
+    .put({
+      type: 'USER',
+      payload: { name: 'Tucker', age: 11 },
+    })
+    .run();
+});
+```
+
+### Parallel Effects via an Array
+
+Providers work on effects yielded inside an array too. **NOTE:** yielding an
+array is deprecated in Redux Saga, so this functionality will be removed when
+Redux Saga removes support for yielded arrays.
 
 ```js
 import { put, select } from 'redux-saga/effects';
