@@ -4,6 +4,7 @@ import parseEffect from './parseEffect';
 
 import {
   ACTION_CHANNEL,
+  ALL,
   CALL,
   CANCEL,
   CANCELLED,
@@ -11,7 +12,6 @@ import {
   FLUSH,
   FORK,
   JOIN,
-  PARALLEL,
   PUT,
   RACE,
   SELECT,
@@ -25,6 +25,13 @@ export const next = () => NEXT;
 
 export const handlers = {
   [ACTION_CHANNEL]: 'actionChannel',
+  [ALL](providers, value) {
+    if (providers.all) {
+      return providers.all(value, next);
+    }
+
+    return NEXT;
+  },
   [CALL]: 'call',
   [CANCEL]: 'cancel',
   [CANCELLED]: 'cancelled',
@@ -44,13 +51,6 @@ export const handlers = {
     return NEXT;
   },
   [JOIN]: 'join',
-  [PARALLEL](providers, value) {
-    if (providers.parallel) {
-      return providers.parallel(value, next);
-    }
-
-    return NEXT;
-  },
   [PUT]: 'put',
   [RACE]: 'race',
   [SELECT]: 'select',

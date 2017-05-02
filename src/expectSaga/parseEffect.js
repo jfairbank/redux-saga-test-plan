@@ -4,6 +4,7 @@ import { utils } from 'redux-saga';
 
 import {
   ACTION_CHANNEL,
+  ALL,
   CALL,
   CANCEL,
   CANCELLED,
@@ -12,7 +13,6 @@ import {
   FORK,
   JOIN,
   NONE,
-  PARALLEL,
   PROMISE,
   PUT,
   RACE,
@@ -113,8 +113,11 @@ export default function parseEffect(effect: Object): Object {
         providerKey: 'actionChannel',
       };
 
+    case is.notUndef(parsedEffect = asEffect.all(effect)):
+      return { type: ALL, effects: parsedEffect };
+
     case Array.isArray(effect):
-      return { type: PARALLEL, effects: effect };
+      return { type: ALL, effects: effect };
 
     default:
       return { type: NONE };

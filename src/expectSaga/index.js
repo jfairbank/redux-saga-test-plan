@@ -26,10 +26,10 @@ import { coalesceProviders } from './providers/helpers';
 
 import {
   ACTION_CHANNEL,
+  ALL,
   CALL,
   CPS,
   FORK,
-  PARALLEL,
   PROMISE,
   PUT,
   RACE,
@@ -132,7 +132,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
         return race(mapValues(effect, refineYieldedValue));
 
-      case type === PARALLEL && !localProviders.parallel:
+      case type === ALL && !localProviders.all:
         return parsedEffect.effects.map(refineYieldedValue);
 
       case type === FORK: {

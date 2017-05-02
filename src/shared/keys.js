@@ -1,5 +1,6 @@
 // @flow
 export const ACTION_CHANNEL = 'ACTION_CHANNEL';
+export const ALL = 'ALL';
 export const CALL = 'CALL';
 export const CANCEL = 'CANCEL';
 export const CANCELLED = 'CANCELLED';
@@ -8,7 +9,6 @@ export const FLUSH = 'FLUSH';
 export const FORK = 'FORK';
 export const JOIN = 'JOIN';
 export const NONE = 'NONE';
-export const PARALLEL = 'PARALLEL';
 export const PROMISE = 'PROMISE';
 export const PUT = 'PUT';
 export const RACE = 'RACE';

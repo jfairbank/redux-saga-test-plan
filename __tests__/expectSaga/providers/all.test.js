@@ -1,33 +1,23 @@
 // @flow
-import { call, put, take } from 'redux-saga/effects';
+import { all, call, put, take } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
+import { NEXT, handlers } from '../../../src/expectSaga/provideValue';
+import { ALL } from '../../../src/shared/keys';
 import * as m from '../../../src/expectSaga/matchers';
 import { dynamic } from '../../../src/expectSaga/providers';
 
 const apiFunction = () => 0;
 
 function* saga() {
-  const [x, { payload: y }] = yield [
+  const [x, { payload: y }] = yield all([
     call(apiFunction),
     take('Y'),
-  ];
+  ]);
 
   yield put({ type: 'DONE', payload: x + y });
 }
 
-test('uses provided value from `all`', () => (
-  expectSaga(saga)
-    .provide({
-      all: () => [
-        20,
-        { type: 'Y', payload: 22 },
-      ],
-    })
-    .put({ type: 'DONE', payload: 42 })
-    .run()
-));
-
-test('inner providers for array work', () => (
+test('inner providers for `all` work', () => (
   expectSaga(saga)
     .provide({
       call: () => 20,
@@ -37,7 +27,7 @@ test('inner providers for array work', () => (
     .run()
 ));
 
-test('inner static providers from redux-saga/effects for array work', () => (
+test('inner static providers from redux-saga/effects for `all` work', () => (
   expectSaga(saga)
     .provide([
       [call(apiFunction), 20],
@@ -47,7 +37,7 @@ test('inner static providers from redux-saga/effects for array work', () => (
     .run()
 ));
 
-test('inner static providers from matchers for array work', () => (
+test('inner static providers from matchers for `all` work', () => (
   expectSaga(saga)
     .provide([
       [m.call(apiFunction), 20],
@@ -83,3 +73,8 @@ test('inner static providers dynamic values have access to effect', () => (
     .put({ type: 'DONE', payload: 42 })
     .run()
 ));
+
+test('test coverage for ALL handler', () => {
+  const actual = handlers[ALL]({}, {});
+  expect(actual).toBe(NEXT);
+});

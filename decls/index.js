@@ -221,6 +221,7 @@ type Provider = (effect: any, next: ProviderNextF) => any;
 
 type Providers = {
   actionChannel?: Provider,
+  all?: Provider,
   call?: Provider,
   cancel?: Provider,
   cancelled?: Provider,
@@ -228,7 +229,6 @@ type Providers = {
   flush?: Provider,
   fork?: Provider,
   join?: Provider,
-  parallel?: Provider,
   put?: Provider,
   race?: Provider,
   select?: Provider,
