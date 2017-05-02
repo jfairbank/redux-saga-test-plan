@@ -567,7 +567,7 @@ ${serializedExpected}
     isRunning = true;
     iterator = generator(...sagaArgs);
 
-    mainTask = runSaga(sagaWrapper(iterator, refineYieldedValue, setReturnValue), io);
+    mainTask = runSaga(io, sagaWrapper, iterator, refineYieldedValue, setReturnValue);
 
     mainTaskPromise = mainTask.done
       .then(checkExpectations)
