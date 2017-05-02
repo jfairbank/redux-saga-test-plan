@@ -1,4 +1,4 @@
-import { call, put, race } from 'redux-saga/effects';
+import { all, call, put, race } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 
 const returnFalse = () => false;
@@ -35,6 +35,25 @@ test('can receive falsy values from calls in parallel', () => {
       call(return0),
       call(returnNaN),
     ];
+
+    yield put({ type: 'DONE' });
+  }
+
+  return expectSaga(saga)
+    .put({ type: 'DONE' })
+    .run();
+});
+
+test('can receive falsy values from calls in `all`', () => {
+  function* saga() {
+    yield all([
+      call(returnFalse),
+      call(returnNull),
+      call(returnUndefined),
+      call(returnEmptyString),
+      call(return0),
+      call(returnNaN),
+    ]);
 
     yield put({ type: 'DONE' });
   }
@@ -97,6 +116,33 @@ test('can receive falsy values from providers in parallel', () => {
       call(return0),
       call(returnNaN),
     ];
+
+    yield put({ type: 'DONE' });
+  }
+
+  return expectSaga(saga)
+    .provide([
+      [call(returnFalse), false],
+      [call(returnNull), null],
+      [call(returnUndefined), undefined],
+      [call(returnEmptyString), ''],
+      [call(return0), 0],
+      [call(returnNaN), NaN],
+    ])
+    .put({ type: 'DONE' })
+    .run();
+});
+
+test('can receive falsy values from providers in `all`', () => {
+  function* saga() {
+    yield all([
+      call(returnFalse),
+      call(returnNull),
+      call(returnUndefined),
+      call(returnEmptyString),
+      call(return0),
+      call(returnNaN),
+    ]);
 
     yield put({ type: 'DONE' });
   }

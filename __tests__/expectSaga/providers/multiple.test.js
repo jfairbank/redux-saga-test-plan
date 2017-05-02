@@ -1,5 +1,5 @@
 // @flow
-import { call, put, select } from 'redux-saga/effects';
+import { all, call, put, select } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 import * as m from 'expectSaga/matchers';
 import { composeProviders, dynamic } from 'expectSaga/providers';
@@ -44,6 +44,20 @@ function* parallelSaga() {
     call(findGreeting),
     select(getOtherData),
   ];
+
+  yield put({
+    type: 'DONE',
+    payload: { user, dog, greeting, otherData },
+  });
+}
+
+function* allSaga() {
+  const [user, dog, greeting, otherData] = yield all([
+    call(findUser, 1),
+    call(findDog),
+    call(findGreeting),
+    select(getOtherData),
+  ]);
 
   yield put({
     type: 'DONE',
@@ -131,6 +145,25 @@ test('takes static and dynamics providers', () => (
 
 test('provides for effects yielded in parallel', () => (
   expectSaga(parallelSaga)
+    .provide([
+      [call(findUser, 1), fakeUser],
+      { call: provideDog },
+      [m.select(getOtherData), fakeOtherData],
+    ])
+    .put({
+      type: 'DONE',
+      payload: {
+        user: fakeUser,
+        dog: fakeDog,
+        greeting: 'hello',
+        otherData: fakeOtherData,
+      },
+    })
+    .run()
+));
+
+test('provides for effects yielded in `all`', () => (
+  expectSaga(allSaga)
     .provide([
       [call(findUser, 1), fakeUser],
       { call: provideDog },
