@@ -19,6 +19,7 @@ import {
 } from './historyTypes';
 
 import {
+  ALL,
   ACTION_CHANNEL,
   CALL,
   CANCEL,
@@ -34,7 +35,6 @@ import {
 } from '../shared/keys';
 
 import SagaTestError from '../shared/SagaTestError';
-import identity from '../utils/identity';
 import createErrorMessage from './createErrorMessage';
 import assertSameEffect from './assertSameEffect';
 import validateTakeHelper from './validateTakeHelper';
@@ -59,10 +59,36 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
   let finalSagaArgs = sagaArgs;
   let iterator = createIterator();
 
+  const allEffectTester = yieldedValue => (expectedEffects) => {
+    if (Array.isArray(yieldedValue)) {
+      assertSameEffect(
+        eventChannel,
+        'parallel',
+        undefined,
+        false,
+        yieldedValue,
+        expectedEffects,
+        history.length,
+      );
+    } else {
+      assertSameEffect(
+        eventChannel,
+        'all',
+        ALL,
+        false,
+        yieldedValue,
+        effects.all(expectedEffects),
+        history.length,
+      );
+    }
+
+    return api;
+  };
+
   function createEffectTester(
     name: string,
     key?: string,
-    effect: Function = identity,
+    effect: Function,
     isForkedEffect: boolean = false,
   ): EffectTesterCreator {
     return (yieldedValue) => (...args) => {
@@ -100,6 +126,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
 
   const effectsTestersCreators: EffectTestersCreator = {
     actionChannel: createEffectTesterFromEffects('actionChannel', ACTION_CHANNEL),
+    all: allEffectTester,
     apply: createEffectTesterFromEffects('apply', CALL),
     call: createEffectTesterFromEffects('call', CALL),
     cancel: createEffectTesterFromEffects('cancel', CANCEL),
@@ -108,7 +135,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     flush: createEffectTesterFromEffects('flush', FLUSH),
     fork: createEffectTesterFromEffects('fork', FORK),
     join: createEffectTesterFromEffects('join', JOIN),
-    parallel: createEffectTester('parallel'),
     put: createEffectTesterFromEffects('put', PUT),
     race: createEffectTesterFromEffects('race', RACE),
     select: createEffectTesterFromEffects('select', SELECT),
@@ -191,6 +217,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
   ): ApiWithEffectsTesters {
     const newApi = assign({}, api, {
       actionChannel: effectsTestersCreators.actionChannel(value),
+      all: effectsTestersCreators.all(value),
       apply: effectsTestersCreators.apply(value),
       call: effectsTestersCreators.call(value),
       cancel: effectsTestersCreators.cancel(value),
@@ -199,7 +226,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       flush: effectsTestersCreators.flush(value),
       fork: effectsTestersCreators.fork(value),
       join: effectsTestersCreators.join(value),
-      parallel: effectsTestersCreators.parallel(value),
       put: effectsTestersCreators.put(value),
       race: effectsTestersCreators.race(value),
       select: effectsTestersCreators.select(value),

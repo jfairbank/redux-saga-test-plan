@@ -16,6 +16,7 @@ declare type Api = {
 
 declare type ApiWithEffectsTesters = Api & {
   actionChannel: EffectTester,
+  all: EffectTester,
   apply: EffectTester,
   call: EffectTester,
   cancel: EffectTester,
@@ -24,7 +25,6 @@ declare type ApiWithEffectsTesters = Api & {
   flush: EffectTester,
   fork: EffectTester,
   join: EffectTester,
-  parallel: EffectTester,
   put: EffectTester,
   race: EffectTester,
   select: EffectTester,
@@ -105,6 +105,7 @@ declare type EffectTesterCreator = (value: any) => EffectTester;
 
 declare type EffectTestersCreator = {
   actionChannel: EffectTesterCreator,
+  all: EffectTesterCreator,
   apply: EffectTesterCreator,
   call: EffectTesterCreator,
   cancel: EffectTesterCreator,
@@ -113,7 +114,6 @@ declare type EffectTestersCreator = {
   flush: EffectTesterCreator,
   fork: EffectTesterCreator,
   join: EffectTesterCreator,
-  parallel: EffectTesterCreator,
   put: EffectTesterCreator,
   race: EffectTesterCreator,
   select: EffectTesterCreator,

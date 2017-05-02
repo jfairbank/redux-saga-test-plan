@@ -62,7 +62,7 @@ test('follows the saga', () => {
     .call(identity, action)
 
     .next()
-    .parallel([
+    .all([
       call(identity, 'parallel call'),
       put({ type: 'PARALLEL_PUT' }),
     ])
@@ -322,7 +322,7 @@ test('restarts when done', () => {
     .call(identity, action)
 
     .next()
-    .parallel([
+    .all([
       call(identity, 'parallel call'),
       put({ type: 'PARALLEL_PUT' }),
     ])
@@ -345,7 +345,7 @@ test('restarts when done', () => {
     .call(identity, action)
 
     .next()
-    .parallel([
+    .all([
       call(identity, 'parallel call'),
       put({ type: 'PARALLEL_PUT' }),
     ])
@@ -380,7 +380,7 @@ test('restarts before done', () => {
     .call(identity, action)
 
     .next()
-    .parallel([
+    .all([
       call(identity, 'parallel call'),
       put({ type: 'PARALLEL_PUT' }),
     ])
@@ -408,7 +408,7 @@ test('restarts can change generator arguments', () => {
     .call(identity, action)
 
     .next()
-    .parallel([
+    .all([
       call(identity, 'parallel call'),
       put({ type: 'PARALLEL_PUT' }),
     ])
@@ -431,7 +431,7 @@ test('restarts can change generator arguments', () => {
     .call(identity, action)
 
     .next()
-    .parallel([
+    .all([
       call(identity, 'parallel call'),
       put({ type: 'PARALLEL_PUT' }),
     ])
