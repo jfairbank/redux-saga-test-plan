@@ -606,7 +606,7 @@ ${serializedExpected}
     return api;
   }
 
-  function provide(newProviders: Providers | Array<Providers>) {
+  function provide(newProviders: Providers | Array<Providers | [Object, any]>) {
     providers = Array.isArray(newProviders)
       ? coalesceProviders(newProviders)
       : newProviders;

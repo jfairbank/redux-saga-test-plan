@@ -31,7 +31,7 @@ export function applyProviders(providerFns: Array<Provider>): Provider {
   return composeProviders(...providerFns);
 }
 
-export function coalesceProviders(providers: Array<Providers>): Providers {
+export function coalesceProviders(providers: Array<Providers | [Object, any]>): Providers {
   const collected = {};
 
   function addToCollected(key, value) {
@@ -70,6 +70,7 @@ export function coalesceProviders(providers: Array<Providers>): Providers {
       }
     } else {
       Object.keys(providersObject).forEach((providerKey) => {
+        // $FlowFixMe
         const provider = providersObject[providerKey];
         addToCollected(providerKey, provider);
       });

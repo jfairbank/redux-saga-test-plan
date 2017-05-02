@@ -239,7 +239,7 @@ type Providers = {
 type ExpectApi = {
   dispatch: Function,
   run: Function,
-  provide: (Providers) => ExpectApi,
+  provide: (Providers | Array<Providers | [Object, any]>) => ExpectApi,
   withState: (any) => ExpectApi,
   withReducer: (Reducer, any) => ExpectApi,
   actionChannel: Function,
@@ -249,6 +249,7 @@ type ExpectApi = {
   fork: Function,
   put: Function,
   race: Function,
+  returns: Function,
   select: Function,
   spawn: Function,
   take: Function,
