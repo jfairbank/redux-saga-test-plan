@@ -76,7 +76,7 @@ must handle `apply` effects with the `call` provider function.
 respectively. You can inspect `take` effects for the `maybe` property and `put`
 effects for the `resolve` property.
 
-\** `all` will provide values for a yielded `all` effect as well as a yielded
+\*\* `all` will provide values for a yielded `all` effect as well as a yielded
 array. **NOTE:** yielding an array is deprecated in Redux Saga, so this
 functionality will be removed when Redux Saga removes support for yielded
 arrays.
