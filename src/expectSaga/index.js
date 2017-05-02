@@ -15,8 +15,6 @@ import serializeEffect from '../shared/serializeEffect';
 import { warn } from '../utils/logging';
 import { delay, schedule } from '../utils/async';
 import identity from '../utils/identity';
-import noop from '../utils/noop';
-import deprecate from '../utils/deprecate';
 import reportActualEffects from './reportActualEffects';
 import parseEffect from './parseEffect';
 import { NEXT, provideValue } from './provideValue';
@@ -51,12 +49,6 @@ function extractState(reducer: Reducer, initialState?: any): any {
 function isHelper(fn: Function): boolean {
   return fn === takeEveryHelper || fn === takeLatestHelper;
 }
-
-const deprecatedProvideInForkedTasks = deprecate(
-  noop,
-  'expectSaga can provide values to forked tasks by default now. ' +
-  'You can safely remove the provideInForkedTasks option from your providers.',
-);
 
 export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): ExpectApi {
   const effectStores = {
@@ -130,10 +122,6 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     const parsedEffect = parseEffect(value);
     const localProviders = providers || {};
     const { type, effect } = parsedEffect;
-
-    if (localProviders.provideInForkedTasks) {
-      deprecatedProvideInForkedTasks();
-    }
 
     switch (true) {
       case type === RACE && !localProviders.race:

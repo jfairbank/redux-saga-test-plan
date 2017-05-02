@@ -3,7 +3,6 @@ import { call, fork, put } from 'redux-saga/effects';
 import { expectSaga } from '../../../src';
 import { NEXT, handlers } from '../../../src/expectSaga/provideValue';
 import { FORK } from '../../../src/shared/keys';
-import { warn } from '../../../src/utils/logging';
 import * as m from '../../../src/expectSaga/matchers';
 import { dynamic } from '../../../src/expectSaga/providers';
 
@@ -11,8 +10,6 @@ const fakeUser = {
   id: 1,
   name: 'John Doe',
 };
-
-jest.mock('../../../src/utils/logging');
 
 const fakeTask = { hello: 'world' };
 const fetchUser = () => 0;
@@ -218,29 +215,4 @@ test('provides values in deeply forked and called sagas', () => {
 test('test coverage for FORK handler', () => {
   const actual = handlers[FORK]({}, {});
   expect(actual).toBe(NEXT);
-});
-
-test('provideInForkedTasks is deprecated', async () => {
-  warn.mockClear();
-
-  function* localSaga() {
-    yield put({ type: 'DONE' });
-  }
-
-  function createTest() {
-    return expectSaga(localSaga)
-      .provide({ provideInForkedTasks: true })
-      .put({ type: 'DONE' })
-      .run();
-  }
-
-  await Promise.all([
-    createTest(),
-    createTest(),
-  ]);
-
-  const [[message]] = warn.mock.calls;
-
-  expect(warn).toHaveBeenCalledTimes(1);
-  expect(message).toMatch(/remove the provideInForkedTasks/);
 });
