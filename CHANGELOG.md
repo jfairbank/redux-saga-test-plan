@@ -1,3 +1,184 @@
+## v3.0.0
+
+### Redux Saga 0.15.x support
+
+Redux Saga introduced some new features that merited a major bump in Redux Saga
+Test Plan. The upgrade path is minimal but involves a couple breaking changes.
+To learn more about Redux Saga v0.15.x, please visit the
+[release page](https://github.com/redux-saga/redux-saga/releases/tag/v0.15.0).
+
+**Please make sure to thoroughly read the release notes below for all the new
+features and breaking changes.**
+
+### New in `expectSaga`
+
+#### Dynamic `all` Provider
+
+Added support for a dynamic `all` provider to handle parallel effects. This is
+now the preferred pattern for parallel effects, meaning yielding arrays is
+deprecated in Redux Saga.
+
+You can still provide values for effects inside of an `all` effect just like you
+could do with effects yielded inside an array.
+
+```js
+import { all, call, put } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga';
+import * as matchers from 'redux-saga/matchers';
+
+const identity = value => value;
+
+function* saga() {
+  const results = yield all([
+    put({ type: 'HELLO' }),
+    call(identity, 42),
+  ]);
+
+  yield put({ type: 'RESULTS', payload: results });
+}
+
+it('works with `all`', () => {
+  return expectSaga(saga)
+    .provide({
+      all: () => ['foo', 'bar'],
+    })
+    .put({ type: 'RESULTS', payload: ['foo', 'bar'] })
+    .run();
+});
+
+it('internal effects can be provided', () => {
+  return expectSaga(saga)
+    .provide([
+      [matches.put.actionType('HELLO'), 'foo'],
+      [matches.call.fn(identity), 'bar'],
+    ])
+    .put({ type: 'RESULTS', payload: ['foo', 'bar'] })
+    .run();
+});
+```
+
+#### Method String Syntax
+
+This works out of the box with Redux Saga Test Plan.
+
+```js
+const context = { foo: () => 1 };
+
+function* saga() {
+  const value = yield call([context, 'foo']);
+  yield put({ type: 'VALUE', payload: value });
+}
+
+it('works with call', () => {
+  return expectSaga(saga)
+    .call([context, 'foo'])
+    .run();
+});
+
+it('works with partial assertions', () => {
+  return expectSaga(saga)
+    .call.fn(context.foo)
+    .run();
+});
+
+it('works with providers', () => {
+  return expectSaga(saga)
+    .provide([
+      [call([context, 'foo']), 42],
+    ])
+    .put({ type: 'VALUE', payload: 42 })
+    .run();
+});
+```
+
+### BREAKING Changes in `expectSaga`
+
+* Officially removed the `provideInForkedTasks` option for dynamic providers.
+* Removed the dynamic `parallel` provider. Please use the dynamic `all` provider
+  mentioned above in the new features.
+
+### New in `testSaga`
+
+#### Assertion for `all`
+
+Added support for an `all` assertion. This is mentioned in the breaking changes
+below, but `all` can be used in place of the old `parallel` assertion if you're
+still yielding arrays.
+
+```js
+import { all, call, put } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga';
+import * as matchers from 'redux-saga/matchers';
+
+const identity = value => value;
+
+function* saga() {
+  const results = yield all([
+    put({ type: 'HELLO' }),
+    call(identity, 42),
+  ]);
+
+  yield put({ type: 'RESULTS', payload: results });
+}
+
+it('works with `all`', () => {
+  testSaga(saga)
+    .next()
+    .all([
+      put({ type: 'HELLO' }),
+      call(identity, 42),
+    ])
+
+    .next(['foo', 'bar'])
+    .put({ type: 'RESULTS', payload: ['foo', 'bar'] });
+});
+```
+
+#### Method String Syntax
+
+This works out of the box with Redux Saga Test Plan.
+
+```js
+const context = { foo: () => 1 };
+
+function* saga() {
+  const value = yield call([context, 'foo']);
+  yield put({ type: 'VALUE', payload: value });
+}
+
+it('works with call', () => {
+  testSaga(saga)
+    .next()
+    .call([context, 'foo']);
+});
+```
+
+### BREAKING Changes in `testSaga`
+
+* Removed the `parallel` assertion. Please use the `all` assertion mentioned
+  above in the new features. The `all` assertion works with yielded `all`
+  effects and deprecated yielded arrays.
+
+### Other BREAKING Changes
+
+* Removed the default `testSaga` export. Use named imports for `expectSaga` and
+`testSaga`.
+
+  ```js
+  import testSaga from 'redux-saga-test-plan'; // <-- this is gone
+
+  import { expectSaga, testSaga } from 'redux-saga-test-plan'; // <-- this is correct
+  ```
+
+### MISSING Features
+
+* No support has been added for the new `getContext` and `setContext` effect
+  creators yet. I'm waiting on the
+  [docs](https://github.com/redux-saga/redux-saga/issues/943) to be filled in
+  before I feel comfortable supporting these effects.
+
+---
+
 ## v2.4.4
 
 ### Bug Fix
