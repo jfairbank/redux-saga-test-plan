@@ -301,8 +301,9 @@ v0.15 should be effortless.
 If you can't upgrade from v0.14, though, then you can use the latest **v2** of
 Redux Saga Test Plan.
 
-**NOTE:** newer features will only be added to **v3** of Redux Saga Test Plan,
-so you should upgrade Redux Saga if you're able.
+**NOTE:** newer features will likely only be added to **v3** of Redux Saga Test
+Plan, so you should upgrade Redux Saga if you're able. I can't guarantee that
+I'll have time to back port features, but back port PRs are welcome.
 
 Install with yarn or npm.
 
