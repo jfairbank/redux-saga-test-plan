@@ -1,3 +1,9 @@
+## v3.0.2
+
+* Update the docs about supported Redux Saga versions.
+
+---
+
 ## v3.0.1
 
 * Update the docs about supported Redux Saga versions.
