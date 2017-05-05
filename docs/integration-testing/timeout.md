@@ -45,6 +45,8 @@ it('can be silenced', () => {
 });
 ```
 
+For convenience, you may also use the `silentRun` method which functions the same but is easier to type and read.
+
 ### Adjusting Timeout
 
 Instead of silencing warnings, you can adjust the timeout length. The default
@@ -56,7 +58,7 @@ expectSaga.DEFAULT_TIMEOUT = 500; // set it to 500ms
 ```
 
 If you want to override the timeout for a particular test case, then you can
-pass in a timeout length to the `run` method.
+pass in a timeout length to the `run` (or `silentRun`) method.
 
 ```js
 const delay = time => new Promise(resolve => setTimeout(resolve, time));
