@@ -48,7 +48,7 @@
     "babel-cli": "^6.7.7",
     "babel-core": "^6.7.7",
     "babel-eslint": "^7.0.0",
-    "babel-jest": "^19.0.0",
+    "babel-jest": "^20.0.0",
     "babel-plugin-transform-async-to-generator": "^6.16.0",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-flow-strip-types": "^6.8.0",
@@ -63,7 +63,7 @@
     "eslint-plugin-import": "^2.1.0",
     "flow-bin": "^0.45.0",
     "gitbook-cli": "^2.3.0",
-    "jest": "^19.0.2",
+    "jest": "^20.0.0",
     "redux": "^3.6.0",
     "redux-saga": "^0.15.1",
     "rimraf": "^2.5.4"
