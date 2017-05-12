@@ -20,7 +20,7 @@ import parseEffect from './parseEffect';
 import { NEXT, provideValue } from './provideValue';
 import { mapValues } from '../utils/object';
 import findDispatchableActionIndex from './findDispatchableActionIndex';
-import createSagaWrapper from './sagaWrapper';
+import createSagaWrapper, { isSagaWrapper } from './sagaWrapper';
 import sagaIdFactory from './sagaIdFactory';
 import { coalesceProviders } from './providers/helpers';
 
@@ -49,6 +49,22 @@ function extractState(reducer: Reducer, initialState?: any): any {
 function isHelper(fn: Function): boolean {
   return fn === takeEveryHelper || fn === takeLatestHelper;
 }
+
+function lacksSagaWrapper(value: Object): boolean {
+  const { type, effect } = parseEffect(value);
+  return type !== 'FORK' || !isSagaWrapper(effect.fn);
+}
+
+const exposableEffects = {
+  [TAKE]: 'take',
+  [PUT]: 'put',
+  [RACE]: 'race',
+  [CALL]: 'call',
+  [CPS]: 'cps',
+  [FORK]: 'fork',
+  [SELECT]: 'select',
+  [ACTION_CHANNEL]: 'actionChannel',
+};
 
 export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): ExpectApi {
   const effectStores = {
@@ -587,18 +603,35 @@ ${serializedExpected}
     });
   }
 
+  function exposeEffects(): Object {
+    const finalEffects = Object.keys(exposableEffects).reduce((memo, key) => {
+      const effectName = exposableEffects[key];
+      const values = effectStores[key].values().filter(lacksSagaWrapper);
+
+      if (values.length > 0) {
+        // eslint-disable-next-line no-param-reassign
+        memo[effectName] = effectStores[key].values().filter(lacksSagaWrapper);
+      }
+
+      return memo;
+    }, {});
+
+    return {
+      effects: finalEffects,
+    };
+  }
+
   function run(
     timeout?: Timeout | TimeoutConfig = expectSaga.DEFAULT_TIMEOUT,
   ): Promise<*> {
     start();
-    return stop(timeout);
+    return stop(timeout).then(exposeEffects);
   }
 
   function silentRun(
     timeout?: Timeout = expectSaga.DEFAULT_TIMEOUT,
   ): Promise<*> {
-    start();
-    return stop({
+    return run({
       timeout,
       silenceTimeout: true,
     });

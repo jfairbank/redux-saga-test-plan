@@ -239,6 +239,7 @@ type Providers = {
 type ExpectApi = {
   dispatch: Function,
   run: Function,
+  silentRun: Function,
   provide: (Providers | Array<Providers | [Object, any]>) => ExpectApi,
   withState: (any) => ExpectApi,
   withReducer: (Reducer, any) => ExpectApi,

@@ -6,6 +6,7 @@ const NEXT = 'NEXT';
 const LOOP = 'LOOP';
 
 const FALSY = '@@redux-saga-test-plan/falsy';
+const SAGA_WRAPPER = '@@redux-saga-test-plan/saga-wrapper';
 
 // Tagging falsy values that aren't null or undefined because
 // redux-saga blocks when they are yielded.
@@ -24,6 +25,10 @@ function unwrapFalsy(value) {
   }
 
   return value;
+}
+
+export function isSagaWrapper(saga: Function): boolean {
+  return saga[SAGA_WRAPPER];
 }
 
 export default function createSagaWrapper(name: string = 'sagaWrapper'): Function {
@@ -95,6 +100,8 @@ export default function createSagaWrapper(name: string = 'sagaWrapper'): Functio
       },
     });
   }
+
+  sagaWrapper[SAGA_WRAPPER] = true;
 
   try {
     Object.defineProperty(sagaWrapper, 'name', { value: name });
