@@ -47,6 +47,20 @@ test('silences warnings', async () => {
   expect(warn).not.toHaveBeenCalled();
 });
 
+test('silentRun silences warnings', async () => {
+  warn.mockClear();
+
+  function* saga() {
+    while (true) {
+      yield take('FOO');
+    }
+  }
+
+  await expectSaga(saga).silentRun();
+
+  expect(warn).not.toHaveBeenCalled();
+});
+
 test('silences warnings with forks', async () => {
   warn.mockClear();
 
@@ -59,6 +73,22 @@ test('silences warnings with forks', async () => {
   }
 
   await expectSaga(saga).run({ silenceTimeout: true });
+
+  expect(warn).not.toHaveBeenCalled();
+});
+
+test('silentRun silences warnings with forks', async () => {
+  warn.mockClear();
+
+  function* otherSaga() {
+    yield 42;
+  }
+
+  function* saga() {
+    yield takeEvery('TAKE_EVERY', otherSaga);
+  }
+
+  await expectSaga(saga).silentRun();
 
   expect(warn).not.toHaveBeenCalled();
 });
@@ -98,6 +128,22 @@ test('silences warning if times out with supplied timeout', async () => {
     timeout,
     silenceTimeout: true,
   });
+
+  expect(warn).not.toHaveBeenCalled();
+});
+
+test('silentRun silences warning if times out with supplied timeout', async () => {
+  warn.mockClear();
+
+  const timeout = expectSaga.DEFAULT_TIMEOUT + 10;
+
+  function* saga() {
+    while (true) {
+      yield take('FOO');
+    }
+  }
+
+  await expectSaga(saga).silentRun(timeout);
 
   expect(warn).not.toHaveBeenCalled();
 });
