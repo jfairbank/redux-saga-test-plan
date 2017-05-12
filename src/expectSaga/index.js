@@ -419,6 +419,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
   const api = {
     run,
+    silentRun,
     withState,
     withReducer,
     provide,
@@ -591,6 +592,16 @@ ${serializedExpected}
   ): Promise<*> {
     start();
     return stop(timeout);
+  }
+
+  function silentRun(
+    timeout?: Timeout = expectSaga.DEFAULT_TIMEOUT,
+  ): Promise<*> {
+    start();
+    return stop({
+      timeout,
+      silenceTimeout: true,
+    });
   }
 
   function withState(state: any): ExpectApi {
