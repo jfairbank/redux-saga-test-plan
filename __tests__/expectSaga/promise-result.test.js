@@ -9,7 +9,7 @@ test('exposes the effects in the promise result', async () => {
     yield put({ type: 'BAR', payload: 'hello' });
   }
 
-  const { effects } = await expectSaga(saga).run();
+  const { effects, toJSON } = await expectSaga(saga).run();
 
   expect(effects.call).toHaveLength(1);
   expect(effects.put).toHaveLength(2);
@@ -17,6 +17,8 @@ test('exposes the effects in the promise result', async () => {
   expect(effects.call[0]).toEqual(call(identity, 42));
   expect(effects.put[0]).toEqual(put({ type: 'FOO' }));
   expect(effects.put[1]).toEqual(put({ type: 'BAR', payload: 'hello' }));
+
+  expect(toJSON()).toMatchSnapshot();
 });
 
 test('exposes the effects from forked sagas in the promise result', async () => {
@@ -31,7 +33,7 @@ test('exposes the effects from forked sagas in the promise result', async () => 
     yield put({ type: 'BAR', payload: 'world' });
   }
 
-  const { effects } = await expectSaga(saga)
+  const { effects, toJSON } = await expectSaga(saga)
     .dispatch({ type: 'HELLO' })
     .run();
 
@@ -43,4 +45,16 @@ test('exposes the effects from forked sagas in the promise result', async () => 
   expect(effects.call[0]).toEqual(call(identity, 42));
   expect(effects.put).toContainEqual(put({ type: 'FOO' }));
   expect(effects.put).toContainEqual(put({ type: 'BAR', payload: 'world' }));
+
+  expect(toJSON()).toMatchSnapshot();
+});
+
+test('test coverage for snapshot testing call of anonymous function', async () => {
+  function* saga() {
+    yield call(() => {});
+  }
+
+  const { toJSON } = await expectSaga(saga).run();
+
+  expect(toJSON()).toMatchSnapshot();
 });

@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`exposes the effects from forked sagas in the promise result 1`] = `
+Object {
+  "call": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [
+          42,
+        ],
+        "context": null,
+        "fn": "@@redux-saga-test-plan/json/function/identity",
+      },
+    },
+  ],
+  "fork": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "FORK": Object {
+        "args": Array [],
+        "context": null,
+        "fn": "@@redux-saga-test-plan/json/function/backgroundSaga",
+      },
+    },
+  ],
+  "put": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "type": "FOO",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": "world",
+          "type": "BAR",
+        },
+        "channel": null,
+      },
+    },
+  ],
+  "take": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "TAKE": Object {
+        "pattern": "HELLO",
+      },
+    },
+  ],
+}
+`;
+
+exports[`exposes the effects in the promise result 1`] = `
+Object {
+  "call": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [
+          42,
+        ],
+        "context": null,
+        "fn": "@@redux-saga-test-plan/json/function/identity",
+      },
+    },
+  ],
+  "put": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "type": "FOO",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": "hello",
+          "type": "BAR",
+        },
+        "channel": null,
+      },
+    },
+  ],
+}
+`;
+
+exports[`test coverage for snapshot testing call of anonymous function 1`] = `
+Object {
+  "call": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": null,
+        "fn": "@@redux-saga-test-plan/json/function/<anonymous>",
+      },
+    },
+  ],
+}
+`;

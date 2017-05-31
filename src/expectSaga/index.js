@@ -50,6 +50,22 @@ function isHelper(fn: Function): boolean {
   return fn === takeEveryHelper || fn === takeLatestHelper;
 }
 
+function toJSON(object: mixed): mixed {
+  if (Array.isArray(object)) {
+    return object.map(toJSON);
+  }
+
+  if (typeof object === 'function') {
+    return `@@redux-saga-test-plan/json/function/${object.name || '<anonymous>'}`;
+  }
+
+  if (typeof object === 'object' && object !== null) {
+    return mapValues(object, toJSON);
+  }
+
+  return object;
+}
+
 function lacksSagaWrapper(value: Object): boolean {
   const { type, effect } = parseEffect(value);
   return type !== 'FORK' || !isSagaWrapper(effect.fn);
@@ -618,6 +634,7 @@ ${serializedExpected}
 
     return {
       effects: finalEffects,
+      toJSON: () => toJSON(finalEffects),
     };
   }
 
