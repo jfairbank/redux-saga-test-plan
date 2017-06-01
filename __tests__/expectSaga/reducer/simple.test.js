@@ -81,6 +81,7 @@ test('tests and exposes changed store state with no initial state', async () => 
 
   const { storeState } = await expectSaga(saga)
     .withReducer(dogReducer)
+    .hasFinalState(expectedFinalState)
     .dispatch({ type: HAVE_BIRTHDAY })
     .run();
 
@@ -95,8 +96,107 @@ test('tests and exposes changed store state with initial state', async () => {
 
   const { storeState } = await expectSaga(saga, initialDog)
     .withReducer(dogReducer)
+    .hasFinalState(expectedFinalState)
     .dispatch({ type: HAVE_BIRTHDAY })
     .run();
 
   expect(storeState).toEqual(expectedFinalState);
+});
+
+test('tests negated store state with no initial state', () => {
+  const unexpectedFinalState = {
+    name: 'Tucker',
+    age: 11,
+  };
+
+  return expectSaga(saga)
+    .withReducer(dogReducer)
+    // $FlowFixMe
+    .not.hasFinalState(unexpectedFinalState)
+    .dispatch({ type: HAVE_BIRTHDAY })
+    .run();
+});
+
+test('tests negated store state with initial state', () => {
+  const unexpectedFinalState = {
+    name: 'Tucker',
+    age: 11,
+  };
+
+  return expectSaga(saga, initialDog)
+    .withReducer(dogReducer)
+    // $FlowFixMe
+    .not.hasFinalState(unexpectedFinalState)
+    .dispatch({ type: HAVE_BIRTHDAY })
+    .run();
+});
+
+test('hasFinalState fails with incorrect state without initial state', () => {
+  const incorrectFinalState = {
+    name: 'Tucker',
+    age: 11,
+  };
+
+  return expectSaga(saga)
+    .withReducer(dogReducer)
+    .hasFinalState(incorrectFinalState)
+    .dispatch({ type: HAVE_BIRTHDAY })
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(/Expected to have final store state/);
+    });
+});
+
+test('hasFinalState fails with incorrect state with initial state', () => {
+  const incorrectFinalState = {
+    name: 'Tucker',
+    age: 11,
+  };
+
+  return expectSaga(saga)
+    .withReducer(dogReducer, initialDog)
+    .hasFinalState(incorrectFinalState)
+    .dispatch({ type: HAVE_BIRTHDAY })
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(/Expected to have final store state/);
+    });
+});
+
+test('negated hasFinalState fails with correct state without initial state', () => {
+  const correctFinalState = {
+    name: 'Tucker',
+    age: 12,
+  };
+
+  return expectSaga(saga)
+    .withReducer(dogReducer)
+    // $FlowFixMe
+    .not.hasFinalState(correctFinalState)
+    .dispatch({ type: HAVE_BIRTHDAY })
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(/Expected to not have final store state/);
+    });
+});
+
+test('negated hasFinalState fails with correct state with initial state', () => {
+  const correctFinalState = {
+    name: 'Tucker',
+    age: 12,
+  };
+
+  return expectSaga(saga)
+    .withReducer(dogReducer, initialDog)
+    // $FlowFixMe
+    .not.hasFinalState(correctFinalState)
+    .dispatch({ type: HAVE_BIRTHDAY })
+    .run()
+    .then(unreachableError)
+    .catch((e) => {
+      expect(e.message).toMatch(/Expected to not have final store state/);
+    });
 });

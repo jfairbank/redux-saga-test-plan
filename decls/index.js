@@ -248,6 +248,7 @@ type ExpectApi = {
   call: Function,
   cps: Function,
   fork: Function,
+  hasFinalState: Function,
   put: Function,
   race: Function,
   returns: Function,

@@ -23,6 +23,7 @@ import type { Expectation } from './expectations';
 import {
   createEffectExpectation,
   createReturnExpectation,
+  createStoreStateExpectation,
 } from './expectations';
 
 import {
@@ -459,6 +460,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     withReducer,
     provide,
     returns,
+    hasFinalState,
     dispatch: apiDispatch,
     delay: apiDelay,
 
@@ -623,6 +625,15 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   function returns(value: any): ExpectApi {
     addExpectation(createReturnExpectation({
       value,
+      expected: !negateNextAssertion,
+    }));
+
+    return api;
+  }
+
+  function hasFinalState(state: mixed): ExpectApi {
+    addExpectation(createStoreStateExpectation({
+      state,
       expected: !negateNextAssertion,
     }));
 

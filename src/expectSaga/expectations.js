@@ -95,3 +95,41 @@ ${serializedExpected}
     }
   };
 }
+
+type StoreStateExpectationArgs = {
+  state: mixed,
+  expected: boolean,
+};
+
+export function createStoreStateExpectation(
+  { state: expectedState, expected }: StoreStateExpectationArgs,
+): Expectation {
+  return ({ storeState }: ExpectationThunkArgs) => {
+    if (expected && !isEqual(expectedState, storeState)) {
+      const serializedActual = inspect(storeState, { depth: 3 });
+      const serializedExpected = inspect(expectedState, { depth: 3 });
+
+      const errorMessage = `
+Expected to have final store state:
+-----------------------------------
+${serializedExpected}
+
+But instead had final store state:
+----------------------------------
+${serializedActual}
+`;
+
+      throw new SagaTestError(errorMessage);
+    } else if (!expected && isEqual(expectedState, storeState)) {
+      const serializedExpected = inspect(expectedState, { depth: 3 });
+
+      const errorMessage = `
+Expected to not have final store state:
+---------------------------------------
+${serializedExpected}
+`;
+
+      throw new SagaTestError(errorMessage);
+    }
+  };
+}
