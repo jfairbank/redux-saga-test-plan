@@ -49,6 +49,29 @@ test('exposes the effects from forked sagas in the promise result', async () => 
   expect(toJSON()).toMatchSnapshot();
 });
 
+test('exposes the return value', async () => {
+  const expected = 42;
+
+  // eslint-disable-next-line require-yield
+  function* saga() {
+    return expected;
+  }
+
+  const { returnValue } = await expectSaga(saga).run();
+
+  expect(returnValue).toBe(expected);
+});
+
+test('exposes return value of undefined with no explicit return', async () => {
+  function* saga() {
+    yield call(() => {});
+  }
+
+  const { returnValue } = await expectSaga(saga).run();
+
+  expect(returnValue).toBe(undefined);
+});
+
 test('test coverage for snapshot testing call of anonymous function', async () => {
   function* saga() {
     yield call(() => {});

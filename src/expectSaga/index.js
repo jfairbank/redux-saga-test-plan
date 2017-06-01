@@ -580,6 +580,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
     return {
       storeState,
+      returnValue,
       effects: finalEffects,
       toJSON: () => toJSON(finalEffects),
     };
