@@ -1,3 +1,201 @@
+## v3.1.0
+
+### NEW features in `expectSaga`
+
+#### Exposed effects when saga finishes
+
+The `Promise` returned by the `run` method now resolves with an object that
+contains any effects yielded by your saga and sagas that it forked. You can use
+this for finer-grained control over testing exact number of effects. Be careful
+when testing top-level sagas that fork other sagas because the effects object
+will include yielded effects from all forked sagas too. There currently is no
+way to distinguish between effects yielded by the top-level saga and forked
+sagas.
+
+```js
+function* userSaga(id) {
+  const user = yield call(fetchUser, id);
+  const pet = yield call(fetchPet, user.petId);
+
+  yield put({ type: 'DONE', payload: { user, pet } });
+}
+
+it('exposes effects', () => {
+  const id = 42;
+  const petId = 20;
+
+  const user = { id, petId, name: 'Jeremy' };
+  const pet = { name: 'Tucker' };
+
+  return expectSaga(saga, id)
+    .provide([
+      [call(fetchUser, id), user],
+      [call(fetchPet, petId), pet],
+    ])
+    .run()
+    .then((result) => {
+      const { effects } = result;
+
+      expect(effects.call).toHaveLength(2);
+      expect(effects.put).toHaveLength(1);
+
+      expect(effects.call[0]).toEqual(call(fetchUser, id));
+      expect(effects.call[1]).toEqual(call(fetchPet, petId));
+
+      expect(effects.put[0]).toEqual(
+        put({ type: 'DONE', payload: { user, pet } })
+      );
+    });
+});
+```
+
+Of course, `async` functions work nicely with this feature too.
+
+```js
+it('exposes effects using async functions', async () => {
+  const id = 42;
+  const petId = 20;
+
+  const user = { id, petId, name: 'Jeremy' };
+  const pet = { name: 'Tucker' };
+
+  const { effects } = await expectSaga(saga, id)
+    .provide([
+      [call(fetchUser, id), user],
+      [call(fetchPet, petId), pet],
+    ])
+    .run();
+
+  expect(effects.call).toHaveLength(2);
+  expect(effects.put).toHaveLength(1);
+
+  expect(effects.call[0]).toEqual(call(fetchUser, id));
+  expect(effects.call[1]).toEqual(call(fetchPet, petId));
+
+  expect(effects.put[0]).toEqual(
+    put({ type: 'DONE', payload: { user, pet } })
+  );
+});
+```
+
+The available effects are:
+
+- `actionChannel`
+- `call`
+- `cps`
+- `fork`
+- `join`
+- `put`
+- `race`
+- `select`
+- `take`
+
+#### Snapshot Testing
+
+The returned `Promise` also resolves with a `toJSON` method that serializes the
+effects to a form appropriate for snapshot testing.
+
+```js
+it('can be used with snapshot testing', () => {
+  return expectSaga(saga)
+    .run()
+    .then((result) => {
+      expect(result.toJSON()).toMatchSnapshot();
+    });
+});
+```
+
+#### Test Final Store State
+
+If you're using the `withReducer` function, you can test the final store state
+after your saga finishes in two ways.
+
+You can use the `hasFinalState` method assertion in your `expectSaga` method
+chain.
+
+```js
+const initialDog = {
+  name: 'Tucker',
+  age: 11,
+};
+
+function dogReducer(state = initialDog, action) {
+  if (action.type === 'HAVE_BIRTHDAY') {
+    return {
+      ...state,
+      age: state.age + 1,
+    };
+  }
+
+  return state;
+}
+
+function* saga() {
+  yield put({ type: HAVE_BIRTHDAY });
+}
+
+it('tests final store state', () => {
+  return expectSaga(saga)
+    .withReducer(dogReducer)
+    .hasFinalState({
+      name: 'Tucker',
+      age: 12,
+    })
+    .run();
+});
+```
+
+Or the returned `Promise` resolves with a `storeState` object to test.
+
+```js
+it('tests final store state', () => {
+  return expectSaga(saga)
+    .withReducer(dogReducer)
+    .run()
+    .then((result) => {
+      expect(result.storeState).toEqual({
+        name: 'Tucker',
+        age: 12,
+      });
+    });
+});
+```
+
+#### Exposed Return Value
+
+The returned `Promise` also resolves with the top-level saga's return value.
+
+```js
+function* saga() {
+  const data = yield call(someApi);
+  return data;
+}
+
+it('exposes the return value', () => {
+  return expectSaga(saga)
+    .provide([
+      [call(someApi), 42],
+    ])
+    .run()
+    .then((result) => {
+      expect(result.returnValue).toEqual(42);
+    });
+});
+```
+
+#### Easier warning suppression with `silentRun`
+
+You can silence timeout warnings easier with the `silentRun` method.  The
+`silentRun` method returns the same `Promise` as the `run` method.  (credit
+[@Bebersohl](https://github.com/Bebersohl))
+
+```js
+.silentRun()    // same as .run({ silenceTimeout: true })
+.silentRun(500) // same as .run({ silenceTimeout: true, timeout: 500 })
+```
+
+---
+
 ## v3.0.2
 
 * Update the docs about supported Redux Saga versions.
