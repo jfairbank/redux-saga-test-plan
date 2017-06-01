@@ -563,7 +563,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     });
   }
 
-  function exposeEffects(): Object {
+  function exposeResults(): Object {
     const finalEffects = Object.keys(exposableEffects).reduce((memo, key) => {
       const effectName = exposableEffects[key];
       const values = effectStores[key].values().filter(lacksSagaWrapper);
@@ -577,6 +577,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     }, {});
 
     return {
+      storeState,
       effects: finalEffects,
       toJSON: () => toJSON(finalEffects),
     };
@@ -586,7 +587,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     timeout?: Timeout | TimeoutConfig = expectSaga.DEFAULT_TIMEOUT,
   ): Promise<*> {
     start();
-    return stop(timeout).then(exposeEffects);
+    return stop(timeout).then(exposeResults);
   }
 
   function silentRun(

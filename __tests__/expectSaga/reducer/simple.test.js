@@ -72,3 +72,31 @@ test('fails with wrong put payload', () => (
       expect(e.message).toMatch(errorRegex);
     })
 ));
+
+test('tests and exposes changed store state with no initial state', async () => {
+  const expectedFinalState = {
+    name: 'Tucker',
+    age: 12,
+  };
+
+  const { storeState } = await expectSaga(saga)
+    .withReducer(dogReducer)
+    .dispatch({ type: HAVE_BIRTHDAY })
+    .run();
+
+  expect(storeState).toEqual(expectedFinalState);
+});
+
+test('tests and exposes changed store state with initial state', async () => {
+  const expectedFinalState = {
+    name: 'Tucker',
+    age: 12,
+  };
+
+  const { storeState } = await expectSaga(saga, initialDog)
+    .withReducer(dogReducer)
+    .dispatch({ type: HAVE_BIRTHDAY })
+    .run();
+
+  expect(storeState).toEqual(expectedFinalState);
+});
