@@ -1,21 +1,15 @@
 // @flow
-/* eslint-disable no-constant-condition, no-underscore-dangle */
-import inspect from 'util-inspect';
+/* eslint-disable no-underscore-dangle */
 import { effects, runSaga, utils } from 'redux-saga';
 import { call, fork, race, spawn } from 'redux-saga/effects';
 import { takeEveryHelper, takeLatestHelper } from 'redux-saga/lib/internal/sagaHelpers';
 import assign from 'object-assign';
-import isMatch from 'lodash.ismatch';
-import isEqual from 'lodash.isequal';
-import SagaTestError from '../shared/SagaTestError';
 import { splitAt } from '../utils/array';
 import Map from '../utils/Map';
 import ArraySet from '../utils/ArraySet';
-import serializeEffect from '../shared/serializeEffect';
 import { warn } from '../utils/logging';
 import { delay, schedule } from '../utils/async';
 import identity from '../utils/identity';
-import reportActualEffects from './reportActualEffects';
 import parseEffect from './parseEffect';
 import { NEXT, provideValue } from './provideValue';
 import { mapValues } from '../utils/object';
@@ -23,6 +17,13 @@ import findDispatchableActionIndex from './findDispatchableActionIndex';
 import createSagaWrapper, { isSagaWrapper } from './sagaWrapper';
 import sagaIdFactory from './sagaIdFactory';
 import { coalesceProviders } from './providers/helpers';
+
+import type { Expectation } from './expectations';
+
+import {
+  createEffectExpectation,
+  createReturnExpectation,
+} from './expectations';
 
 import {
   ACTION_CHANNEL,
@@ -95,7 +96,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     [PROMISE]: new ArraySet(),
   };
 
-  const expectations = [];
+  const expectations: Array<Expectation> = [];
   const queuedActions = [];
   const listeners = [];
   const forkedTasks = [];
@@ -115,14 +116,12 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   let mainTaskPromise;
   let providers;
 
-  let actualReturnValue;
-  let expectedReturnValue;
-  let expectReturnValue = false;
+  let returnValue;
 
   let storeState: any;
 
   function setReturnValue(value: any): void {
-    actualReturnValue = value;
+    returnValue = value;
   }
 
   function useProvidedValue(value) {
@@ -408,6 +407,10 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     }
   }
 
+  function addExpectation(expectation: Function): void {
+    expectations.push(expectation);
+  }
+
   const io = {
     subscribe(listener: Function): Function {
       listeners.push(listener);
@@ -508,68 +511,9 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   api.spawn.fn = fn => api.spawn.like({ fn });
 
   function checkExpectations(): void {
-    expectations.forEach(({
-      effectName,
-      expectedEffect,
-      store,
-      storeKey,
-      expectToHave,
-      like,
-      extractEffect,
-    }) => {
-      const deleted = like
-        ? store.deleteBy(item => isMatch(extractEffect(item), expectedEffect))
-        : store.delete(expectedEffect);
-
-      let errorMessage = '';
-
-      if (deleted && !expectToHave) {
-        const serializedEffect = serializeEffect(expectedEffect, storeKey);
-
-        errorMessage = `\n${effectName} expectation unmet:` +
-                       `\n\nNot Expected\n------------\n${serializedEffect}\n`;
-      } else if (!deleted && expectToHave) {
-        const serializedEffect = serializeEffect(expectedEffect, storeKey);
-
-        errorMessage = `\n${effectName} expectation unmet:` +
-                       `\n\nExpected\n--------\n${serializedEffect}\n`;
-
-        errorMessage += reportActualEffects(store, storeKey, effectName);
-      }
-
-      if (errorMessage) {
-        throw new SagaTestError(errorMessage);
-      }
+    expectations.forEach((expectation) => {
+      expectation({ storeState, returnValue });
     });
-
-    if (expectReturnValue) {
-      if (!negateNextAssertion && !isEqual(expectedReturnValue, actualReturnValue)) {
-        const serializedActual = inspect(actualReturnValue, { depth: 3 });
-        const serializedExpected = inspect(expectedReturnValue, { depth: 3 });
-
-        const errorMessage = `
-Expected to return:
--------------------
-${serializedExpected}
-
-But returned instead:
----------------------
-${serializedActual}
-`;
-
-        throw new SagaTestError(errorMessage);
-      } else if (negateNextAssertion && isEqual(expectedReturnValue, actualReturnValue)) {
-        const serializedExpected = inspect(expectedReturnValue, { depth: 3 });
-
-        const errorMessage = `
-Did not expect to return:
--------------------------
-${serializedExpected}
-`;
-
-        throw new SagaTestError(errorMessage);
-      }
-    }
   }
 
   function apiDispatch(action: Action): ExpectApi {
@@ -676,8 +620,11 @@ ${serializedExpected}
   }
 
   function returns(value: any): ExpectApi {
-    expectReturnValue = true;
-    expectedReturnValue = value;
+    addExpectation(createReturnExpectation({
+      value,
+      expected: !negateNextAssertion,
+    }));
+
     return api;
   }
 
@@ -698,15 +645,15 @@ ${serializedExpected}
         ? args[0]
         : effectCreator(...args);
 
-      expectations.push({
+      addExpectation(createEffectExpectation({
         effectName,
         expectedEffect,
         storeKey,
         like,
         extractEffect,
         store: effectStores[storeKey],
-        expectToHave: !negateNextAssertion,
-      });
+        expected: !negateNextAssertion,
+      }));
 
       negateNextAssertion = false;
 
