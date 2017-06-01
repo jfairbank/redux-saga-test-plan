@@ -30,8 +30,10 @@ it('times out', () => {
 
 The warning message is typically useful if a saga without an infinite loop is
 taking too long. If you have a saga with an infinite loop, though, you will want
-it to time out. Therefore, to silence the warning message, you can pass into the
-`run` method an object with the `silenceTimeout` property set to `true`.
+it to time out. Therefore, to silence the warning message, you can call the
+`silentRun` method instead. It functions the same as the `run` method but
+suppresses timeout warnings from Redux Saga Test Plan. **NOTE:** this will not
+suppress any timeout warnings from your test runner (e.g. Jest).
 
 ```js
 it('can be silenced', () => {
@@ -41,11 +43,24 @@ it('can be silenced', () => {
 
     // no warning message will be printed
     // this is useful if you expect the saga to time out
-    .run({ silenceTimeout: true });
+    .silentRun();
 });
 ```
 
-For convenience, you may also use the `silentRun` method which functions the same but is easier to type and read.
+The old method of silencing timeouts by passing a `silenceTimeout` option into
+`run` is still available, but you're encouraged to use the cleaner `silentRun`
+method.
+
+```js
+it('can be silenced', () => {
+  return expectSaga(mainSaga)
+    .put({ type: 'DATA', payload: 42 })
+    .dispatch({ type: 'READY', payload: 42 })
+
+    // still works, but more to type
+    .run({ silenceTimeout: true });
+});
+```
 
 ### Adjusting Timeout
 

@@ -1,8 +1,8 @@
 # Redux Saga Test Plan
 
-[![npm](https://img.shields.io/npm/v/redux-saga-test-plan.svg?style=flat-square)](https://www.npmjs.com/package/redux-saga-test-plan)
-[![Travis branch](https://img.shields.io/travis/jfairbank/redux-saga-test-plan/master.svg?style=flat-square)](https://travis-ci.org/jfairbank/redux-saga-test-plan)
-[![Codecov](https://img.shields.io/codecov/c/github/jfairbank/redux-saga-test-plan.svg?style=flat-square)](https://codecov.io/gh/jfairbank/redux-saga-test-plan)
+<!-- [![npm](https://img.shields.io/npm/v/redux-saga-test-plan.svg?style=flat-square)](https://www.npmjs.com/package/redux-saga-test-plan) -->
+<!-- [![Travis branch](https://img.shields.io/travis/jfairbank/redux-saga-test-plan/master.svg?style=flat-square)](https://travis-ci.org/jfairbank/redux-saga-test-plan) -->
+<!-- [![Codecov](https://img.shields.io/codecov/c/github/jfairbank/redux-saga-test-plan.svg?style=flat-square)](https://codecov.io/gh/jfairbank/redux-saga-test-plan) -->
 
 #### Test Redux Saga with an easy plan.
 
@@ -279,6 +279,9 @@ it('works with unit tests', () => {
     - [Dynamic Providers](/integration-testing/mocking/dynamic-providers.md)
   - [Partial Assertions](/integration-testing/partial-matching.md)
   - [Negated Assertions](/integration-testing/negated-assertions.md)
+  - [Exposed Effects](/integration-testing/exposed-effects.md)
+  - [Snapshot Testing](/integration-testing/snapshot-testing.md)
+  - [Return Value](/integration-testing/return-value.md)
   - [Forked Sagas](/integration-testing/forked-sagas.md)
 - [Unit Testing](/unit-testing/README.md)
   - [Error Messages](/unit-testing/error-messages.md)
