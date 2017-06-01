@@ -173,54 +173,37 @@ hook up your reducer to your test by calling the `withReducer` method with your
 reducer function.
 
 ```js
-import { call, select, take } from 'redux-saga/effects';
+import { put } from 'redux-saga/effects';
 import { expectSaga } from 'redux-saga-test-plan';
 
-const HAVE_BIRTHDAY = 'HAVE_BIRTHDAY';
-const UPDATE_DOG = 'UPDATE_DOG';
-
-const initialState = {
-  dog: {
-    name: 'Tucker',
-    age: 11,
-  },
+const initialDog = {
+  name: 'Tucker',
+  age: 11,
 };
 
-function reducer(state = initialState, action) {
-  if (action.type === HAVE_BIRTHDAY) {
+function reducer(state = initialDog, action) {
+  if (action.type === 'HAVE_BIRTHDAY') {
     return {
       ...state,
-      dog: {
-        ...state.dog,
-        age: state.dog.age + 1,
-      },
+      age: state.age + 1,
     };
   }
 
   return state;
 }
 
-const getDog = state => state.dog;
-
-function* saga(api) {
-  yield take(UPDATE_DOG);
-  const dog = yield select(getDog);
-  yield call(api.updateDog, dog);
+function* saga() {
+  yield put({ type: 'HAVE_BIRTHDAY' });
 }
 
-it('handles reducers', () => {
-  const api = { updateDog() {} };
-
-  return expectSaga(saga, api)
+it('handles reducers and store state', () => {
+  return expectSaga(saga)
     .withReducer(reducer)
 
-    .call(api.updateDog, {
+    .hasFinalState({
       name: 'Tucker',
-      age: 12,
+      age: 12, // <-- age changes in store state
     })
-
-    .dispatch({ type: HAVE_BIRTHDAY })
-    .dispatch({ type: UPDATE_DOG })
 
     .run();
 });
