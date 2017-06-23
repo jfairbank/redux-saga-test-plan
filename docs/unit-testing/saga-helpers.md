@@ -52,7 +52,7 @@ possibilities below:
 | Helper | Effect Creator | Delegating Helper<br>DEPRECATED | Yielding Helper<br>DEPRECATED |
 | ------ | -------------- | ----------------- | --------------- |
 | `takeEvery` | Use `takeEveryEffect` assertion.<br>Call `next` before. | Use `takeEvery` assertion.<br>Don't call `next` before. | Use `takeEveryFork` assertion.<br>Call `next` before. |
-| `takeLatest` | Use `takeLatestEveryEffect` assertion.<br>Call `next` before. | Use `takeLatest` assertion.<br>Don't call `next` before. | Use `takeLatestFork` assertion.<br>Call `next` before. |
+| `takeLatest` | Use `takeLatestEffect` assertion.<br>Call `next` before. | Use `takeLatest` assertion.<br>Don't call `next` before. | Use `takeLatestFork` assertion.<br>Call `next` before. |
 | `throttle` | Use `throttleEffect` assertion.<br>Call `next` before. | Use `throttle` assertion.<br>Don't call `next` before. | Use `throttleFork` assertion.<br>Call `next` before. |
 
 #### Delegating Example
