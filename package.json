@@ -4,6 +4,7 @@
   "description": "Test Redux Saga with an easy plan",
   "main": "lib/index.js",
   "files": [
+    "decls",
     "src",
     "lib",
     "matchers.js",
