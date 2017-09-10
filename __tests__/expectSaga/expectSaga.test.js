@@ -1,5 +1,5 @@
 /* eslint-disable no-constant-condition */
-import { take, takeEvery, fork, join, put, spawn } from 'redux-saga/effects';
+import { call, take, takeEvery, fork, join, put, spawn } from 'redux-saga/effects';
 import { warn } from 'utils/logging';
 import { delay } from 'utils/async';
 import expectSaga from 'expectSaga';
@@ -271,4 +271,27 @@ test('ignores effects without effect store', () => {
   return expectSaga(saga)
     .put({ type: 'DONE' })
     .run();
+});
+
+test('terminates and does not wait for Call effect Promises', async () => {
+  warn.mockClear();
+  function endpoint() {
+    return Promise.reject();
+  }
+
+  function* saga() {
+    try {
+      while (true) {
+        yield call(endpoint);
+        yield call(delay, 200);
+      }
+    } catch (e) {
+      yield put({ type: 'DONE' });
+    }
+  }
+
+  await expectSaga(saga)
+  .run(false);
+
+  expect(warn).not.toHaveBeenCalled();
 });
