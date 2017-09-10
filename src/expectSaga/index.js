@@ -254,7 +254,6 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   function getAllPromises(): Promise<*> {
     return new Promise(resolve => {
       Promise.all([
-        ...effectStores[PROMISE].values(),
         ...forkedTasks.map(task => task.done),
         mainTaskPromise,
       ]).then(() => {
