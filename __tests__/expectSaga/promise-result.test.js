@@ -81,3 +81,19 @@ test('test coverage for snapshot testing call of anonymous function', async () =
 
   expect(toJSON()).toMatchSnapshot();
 });
+
+test('exposes all yielded effects in order', () => {
+  function* saga() {
+    yield call(identity, 42);
+    yield put({ type: 'HELLO' });
+  }
+
+  return expectSaga(saga)
+    .run()
+    .then((result) => {
+      expect(result.allEffects).toEqual([
+        call(identity, 42),
+        put({ type: 'HELLO' }),
+      ]);
+    });
+});

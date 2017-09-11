@@ -85,6 +85,7 @@ const exposableEffects = {
 };
 
 export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): ExpectApi {
+  const allEffects = [];
   const effectStores = {
     [TAKE]: new ArraySet(),
     [PUT]: new ArraySet(),
@@ -375,6 +376,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
       return;
     }
 
+    allEffects.push(event.effect);
     effectStore.add(event.effect);
 
     switch (parsedEffect.type) {
@@ -582,6 +584,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
       storeState,
       returnValue,
       effects: finalEffects,
+      allEffects,
       toJSON: () => toJSON(finalEffects),
     };
   }
