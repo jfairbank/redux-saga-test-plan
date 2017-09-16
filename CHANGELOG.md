@@ -1,3 +1,48 @@
+## v3.2.0
+
+### NEW features in `expectSaga`
+
+#### Expose all effects when saga finishes
+
+The object resolved by the `Promise` returned from the `run` method now includes
+an array called `allEffects` that contains all of the effects yielded by your
+saga. You can use this array to test specific ordering of effects.
+(credit [@sbycrosz](https://github.com/sbycrosz))
+
+```js
+function* saga() {
+  yield call(identity, 42);
+  yield put({ type: 'HELLO' });
+}
+
+it('exposes all yielded effects in order', () => {
+  return expectSaga(saga)
+    .run()
+    .then((result) => {
+      const { allEffects } = result;
+
+      expect(allEffects).toEqual([
+        call(identity, 42),
+        put({ type: 'HELLO' }),
+      ]);
+    });
+});
+```
+
+### Flow types
+
+Flow types available in `decls/index.js` in the [source
+repo](https://github.com/jfairbank/redux-saga-test-plan) are now available in
+the npm package.
+
+### Bug Fixes
+
+* Rejected `Promises` inside sagas no longer cause `UnhandledPromiseRejectionWarning`.  
+  Related issue: #123  
+  (credit [@MehdiZonjy](https://github.com/MehdiZonjy))
+
+---
+
 ## v3.1.0
 
 ### NEW features in `expectSaga`
