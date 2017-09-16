@@ -291,7 +291,7 @@ test('terminates and does not wait for Call effect Promises', async () => {
   }
 
   await expectSaga(saga)
-  .run(false);
+    .run(false);
 
   expect(warn).not.toHaveBeenCalled();
 });
