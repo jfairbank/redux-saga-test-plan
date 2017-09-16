@@ -105,6 +105,31 @@ it('can test properties on effects', () => {
 });
 ```
 
+## All Effects
+
+If you want all the effects consolidated in the order they were yielded, you can
+use the `allEffects` property from the resolved object.
+
+```js
+function* saga() {
+  yield call(identity, 42);
+  yield put({ type: 'HELLO' });
+}
+
+it('exposes all yielded effects in order', () => {
+  return expectSaga(saga)
+    .run()
+    .then((result) => {
+      const { allEffects } = result;
+
+      expect(allEffects).toEqual([
+        call(identity, 42),
+        put({ type: 'HELLO' }),
+      ]);
+    });
+});
+```
+
 ## Available Effects
 
 The available effects are:
