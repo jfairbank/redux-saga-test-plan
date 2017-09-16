@@ -32,7 +32,6 @@ import {
   CALL,
   CPS,
   FORK,
-  PROMISE,
   PUT,
   RACE,
   SELECT,
@@ -95,7 +94,6 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     [FORK]: new ArraySet(),
     [SELECT]: new ArraySet(),
     [ACTION_CHANNEL]: new ArraySet(),
-    [PROMISE]: new ArraySet(),
   };
 
   const expectations: Array<Expectation> = [];

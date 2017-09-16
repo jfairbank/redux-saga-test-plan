@@ -13,7 +13,6 @@ import {
   FORK,
   JOIN,
   NONE,
-  PROMISE,
   PUT,
   RACE,
   SELECT,
@@ -26,9 +25,6 @@ export default function parseEffect(effect: Object): Object {
   let parsedEffect;
 
   switch (true) {
-    case is.promise(effect):
-      return { type: PROMISE, promise: effect };
-
     case is.notUndef(parsedEffect = asEffect.take(effect)):
       return {
         type: TAKE,
