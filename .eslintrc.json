@@ -24,6 +24,7 @@
   },
   "rules": {
     "arrow-parens": 0,
+    "function-paren-newline": 0,
     "global-require": 0,
     "no-plusplus": 0,
     "no-unused-vars": [
@@ -39,6 +40,7 @@
         "functions": false
       }
     ],
+    "object-curly-newline": 0,
     "import/no-extraneous-dependencies": [
       "error",
       {
