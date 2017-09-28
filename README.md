@@ -21,7 +21,13 @@ approaches to make testing your sagas easy.
   * [Example with Reducer](#example-with-reducer)
 * [Unit Testing](#unit-testing)
 * [Install](#install)
-* [Getting Started](#getting-started)
+
+## Documentation
+
+* [Introduction](http://redux-saga-test-plan.jeremyfairbank.com/)
+* [Getting Started](http://redux-saga-test-plan.jeremyfairbank.com/getting-started.html)
+* [Integration Testing](http://redux-saga-test-plan.jeremyfairbank.com/integration-testing/)
+* [Unit Testing](http://redux-saga-test-plan.jeremyfairbank.com/unit-testing/)
 
 ## Integration Testing
 
@@ -297,11 +303,3 @@ yarn add redux-saga-test-plan@^2.0 --dev
 ```
 npm install --save-dev redux-saga-test-plan@^2.0
 ```
-
-## Getting Started
-
-#### [Docs](http://redux-saga-test-plan.jeremyfairbank.com)
-
-Redux Saga Test Plan has a host of options along with more helper methods for
-testing sagas. To learn more, check out the docs at
-[redux-saga-test-plan.jeremyfairbank.com](http://redux-saga-test-plan.jeremyfairbank.com).
