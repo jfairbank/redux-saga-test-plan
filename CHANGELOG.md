@@ -1,3 +1,11 @@
+## v3.3.0
+
+### Redux Saga 0.16 support
+
+Update `peerDependencies` to support redux-saga 0.16.
+
+---
+
 ## v3.2.0
 
 ### NEW features in `expectSaga`
