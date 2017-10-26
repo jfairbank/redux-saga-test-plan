@@ -1,6 +1,6 @@
 {
   "name": "redux-saga-test-plan",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Test Redux Saga with an easy plan",
   "main": "lib/index.js",
   "files": [
