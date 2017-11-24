@@ -1,9 +1,7 @@
-import {
-    Task,
-    Channel,
-    SagaIterator,
-} from 'redux-saga';
 import {Action} from 'redux';
+import {Task} from 'redux-saga';
+import {Channel} from 'redux-saga';
+import {SagaIterator} from 'redux-saga';
 
 export interface ISagaTest {
     back(steps?: number): ISagaTest;
@@ -15,8 +13,6 @@ export interface ISagaTest {
     take(actionType: string | string[] | Channel<any>): ISagaTest;
 
     takeEvery(actionType: string | Channel<any>, saga: Function, ...args: any[]): ISagaTest;
-
-    takeLatest(actionType: string | Channel<any>, saga: Function, ...args: any[]): ISagaTest;
 
     takeEveryFork(actionType: string | Channel<any>, saga: Function, ...args: any[]): ISagaTest;
 
@@ -46,25 +42,27 @@ export interface ISagaTest {
 }
 
 export interface IExpectSaga {
-    put(...params: any): IExpectSaga;
+    put(action: Action): IExpectSaga;
 
-    withReducer(...params: any): IExpectSaga;
+    take(action: Action): IExpectSaga;
 
-    hasFinalState(...params: any): IExpectSaga;
+    call(fn: Function, ...args: any[]): IExpectSaga;
 
-    take(...params: any): IExpectSaga;
+    withReducer(...args: any[]): IExpectSaga;
 
-    provide(...params: any): IExpectSaga;
+    hasFinalState(...args: any[]): IExpectSaga;
 
-    dispatch(...params: any): IExpectSaga;
+    provide(...args: any[]): IExpectSaga;
 
-    run(...params: any): IExpectSaga;
+    dispatch(action: Action): IExpectSaga;
+
+    returns(...args: any[]): IExpectSaga;
+
+    run(): Promise<void>;
 }
 
 export type SagaType = (...params: any[]) => SagaIterator;
 
-function testSaga(saga: SagaType, ...params: any[]): ISagaTest;
+export function expectSaga(saga: SagaType, ...params: any[]): IExpectSaga;
 
-export function expectSaga(saga: SagaType): IExpectSaga;
-
-export default testSaga;
+export function testSaga(saga: SagaType, ...params: any[]): ISagaTest;
