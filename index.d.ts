@@ -1,4 +1,8 @@
-import {Task, Channel, SagaIterator} from 'redux-saga';
+import {
+    Task,
+    Channel,
+    SagaIterator,
+} from 'redux-saga';
 import {Action} from 'redux';
 
 export interface ISagaTest {
@@ -41,6 +45,26 @@ export interface ISagaTest {
     finish(): ISagaTest;
 }
 
-function testSaga(saga: (...params: any[]) => SagaIterator, ...params: any[]): ISagaTest;
+export interface IExpectSaga {
+    put(...params: any): IExpectSaga;
+
+    withReducer(...params: any): IExpectSaga;
+
+    hasFinalState(...params: any): IExpectSaga;
+
+    take(...params: any): IExpectSaga;
+
+    provide(...params: any): IExpectSaga;
+
+    dispatch(...params: any): IExpectSaga;
+
+    run(...params: any): IExpectSaga;
+}
+
+export type SagaType = (...params: any[]) => SagaIterator;
+
+function testSaga(saga: SagaType, ...params: any[]): ISagaTest;
+
+export function expectSaga(saga: SagaType): IExpectSaga;
 
 export default testSaga;
