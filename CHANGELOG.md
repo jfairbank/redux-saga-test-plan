@@ -1,3 +1,13 @@
+## v3.3.1
+
+### Bug Fixes
+
+* Ensure that actions dispatched inside sagas are immediately handled by reducers.  
+  Related PR: #154  
+  (credit [@gjdenhertog](https://github.com/gjdenhertog))
+
+---
+
 ## v3.3.0
 
 ### Redux Saga 0.16 support
