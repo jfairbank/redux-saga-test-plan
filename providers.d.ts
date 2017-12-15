@@ -1,11 +1,12 @@
 import * as E from 'redux-saga/effects';
 import { Matcher } from './matchers';
 
-type ProviderNext = Object;
-type ProviderNextF = () => ProviderNext;
+type ProviderNext = Object; // taken frm flow definitions in /decl
+type ProviderNextF = () => ProviderNext; // taken frm flow definitions in /decl
 
-export type StaticProvider = [E.Effect | Matcher, any]
+export type StaticProvider = [E.Effect | Matcher, any];
 
+/** Dynamic provider that gets an effect descriptor and next as parameters and returns a value. */
 export type EffectProvider<EffectDescriptor>
     = (effect: EffectDescriptor, next: ProviderNextF) => any;
 
@@ -24,8 +25,8 @@ export type EffectProviders = {
     select?: EffectProvider<E.SelectEffectDescriptor>;
     spawn?: EffectProvider<E.CallEffectDescriptor>;
     take?: EffectProvider<E.TakeEffectDescriptor & E.ChannelTakeEffectDescriptor<any>>;
-}
+};
 
-export const composeProviders: Function
-export function dynamic<D = any>(effect: EffectProvider<D>): any
-export function throwError(error: Error): any
+export const composeProviders: Function;
+export function dynamic<D = any>(effect: EffectProvider<D>): any;
+export function throwError(error: Error): any;

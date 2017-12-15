@@ -1,20 +1,22 @@
 import { EffectApi, EffectApiEx } from './effects';
 
-type Extract<T, K extends keyof T> = T[K]
+// Gives you the type of a field K in type T
+type FieldType<T, K extends keyof T> = T[K];
 
 export interface Matcher { }
 
-export const actionChannel: Extract<EffectApiEx<Matcher>, 'actionChannel'>;
-export const apply: Extract<EffectApiEx<Matcher>, 'apply'>;
-export const call: Extract<EffectApiEx<Matcher>, 'call'>;
-export const cancel: Extract<EffectApi<Matcher>, 'cancel'>;
-export const cancelled: Extract<EffectApi<Matcher>, 'cancelled'>;
-export const cps: Extract<EffectApiEx<Matcher>, 'cps'>;
-export const flush: Extract<EffectApi<Matcher>, 'flush'>;
-export const fork: Extract<EffectApiEx<Matcher>, 'fork'>;
-export const join: Extract<EffectApi<Matcher>, 'join'>;
-export const put: Extract<EffectApiEx<Matcher>, 'put'>;
-export const race: Extract<EffectApi<Matcher>, 'race'>;
-export const select: Extract<EffectApiEx<Matcher>, 'select'>;
-export const spawn: Extract<EffectApiEx<Matcher>, 'spawn'>;
-export const take: Extract<EffectApi<Matcher>, 'take'>;
+/** Use signatures from from EffectApi and EffectApiEx */
+export const actionChannel: FieldType<EffectApiEx<Matcher>, 'actionChannel'>;
+export const apply: FieldType<EffectApiEx<Matcher>, 'apply'>;
+export const call: FieldType<EffectApiEx<Matcher>, 'call'>;
+export const cancel: FieldType<EffectApi<Matcher>, 'cancel'>;
+export const cancelled: FieldType<EffectApi<Matcher>, 'cancelled'>;
+export const cps: FieldType<EffectApiEx<Matcher>, 'cps'>;
+export const flush: FieldType<EffectApi<Matcher>, 'flush'>;
+export const fork: FieldType<EffectApiEx<Matcher>, 'fork'>;
+export const join: FieldType<EffectApi<Matcher>, 'join'>;
+export const put: FieldType<EffectApiEx<Matcher>, 'put'>;
+export const race: FieldType<EffectApi<Matcher>, 'race'>;
+export const select: FieldType<EffectApiEx<Matcher>, 'select'>;
+export const spawn: FieldType<EffectApiEx<Matcher>, 'spawn'>;
+export const take: FieldType<EffectApi<Matcher>, 'take'>;

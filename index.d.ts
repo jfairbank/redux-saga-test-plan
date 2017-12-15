@@ -6,8 +6,6 @@ import { Matcher } from './matchers';
 import { EffectProviders, StaticProvider } from './providers';
 import { EffectApi, EffectApiEx } from './effects'
 
-export type SagaType = (...params: any[]) => SagaIterator | IterableIterator<any>;
-
 type Timeout = number | false;
 
 type TimeoutConfig = {
@@ -15,18 +13,9 @@ type TimeoutConfig = {
     timeout?: Timeout,
 };
 
-export type ExpectApiEffects = Pick<EffectApi<ExpectApi>, 'race' | 'take'>
-    & Pick<
-    EffectApiEx<ExpectApi>,
-    'actionChannel'
-    | 'apply'
-    | 'call'
-    | 'cps'
-    | 'fork'
-    | 'put'
-    | 'select'
-    | 'spawn'
-    >
+export type ExpectApiEffects
+    = Pick<EffectApi<ExpectApi>, 'race' | 'take'>
+    & Pick<EffectApiEx<ExpectApi>, 'actionChannel' | 'apply' | 'call' | 'cps' | 'fork' | 'put' | 'select' | 'spawn'>;
 
 interface RunResult {
     storeState: any;
@@ -42,7 +31,7 @@ interface RunResult {
         select: E.SelectEffect[];
         actionChannel: E.ActionChannelEffect[];
     };
-    toJSON(): Object
+    toJSON(): Object;
 }
 
 export interface ExpectApi extends ExpectApiEffects {
@@ -77,21 +66,8 @@ export type ThrottleHelperProgresser = (
 
 export type TestApiEffects = Pick<
     EffectApi<TestApi>,
-    'actionChannel'
-    | 'apply'
-    | 'cps'
-    | 'put'
-    | 'race'
-    | 'select'
-    | 'call'
-    | 'fork'
-    | 'spawn'
-    | 'take'
-    | 'all'
-    | 'cancel'
-    | 'cancelled'
-    | 'flush'
-    | 'join'>
+    'actionChannel' | 'apply' | 'cps' | 'put' | 'race' | 'select' | 'call' | 'fork'
+    | 'spawn' | 'take' | 'all' | 'cancel' | 'cancelled' | 'flush' | 'join'>;
 
 export interface TestApi {
     next(...args: any[]): TestApiWithEffectsTesters;
@@ -120,9 +96,11 @@ export type TestApiWithEffectsTesters = TestApi & TestApiEffects & {
     inspect<V>(expectation: (yieldedValue: V) => void): TestApi;
     isDone(): TestApi;
     returns<V>(returnValue: V): TestApi;
-}
+};
 
-interface ExpectSaga {
+export type SagaType = (...params: any[]) => SagaIterator | IterableIterator<any>;
+
+export interface ExpectSaga {
     (generator: SagaType, ...sagaArgs: any[]): ExpectApi;
     DEFAULT_TIMEOUT: number;
 }
