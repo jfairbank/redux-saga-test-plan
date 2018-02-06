@@ -26,6 +26,7 @@
     "docs:watch": "npm run docs:prepare && gitbook serve",
     "docs:publish": "npm run docs:clean && npm run docs:build && cp CNAME _book && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:jfairbank/redux-saga-test-plan gh-pages --force"
   },
+  "typings": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jfairbank/redux-saga-test-plan.git"
