@@ -1,7 +1,10 @@
-import { put, take } from 'redux-saga/effects';
+import { call, put, take } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 
 const FOO_SYMBOL = Symbol('Foo');
+
+const actionCreatorWithToString = payload => ({ type: 'TO_STRING_ACTION', payload });
+actionCreatorWithToString.toString = () => 'TO_STRING_ACTION';
 
 function* sagaTakeArray() {
   const action = yield take(['FOO', 'BAR']);
@@ -21,6 +24,14 @@ function* sagaTakeWildcard() {
 function* sagaTakeStringType() {
   const action = yield take('BAR');
   yield put({ type: 'DONE', payload: action.payload });
+}
+
+function* sagaTakeActionCreatorWithToString(fn) {
+  while (true) {
+    const action = yield take(actionCreatorWithToString);
+    yield call(fn);
+    yield put({ type: 'ACTION', payload: action.payload });
+  }
 }
 
 function* sagaTakeSymbolType() {
@@ -78,6 +89,18 @@ test('takes string type', () => (
     .dispatch({ type: 'BAR', payload: 'bar payload' })
     .run()
 ));
+
+test('takes action creators with toString defined', async () => {
+  const spy = jest.fn();
+
+  await expectSaga(sagaTakeActionCreatorWithToString, spy)
+    .dispatch(actionCreatorWithToString(42))
+    .dispatch({ type: 'IGNORED' })
+    .dispatch(actionCreatorWithToString(42))
+    .silentRun(10);
+
+  expect(spy).toHaveBeenCalledTimes(2);
+});
 
 test('does not take string type if correct action type not dispatched', () => (
   expectSaga(sagaTakeStringType)

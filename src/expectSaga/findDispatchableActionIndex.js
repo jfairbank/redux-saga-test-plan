@@ -13,6 +13,10 @@ export default function findDispatchableActionIndex(
     return 0;
   }
 
+  if (typeof pattern === 'function' && hasOwn(pattern, 'toString')) {
+    return findDispatchableActionIndex(actions, String(pattern));
+  }
+
   if (typeof pattern === 'function') {
     // Refinements not catching that `pattern` is a function
     // $FlowFixMe
@@ -32,4 +36,8 @@ export default function findDispatchableActionIndex(
   }
 
   return findIndex(actions, a => a.type === pattern);
+}
+
+function hasOwn(object: Object, key: string): boolean {
+  return {}.hasOwnProperty.call(object, key);
 }
