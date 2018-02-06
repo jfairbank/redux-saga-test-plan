@@ -1,3 +1,39 @@
+## v3.4.0
+
+### NEW - TypeScript Support
+
+Thanks to [@sharkBiscuit](https://github.com/sharkBiscuit) for adding TypeScript typings support in [#159](https://github.com/jfairbank/redux-saga-test-plan/pull/159).
+
+### NEW - Support Action Creators with `toString`
+
+Match redux-saga support for action creators that have a `toString` function defined. If you're using something like [redux-actions](https://github.com/reduxactions/redux-actions), then you can `take` your action creators directly. This was sort of working before, but redux-saga-test-plan treated it like a function to call and check if it should match an action. Because the action creator returned a truthy object, it took the action anyway. Now, redux-saga-test-plan uses `toString` to convert the action creator into a matchable string pattern like redux-saga.
+
+```js
+import { call, put, take } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
+
+const actionCreatorWithToString = payload => ({ type: 'TO_STRING_ACTION', payload });
+actionCreatorWithToString.toString = () => 'TO_STRING_ACTION';
+
+function* saga(fn) {
+  const action = yield take(actionCreatorWithToString);
+  yield put({ type: 'DONE', payload: action.payload });
+}
+
+test('takes action creators with toString defined', () => {
+  return expectSaga(sagaTakeActionCreatorWithToString, spy)
+    .put({ type: 'DONE', payload: 42 })
+    .dispatch(actionCreatorWithToString(42))
+    .run();
+});
+```
+
+### Miscellaneous Fixes
+
+* Remove unnecessary npm package dependency on GitBook plugins
+
+---
+
 ## v3.3.1
 
 ### Bug Fixes
