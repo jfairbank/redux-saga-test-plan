@@ -1,3 +1,11 @@
+## v3.4.1
+
+### Bug Fixes
+
+* Include `*.d.ts` files in package.json `files` property.
+
+---
+
 ## v3.4.0
 
 ### NEW - TypeScript Support
