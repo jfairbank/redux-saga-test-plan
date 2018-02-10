@@ -2,7 +2,10 @@
 /* eslint-disable no-underscore-dangle */
 import { effects, runSaga, utils } from 'redux-saga';
 import { call, fork, race, spawn } from 'redux-saga/effects';
-import { takeEveryHelper, takeLatestHelper } from 'redux-saga/lib/internal/sagaHelpers';
+import {
+  takeEveryHelper,
+  takeLatestHelper,
+} from 'redux-saga/lib/internal/sagaHelpers';
 import assign from 'object-assign';
 import { splitAt } from '../utils/array';
 import Map from '../utils/Map';
@@ -57,7 +60,8 @@ function toJSON(object: mixed): mixed {
   }
 
   if (typeof object === 'function') {
-    return `@@redux-saga-test-plan/json/function/${object.name || '<anonymous>'}`;
+    return `@@redux-saga-test-plan/json/function/${object.name ||
+      '<anonymous>'}`;
   }
 
   if (typeof object === 'object' && object !== null) {
@@ -83,7 +87,10 @@ const exposableEffects = {
   [ACTION_CHANNEL]: 'actionChannel',
 };
 
-export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): ExpectApi {
+export default function expectSaga(
+  generator: Function,
+  ...sagaArgs: mixed[]
+): ExpectApi {
   const allEffects = [];
   const effectStores = {
     [TAKE]: new ArraySet(),
@@ -185,7 +192,11 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
             finalArgs = [
               patternOrChannel,
-              action => defaultSagaWrapper(worker(...restArgs, action), refineYieldedValue),
+              action =>
+                defaultSagaWrapper(
+                  worker(...restArgs, action),
+                  refineYieldedValue,
+                ),
             ];
           }
 
@@ -301,18 +312,11 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     }
 
     if (typeof timeoutLength === 'number') {
-      promise = Promise.race([
-        promise,
-        delay(timeoutLength).then(() => true),
-      ]);
+      promise = Promise.race([promise, delay(timeoutLength).then(() => true)]);
     }
 
-    return promise.then(
-      timedOut => schedule(cancelMainTask, [
-        timeoutLength,
-        silenceTimeout,
-        timedOut,
-      ]),
+    return promise.then(timedOut =>
+      schedule(cancelMainTask, [timeoutLength, silenceTimeout, timedOut]),
     );
   }
 
@@ -321,7 +325,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   }
 
   function notifyListeners(action: Action): void {
-    listeners.forEach((listener) => {
+    listeners.forEach(listener => {
       listener(action);
     });
   }
@@ -330,12 +334,10 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     if (typeof action._delayTime === 'number') {
       const { _delayTime } = action;
 
-      dispatchPromise
-        .then(() => delay(_delayTime))
-        .then(() => {
-          storeState = reducer(storeState, action);
-          notifyListeners(action);
-        });
+      dispatchPromise.then(() => delay(_delayTime)).then(() => {
+        storeState = reducer(storeState, action);
+        notifyListeners(action);
+      });
     } else {
       storeState = reducer(storeState, action);
       dispatchPromise.then(() => notifyListeners(action));
@@ -386,7 +388,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
 
         const [reducerActions, [sagaAction]] = splitAt(actions, -1);
 
-        reducerActions.forEach((action) => {
+        reducerActions.forEach(action => {
           dispatch(action);
         });
 
@@ -398,7 +400,10 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
       }
 
       case ACTION_CHANNEL: {
-        outstandingActionChannelEffects.set(event.effectId, parsedEffect.effect);
+        outstandingActionChannelEffects.set(
+          event.effectId,
+          parsedEffect.effect,
+        );
         break;
       }
 
@@ -439,7 +444,9 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
           return;
         }
 
-        const actionChannelEffect = outstandingActionChannelEffects.get(effectId);
+        const actionChannelEffect = outstandingActionChannelEffects.get(
+          effectId,
+        );
 
         if (actionChannelEffect) {
           associateChannelWithPattern(value, actionChannelEffect.pattern);
@@ -468,7 +475,11 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
       return api;
     },
 
-    actionChannel: createEffectTesterFromEffects('actionChannel', ACTION_CHANNEL, asEffect.actionChannel),
+    actionChannel: createEffectTesterFromEffects(
+      'actionChannel',
+      ACTION_CHANNEL,
+      asEffect.actionChannel,
+    ),
     apply: createEffectTesterFromEffects('apply', CALL, asEffect.call),
     call: createEffectTesterFromEffects('call', CALL, asEffect.call),
     cps: createEffectTesterFromEffects('cps', CPS, asEffect.cps),
@@ -480,38 +491,103 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     take: createEffectTesterFromEffects('take', TAKE, asEffect.take),
   };
 
-  api.put.resolve = createEffectTester('put.resolve', PUT, effects.put.resolve, asEffect.put);
-  api.take.maybe = createEffectTester('take.maybe', TAKE, effects.take.maybe, asEffect.take);
+  api.put.resolve = createEffectTester(
+    'put.resolve',
+    PUT,
+    effects.put.resolve,
+    asEffect.put,
+  );
+  api.take.maybe = createEffectTester(
+    'take.maybe',
+    TAKE,
+    effects.take.maybe,
+    asEffect.take,
+  );
 
-  api.actionChannel.like = createEffectTester('actionChannel', ACTION_CHANNEL, effects.actionChannel, asEffect.actionChannel, true);
+  api.actionChannel.like = createEffectTester(
+    'actionChannel',
+    ACTION_CHANNEL,
+    effects.actionChannel,
+    asEffect.actionChannel,
+    true,
+  );
   api.actionChannel.pattern = pattern => api.actionChannel.like({ pattern });
 
-  api.apply.like = createEffectTester('apply', CALL, effects.apply, asEffect.call, true);
+  api.apply.like = createEffectTester(
+    'apply',
+    CALL,
+    effects.apply,
+    asEffect.call,
+    true,
+  );
   api.apply.fn = fn => api.apply.like({ fn });
 
-  api.call.like = createEffectTester('call', CALL, effects.call, asEffect.call, true);
+  api.call.like = createEffectTester(
+    'call',
+    CALL,
+    effects.call,
+    asEffect.call,
+    true,
+  );
   api.call.fn = fn => api.call.like({ fn });
 
-  api.cps.like = createEffectTester('cps', CPS, effects.cps, asEffect.cps, true);
+  api.cps.like = createEffectTester(
+    'cps',
+    CPS,
+    effects.cps,
+    asEffect.cps,
+    true,
+  );
   api.cps.fn = fn => api.cps.like({ fn });
 
-  api.fork.like = createEffectTester('fork', FORK, effects.fork, asEffect.fork, true);
+  api.fork.like = createEffectTester(
+    'fork',
+    FORK,
+    effects.fork,
+    asEffect.fork,
+    true,
+  );
   api.fork.fn = fn => api.fork.like({ fn });
 
-  api.put.like = createEffectTester('put', PUT, effects.put, asEffect.put, true);
+  api.put.like = createEffectTester(
+    'put',
+    PUT,
+    effects.put,
+    asEffect.put,
+    true,
+  );
   api.put.actionType = type => api.put.like({ action: { type } });
 
-  api.put.resolve.like = createEffectTester('put', PUT, effects.put, asEffect.put, true);
-  api.put.resolve.actionType = type => api.put.resolve.like({ action: { type } });
+  api.put.resolve.like = createEffectTester(
+    'put',
+    PUT,
+    effects.put,
+    asEffect.put,
+    true,
+  );
+  api.put.resolve.actionType = type =>
+    api.put.resolve.like({ action: { type } });
 
-  api.select.like = createEffectTester('select', SELECT, effects.select, asEffect.select, true);
+  api.select.like = createEffectTester(
+    'select',
+    SELECT,
+    effects.select,
+    asEffect.select,
+    true,
+  );
   api.select.selector = selector => api.select.like({ selector });
 
-  api.spawn.like = createEffectTester('spawn', FORK, effects.spawn, asEffect.fork, true);
+  api.spawn.like = createEffectTester(
+    'spawn',
+    FORK,
+    effects.spawn,
+    asEffect.fork,
+    true,
+  );
   api.spawn.fn = fn => api.spawn.like({ fn });
 
   function checkExpectations(): void {
-    expectations.forEach((expectation) => {
+    expectations.forEach(expectation => {
       expectation({ storeState, returnValue });
     });
   }
@@ -544,7 +620,13 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     isRunning = true;
     iterator = generator(...sagaArgs);
 
-    mainTask = runSaga(io, sagaWrapper, iterator, refineYieldedValue, setReturnValue);
+    mainTask = runSaga(
+      io,
+      sagaWrapper,
+      iterator,
+      refineYieldedValue,
+      setReturnValue,
+    );
 
     mainTaskPromise = mainTask.done
       .then(checkExpectations)
@@ -556,7 +638,7 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   }
 
   function stop(timeout: Timeout | TimeoutConfig): Promise<*> {
-    return scheduleStop(timeout).then((err) => {
+    return scheduleStop(timeout).then(err => {
       if (err) {
         throw err;
       }
@@ -623,19 +705,23 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
   }
 
   function returns(value: any): ExpectApi {
-    addExpectation(createReturnExpectation({
-      value,
-      expected: !negateNextAssertion,
-    }));
+    addExpectation(
+      createReturnExpectation({
+        value,
+        expected: !negateNextAssertion,
+      }),
+    );
 
     return api;
   }
 
   function hasFinalState(state: mixed): ExpectApi {
-    addExpectation(createStoreStateExpectation({
-      state,
-      expected: !negateNextAssertion,
-    }));
+    addExpectation(
+      createStoreStateExpectation({
+        state,
+        expected: !negateNextAssertion,
+      }),
+    );
 
     return api;
   }
@@ -653,19 +739,19 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     like: boolean = false,
   ): Function {
     return (...args: mixed[]) => {
-      const expectedEffect = like
-        ? args[0]
-        : effectCreator(...args);
+      const expectedEffect = like ? args[0] : effectCreator(...args);
 
-      addExpectation(createEffectExpectation({
-        effectName,
-        expectedEffect,
-        storeKey,
-        like,
-        extractEffect,
-        store: effectStores[storeKey],
-        expected: !negateNextAssertion,
-      }));
+      addExpectation(
+        createEffectExpectation({
+          effectName,
+          expectedEffect,
+          storeKey,
+          like,
+          extractEffect,
+          store: effectStores[storeKey],
+          expected: !negateNextAssertion,
+        }),
+      );
 
       negateNextAssertion = false;
 
@@ -678,7 +764,12 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
     storeKey: string,
     extractEffect: Function,
   ): Function {
-    return createEffectTester(effectName, storeKey, effects[effectName], extractEffect);
+    return createEffectTester(
+      effectName,
+      storeKey,
+      effects[effectName],
+      extractEffect,
+    );
   }
 
   return api;

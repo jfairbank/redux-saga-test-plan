@@ -38,77 +38,65 @@ function* sagaWithError(error) {
   }
 }
 
-test('cps assertion passes', () => (
+test('cps assertion passes', () =>
   expectSaga(saga)
     .cps(handler)
-    .run()
-));
+    .run());
 
-test('cps matching fn assertion passes', () => (
+test('cps matching fn assertion passes', () =>
   expectSaga(saga)
     .cps.fn(handler)
-    .run()
-));
+    .run());
 
-test('negative cps assertion passes', () => (
+test('negative cps assertion passes', () =>
   expectSaga(saga)
     .not.cps(unusedHandler)
-    .run()
-));
+    .run());
 
-test('negative cps matching fn assertion passes', () => (
+test('negative cps matching fn assertion passes', () =>
   expectSaga(saga)
     .not.cps.fn(unusedHandler)
-    .run()
-));
+    .run());
 
-test('cps assertion with arg passes', () => (
+test('cps assertion with arg passes', () =>
   expectSaga(sagaWithArg, 42)
     .cps(handlerWithArg, 42)
-    .run()
-));
+    .run());
 
-test('negative cps assertion with arg passes', () => (
+test('negative cps assertion with arg passes', () =>
   expectSaga(sagaWithArg, 42)
     .not.cps(handlerWithArg, 43)
-    .run()
-));
+    .run());
 
-test('cps.like matching fn and args passes', () => (
+test('cps.like matching fn and args passes', () =>
   expectSaga(sagaWithArg, 42)
     .cps.like({ fn: handlerWithArg, args: [42] })
-    .run()
-));
+    .run());
 
-test('negative cps.like matching fn and args passes with bad fn', () => (
+test('negative cps.like matching fn and args passes with bad fn', () =>
   expectSaga(sagaWithArg, 42)
     .not.cps.like({ fn: unusedHandler, args: [42] })
-    .run()
-));
+    .run());
 
-test('negative cps.like matching fn and args passes with bad args', () => (
+test('negative cps.like matching fn and args passes with bad args', () =>
   expectSaga(sagaWithArg, 42)
     .not.cps.like({ fn: handlerWithArg, args: [43] })
-    .run()
-));
+    .run());
 
-test('negative cps.like matching fn and args passes with bad fn and args', () => (
+test('negative cps.like matching fn and args passes with bad fn and args', () =>
   expectSaga(sagaWithArg, 42)
     .not.cps.like({ fn: unusedHandler, args: [43] })
-    .run()
-));
+    .run());
 
-test('cps gives the default value', () => (
+test('cps gives the default value', () =>
   expectSaga(saga)
     .put({ type: 'RESULT', payload: DEFAULT_VALUE })
-    .run()
-));
+    .run());
 
-test('cps gives the supplied value', () => (
+test('cps gives the supplied value', () =>
   expectSaga(sagaWithArg, 42)
     .put({ type: 'RESULT', payload: 42 })
-    .run()
-));
+    .run());
 
 test('cps rejects with the error', () => {
   const error = new Error('whoops');
@@ -118,75 +106,68 @@ test('cps rejects with the error', () => {
     .run();
 });
 
-test('cps assertion fails', () => (
+test('cps assertion fails', () =>
   expectSaga(saga)
     .cps(unusedHandler)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative cps assertion fails', () => (
+test('negative cps assertion fails', () =>
   expectSaga(saga)
     .not.cps(handler)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('cps matching assertion fails', () => (
+test('cps matching assertion fails', () =>
   expectSaga(saga)
     .cps.fn(unusedHandler)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative cps matching assertion fails', () => (
+test('negative cps matching assertion fails', () =>
   expectSaga(saga)
     .not.cps.fn(handler)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('cps assertion with arg fails', () => (
+test('cps assertion with arg fails', () =>
   expectSaga(sagaWithArg, 42)
     .cps(handlerWithArg, 43)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative cps assertion with arg fails', () => (
+test('negative cps assertion with arg fails', () =>
   expectSaga(sagaWithArg, 42)
     .not.cps(handlerWithArg, 42)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('cps assertion with error fails', () => (
+test('cps assertion with error fails', () =>
   expectSaga(sagaWithError, new Error('whoops'))
     .cps(handlerWithError, new Error('foo'))
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
 test('negative cps assertion with error fails', () => {
   const error = new Error('whoops');
@@ -195,7 +176,7 @@ test('negative cps assertion with error fails', () => {
     .not.cps(handlerWithError, error)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
     });
 });

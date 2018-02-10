@@ -7,6 +7,7 @@
   },
   "extends": [
     "airbnb-base",
+    "prettier",
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:flowtype/recommended"
@@ -14,11 +15,7 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "moduleDirectory": [
-          "node_modules",
-          "src",
-          "__tests__"
-        ]
+        "moduleDirectory": ["node_modules", "src", "__tests__"]
       }
     }
   },
@@ -46,9 +43,8 @@
       {
         "devDependencies": true
       }
-    ]
+    ],
+    "prettier/prettier": "error"
   },
-  "plugins": [
-    "flowtype"
-  ]
+  "plugins": ["flowtype", "prettier"]
 }

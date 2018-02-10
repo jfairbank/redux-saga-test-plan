@@ -34,7 +34,9 @@ export default function validateTakeHelper(
 
   if (!isEqual(actualTakePattern, expectedTakePattern)) {
     return createErrorMessage(
-      `expected ${effectName} to watch pattern ${serializeTakePattern(expectedTakePattern)}`,
+      `expected ${effectName} to watch pattern ${serializeTakePattern(
+        expectedTakePattern,
+      )}`,
       stepNumber,
       actualTakePattern,
       expectedTakePattern,
@@ -52,10 +54,7 @@ export default function validateTakeHelper(
   }
 
   if (actualFork == null) {
-    return createErrorMessage(
-      `actual ${effectName} did not fork`,
-      stepNumber,
-    );
+    return createErrorMessage(`actual ${effectName} did not fork`, stepNumber);
   }
 
   const { fn: expectedForkFn, args: expectedForkArgs } = expectedFork[FORK];

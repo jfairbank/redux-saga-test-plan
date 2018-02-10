@@ -25,10 +25,7 @@ function* sagaTwo(fetchUser) {
   const action = yield take('REQUEST_USER');
   const id = action.payload;
 
-  const [user] = yield race([
-    call(fetchUser, id),
-    call(delay, 500),
-  ]);
+  const [user] = yield race([call(fetchUser, id), call(delay, 500)]);
 
   if (user) {
     yield put({ type: 'RECEIVE_USER', payload: user });
@@ -62,10 +59,7 @@ test('uses provided value for `race`', () => {
     .put({ type: 'DONE', payload: 'hello' })
     .run();
 
-  return Promise.all([
-    promise1,
-    promise2,
-  ]);
+  return Promise.all([promise1, promise2]);
 });
 
 test('uses static provided values from redux-saga/effects', () => {
@@ -89,10 +83,7 @@ test('uses static provided values from redux-saga/effects', () => {
     .put({ type: 'DONE', payload: 'hello' })
     .run();
 
-  return Promise.all([
-    promise1,
-    promise2,
-  ]);
+  return Promise.all([promise1, promise2]);
 });
 
 test('uses static provided values from matchers', () => {
@@ -116,10 +107,7 @@ test('uses static provided values from matchers', () => {
     .put({ type: 'DONE', payload: 'hello' })
     .run();
 
-  return Promise.all([
-    promise1,
-    promise2,
-  ]);
+  return Promise.all([promise1, promise2]);
 });
 
 test('uses dynamic values for static providers', () => {
@@ -143,10 +131,7 @@ test('uses dynamic values for static providers', () => {
     .put({ type: 'DONE', payload: 'hello' })
     .run();
 
-  return Promise.all([
-    promise1,
-    promise2,
-  ]);
+  return Promise.all([promise1, promise2]);
 });
 
 test('dynamic values have access to effect', () => {
@@ -154,7 +139,7 @@ test('dynamic values have access to effect', () => {
     .provide([
       [
         m.race({ first: take('FIRST'), second: take('SECOND') }),
-        dynamic((effect) => {
+        dynamic(effect => {
           expect(effect.first).toEqual(take('FIRST'));
           expect(effect.second).toEqual(take('SECOND'));
 
@@ -169,7 +154,7 @@ test('dynamic values have access to effect', () => {
     .provide([
       [
         m.race({ first: take('FIRST'), second: take('SECOND') }),
-        dynamic((effect) => {
+        dynamic(effect => {
           expect(effect.first).toEqual(take('FIRST'));
           expect(effect.second).toEqual(take('SECOND'));
 
@@ -180,10 +165,7 @@ test('dynamic values have access to effect', () => {
     .put({ type: 'DONE', payload: 'hello' })
     .run();
 
-  return Promise.all([
-    promise1,
-    promise2,
-  ]);
+  return Promise.all([promise1, promise2]);
 });
 
 test('inner providers for `race` work', () => {
@@ -217,85 +199,61 @@ test('inner providers for `race` work', () => {
     .dispatch({ type: 'REQUEST_USER' })
     .run(false);
 
-  return Promise.all([
-    promise1,
-    promise2,
-  ]);
+  return Promise.all([promise1, promise2]);
 });
 
 test('inner static providers from redux-saga/effects for `race` work', () => {
   const fetchUser = () => delay(250).then(() => fakeUser);
 
   const promise1 = expectSaga(sagaTwo, fetchUser)
-    .provide([
-      [call(fetchUser, 42), fakeUser],
-    ])
+    .provide([[call(fetchUser, 42), fakeUser]])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
     .run(false);
 
   const promise2 = expectSaga(sagaTwo, fetchUser)
-    .provide([
-      [call(delay, 500), undefined],
-    ])
+    .provide([[call(delay, 500), undefined]])
     .put({ type: 'TIMEOUT' })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
     .run(false);
 
-  return Promise.all([
-    promise1,
-    promise2,
-  ]);
+  return Promise.all([promise1, promise2]);
 });
 
 test('inner static providers from matchers for `race` work', () => {
   const fetchUser = () => delay(250).then(() => fakeUser);
 
   const promise1 = expectSaga(sagaTwo, fetchUser)
-    .provide([
-      [m.call(fetchUser, 42), fakeUser],
-    ])
+    .provide([[m.call(fetchUser, 42), fakeUser]])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
     .run(false);
 
   const promise2 = expectSaga(sagaTwo, fetchUser)
-    .provide([
-      [m.call(delay, 500), undefined],
-    ])
+    .provide([[m.call(delay, 500), undefined]])
     .put({ type: 'TIMEOUT' })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
     .run(false);
 
-  return Promise.all([
-    promise1,
-    promise2,
-  ]);
+  return Promise.all([promise1, promise2]);
 });
 
 test('inner static providers use dynamic values for static providers', () => {
   const fetchUser = () => delay(250).then(() => fakeUser);
 
   const promise1 = expectSaga(sagaTwo, fetchUser)
-    .provide([
-      [m.call(fetchUser, 42), dynamic(() => fakeUser)],
-    ])
+    .provide([[m.call(fetchUser, 42), dynamic(() => fakeUser)]])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
     .run(false);
 
   const promise2 = expectSaga(sagaTwo, fetchUser)
-    .provide([
-      [m.call(delay, 500), dynamic(() => undefined)],
-    ])
+    .provide([[m.call(delay, 500), dynamic(() => undefined)]])
     .put({ type: 'TIMEOUT' })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
     .run(false);
 
-  return Promise.all([
-    promise1,
-    promise2,
-  ]);
+  return Promise.all([promise1, promise2]);
 });
 
 test('inner static providers dynamic values have access to effect', () => {
@@ -303,12 +261,15 @@ test('inner static providers dynamic values have access to effect', () => {
 
   const promise1 = expectSaga(sagaTwo, fetchUser)
     .provide([
-      [m.call(fetchUser, 42), dynamic(({ fn, args }) => {
-        expect(fn).toBe(fetchUser);
-        expect(args).toEqual([42]);
+      [
+        m.call(fetchUser, 42),
+        dynamic(({ fn, args }) => {
+          expect(fn).toBe(fetchUser);
+          expect(args).toEqual([42]);
 
-        return fakeUser;
-      })],
+          return fakeUser;
+        }),
+      ],
     ])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
@@ -316,19 +277,19 @@ test('inner static providers dynamic values have access to effect', () => {
 
   const promise2 = expectSaga(sagaTwo, fetchUser)
     .provide([
-      [m.call(delay, 500), dynamic(({ fn, args }) => {
-        expect(fn).toBe(delay);
-        expect(args).toEqual([500]);
+      [
+        m.call(delay, 500),
+        dynamic(({ fn, args }) => {
+          expect(fn).toBe(delay);
+          expect(args).toEqual([500]);
 
-        return undefined;
-      })],
+          return undefined;
+        }),
+      ],
     ])
     .put({ type: 'TIMEOUT' })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
     .run(false);
 
-  return Promise.all([
-    promise1,
-    promise2,
-  ]);
+  return Promise.all([promise1, promise2]);
 });

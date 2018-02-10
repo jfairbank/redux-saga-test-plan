@@ -21,64 +21,52 @@ function* saga(fetchData) {
 }
 
 function* sagaWithArray(fetchData) {
-  const [success] = yield race([
-    call(fetchData),
-    take('CANCEL'),
-  ]);
+  const [success] = yield race([call(fetchData), take('CANCEL')]);
 
   yield put({ type: 'DONE', success: !!success });
 }
 
-test('race assertion passes', () => (
+test('race assertion passes', () =>
   expectSaga(saga, quickFetchData)
     .race({
       success: call(quickFetchData),
       cancel: take('CANCEL'),
     })
-    .run()
-));
+    .run());
 
-test('race assertion with array passes', () => (
+test('race assertion with array passes', () =>
   expectSaga(sagaWithArray, quickFetchData)
-    .race([
-      call(quickFetchData),
-      take('CANCEL'),
-    ])
-    .run()
-));
+    .race([call(quickFetchData), take('CANCEL')])
+    .run());
 
-test('negative race assertion passes with wrong success', () => (
+test('negative race assertion passes with wrong success', () =>
   expectSaga(saga, quickFetchData)
     .not.race({
       success: call(() => {}),
       cancel: take('CANCEL'),
     })
-    .run()
-));
+    .run());
 
-test('negative race assertion passes with wrong cancel', () => (
+test('negative race assertion passes with wrong cancel', () =>
   expectSaga(saga, quickFetchData)
     .not.race({
       success: call(quickFetchData),
       cancel: take('FOO'),
     })
-    .run()
-));
+    .run());
 
-test('success branch wins', () => (
+test('success branch wins', () =>
   expectSaga(saga, quickFetchData)
     .put({ type: 'DONE', success: true })
-    .run()
-));
+    .run());
 
-test('cancel branch wins', () => (
+test('cancel branch wins', () =>
   expectSaga(saga, slowFetchData)
     .put({ type: 'DONE', success: false })
     .dispatch({ type: 'CANCEL' })
-    .run(600)
-));
+    .run(600));
 
-test('race assertion fails with wrong cancel', () => (
+test('race assertion fails with wrong cancel', () =>
   expectSaga(saga, quickFetchData)
     .race({
       success: call(quickFetchData),
@@ -86,12 +74,11 @@ test('race assertion fails with wrong cancel', () => (
     })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('race assertion fails with wrong success', () => (
+test('race assertion fails with wrong success', () =>
   expectSaga(saga, quickFetchData)
     .race({
       success: call(() => {}),
@@ -99,12 +86,11 @@ test('race assertion fails with wrong success', () => (
     })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative race assertion fails with correct success and cancel', () => (
+test('negative race assertion fails with correct success and cancel', () =>
   expectSaga(saga, quickFetchData)
     .not.race({
       success: call(quickFetchData),
@@ -112,7 +98,6 @@ test('negative race assertion fails with correct success and cancel', () => (
     })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));

@@ -11,95 +11,84 @@ function* saga() {
   yield put({ payload, type: 'DONE' });
 }
 
-test('actionChannel assertion passes', () => (
+test('actionChannel assertion passes', () =>
   expectSaga(saga)
     .actionChannel('FOO')
-    .run()
-));
+    .run());
 
-test('negative actionChannel assertion passes', () => (
+test('negative actionChannel assertion passes', () =>
   expectSaga(saga)
     .not.actionChannel('BAR')
-    .run()
-));
+    .run());
 
-test('actionChannel matching pattern assertion passes', () => (
+test('actionChannel matching pattern assertion passes', () =>
   expectSaga(saga)
     .actionChannel.pattern('FOO')
-    .run()
-));
+    .run());
 
-test('negative actionChannel matching pattern assertion passes', () => (
+test('negative actionChannel matching pattern assertion passes', () =>
   expectSaga(saga)
     .not.actionChannel.pattern('BAR')
-    .run()
-));
+    .run());
 
-test('actionChannel works with take', () => (
+test('actionChannel works with take', () =>
   expectSaga(saga)
     .put({ type: 'DONE', payload: 42 })
     .dispatch({ type: 'FOO', payload: 42 })
-    .run()
-));
+    .run());
 
-test('actionChannel assertion fails', () => (
+test('actionChannel assertion fails', () =>
   expectSaga(saga)
     .actionChannel('BAR')
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative actionChannel assertion fails', () => (
+test('negative actionChannel assertion fails', () =>
   expectSaga(saga)
     .not.actionChannel('FOO')
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('actionChannel matching assertion fails', () => (
+test('actionChannel matching assertion fails', () =>
   expectSaga(saga)
     .actionChannel.pattern('BAR')
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative actionChannel assertion fails', () => (
+test('negative actionChannel assertion fails', () =>
   expectSaga(saga)
     .not.actionChannel.pattern('FOO')
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('actionChannel fails with wrong take type', () => (
+test('actionChannel fails with wrong take type', () =>
   expectSaga(saga)
     .put({ type: 'WRONG', payload: 42 })
     .dispatch({ type: 'FOO', payload: 42 })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('actionChannel fails with wrong take payload', () => (
+test('actionChannel fails with wrong take payload', () =>
   expectSaga(saga)
     .put({ type: 'DONE', payload: 43 })
     .dispatch({ type: 'FOO', payload: 42 })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));

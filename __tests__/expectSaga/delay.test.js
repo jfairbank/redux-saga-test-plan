@@ -9,7 +9,7 @@ function* mainSaga(callback) {
   yield take('BAR');
 
   const after = process.hrtime();
-  const elapsed = (((after[0] - before[0]) * 1e9) + (after[1] - before[1])) / 1e6;
+  const elapsed = ((after[0] - before[0]) * 1e9 + (after[1] - before[1])) / 1e6;
 
   callback(elapsed);
 
@@ -55,12 +55,12 @@ it('can delay multiple times', () => {
     yield take('BAZ');
 
     const end1 = process.hrtime();
-    const elapsed1 = (((end1[0] - start[0]) * 1e9) + (end1[1] - start[1])) / 1e6;
+    const elapsed1 = ((end1[0] - start[0]) * 1e9 + (end1[1] - start[1])) / 1e6;
 
     yield take('QUUX');
 
     const end2 = process.hrtime();
-    const elapsed2 = (((end2[0] - end1[0]) * 1e9) + (end2[1] - end1[1])) / 1e6;
+    const elapsed2 = ((end2[0] - end1[0]) * 1e9 + (end2[1] - end1[1])) / 1e6;
 
     elapsedCallback(elapsed1, elapsed2);
 

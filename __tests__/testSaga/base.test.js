@@ -16,10 +16,7 @@ function* mainSaga(x, y, z) {
     yield put({ type: 'ADD', payload: x + y });
     yield call(identity, action);
 
-    yield [
-      call(identity, 'parallel call'),
-      put({ type: 'PARALLEL_PUT' }),
-    ];
+    yield [call(identity, 'parallel call'), put({ type: 'PARALLEL_PUT' })];
 
     yield fork(otherSaga, z);
   } catch (e) {
@@ -62,10 +59,7 @@ test('follows the saga', () => {
     .call(identity, action)
 
     .next()
-    .all([
-      call(identity, 'parallel call'),
-      put({ type: 'PARALLEL_PUT' }),
-    ])
+    .all([call(identity, 'parallel call'), put({ type: 'PARALLEL_PUT' })])
 
     .next()
     .fork(otherSaga, z)
@@ -322,10 +316,7 @@ test('restarts when done', () => {
     .call(identity, action)
 
     .next()
-    .all([
-      call(identity, 'parallel call'),
-      put({ type: 'PARALLEL_PUT' }),
-    ])
+    .all([call(identity, 'parallel call'), put({ type: 'PARALLEL_PUT' })])
 
     .next()
     .fork(otherSaga, z)
@@ -345,10 +336,7 @@ test('restarts when done', () => {
     .call(identity, action)
 
     .next()
-    .all([
-      call(identity, 'parallel call'),
-      put({ type: 'PARALLEL_PUT' }),
-    ])
+    .all([call(identity, 'parallel call'), put({ type: 'PARALLEL_PUT' })])
 
     .next()
     .fork(otherSaga, z)
@@ -380,10 +368,7 @@ test('restarts before done', () => {
     .call(identity, action)
 
     .next()
-    .all([
-      call(identity, 'parallel call'),
-      put({ type: 'PARALLEL_PUT' }),
-    ])
+    .all([call(identity, 'parallel call'), put({ type: 'PARALLEL_PUT' })])
 
     .next()
     .fork(otherSaga, z)
@@ -408,10 +393,7 @@ test('restarts can change generator arguments', () => {
     .call(identity, action)
 
     .next()
-    .all([
-      call(identity, 'parallel call'),
-      put({ type: 'PARALLEL_PUT' }),
-    ])
+    .all([call(identity, 'parallel call'), put({ type: 'PARALLEL_PUT' })])
 
     .next()
     .fork(otherSaga, z)
@@ -431,10 +413,7 @@ test('restarts can change generator arguments', () => {
     .call(identity, action)
 
     .next()
-    .all([
-      call(identity, 'parallel call'),
-      put({ type: 'PARALLEL_PUT' }),
-    ])
+    .all([call(identity, 'parallel call'), put({ type: 'PARALLEL_PUT' })])
 
     .next()
     .fork(otherSaga, newZ)

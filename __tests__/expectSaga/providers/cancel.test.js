@@ -41,10 +41,7 @@ test('uses static provided values from redux-saga/effects', () => {
   const fakeTask = createMockTask();
 
   return expectSaga(saga)
-    .provide([
-      [cancel(fakeTask), 'cancelled'],
-      forkProvider(fakeTask),
-    ])
+    .provide([[cancel(fakeTask), 'cancelled'], forkProvider(fakeTask)])
     .put({ type: 'DONE', payload: 'cancelled' })
     .run();
 });
@@ -53,10 +50,7 @@ test('uses static provided values from matchers', () => {
   const fakeTask = createMockTask();
 
   return expectSaga(saga)
-    .provide([
-      [m.cancel(fakeTask), 'cancelled'],
-      forkProvider(fakeTask),
-    ])
+    .provide([[m.cancel(fakeTask), 'cancelled'], forkProvider(fakeTask)])
     .put({ type: 'DONE', payload: 'cancelled' })
     .run();
 });
@@ -78,10 +72,13 @@ test('dynamic values have access to task', () => {
 
   return expectSaga(saga)
     .provide([
-      [m.cancel(fakeTask), dynamic((task) => {
-        expect(task).toBe(fakeTask);
-        return 'cancelled';
-      })],
+      [
+        m.cancel(fakeTask),
+        dynamic(task => {
+          expect(task).toBe(fakeTask);
+          return 'cancelled';
+        }),
+      ],
 
       forkProvider(fakeTask),
     ])

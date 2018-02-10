@@ -32,7 +32,7 @@ function* sagaTwo() {
   yield fork(fetchUserSaga);
 }
 
-test('uses provided value for `fork`', () => (
+test('uses provided value for `fork`', () =>
   expectSaga(sagaOne)
     .provide({
       fork({ fn }, next) {
@@ -44,58 +44,47 @@ test('uses provided value for `fork`', () => (
       },
     })
     .put({ type: 'DONE', payload: fakeTask })
-    .run()
-));
+    .run());
 
-test('uses static provided values from redux-saga/effects', () => (
+test('uses static provided values from redux-saga/effects', () =>
+  expectSaga(sagaOne)
+    .provide([[fork(otherSaga), fakeTask]])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run());
+
+test('uses static provided values from matchers', () =>
+  expectSaga(sagaOne)
+    .provide([[m.fork(otherSaga), fakeTask]])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run());
+
+test('uses partial static provided values from matchers', () =>
+  expectSaga(sagaOne)
+    .provide([[m.fork.fn(otherSaga), fakeTask]])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run());
+
+test('uses dynamic values for static providers', () =>
+  expectSaga(sagaOne)
+    .provide([[m.fork.fn(otherSaga), dynamic(() => fakeTask)]])
+    .put({ type: 'DONE', payload: fakeTask })
+    .run());
+
+test('dynamic values have access to effect', () =>
   expectSaga(sagaOne)
     .provide([
-      [fork(otherSaga), fakeTask],
+      [
+        m.fork.fn(otherSaga),
+        dynamic(({ fn }) => {
+          expect(fn).toBe(otherSaga);
+          return fakeTask;
+        }),
+      ],
     ])
     .put({ type: 'DONE', payload: fakeTask })
-    .run()
-));
+    .run());
 
-test('uses static provided values from matchers', () => (
-  expectSaga(sagaOne)
-    .provide([
-      [m.fork(otherSaga), fakeTask],
-    ])
-    .put({ type: 'DONE', payload: fakeTask })
-    .run()
-));
-
-test('uses partial static provided values from matchers', () => (
-  expectSaga(sagaOne)
-    .provide([
-      [m.fork.fn(otherSaga), fakeTask],
-    ])
-    .put({ type: 'DONE', payload: fakeTask })
-    .run()
-));
-
-test('uses dynamic values for static providers', () => (
-  expectSaga(sagaOne)
-    .provide([
-      [m.fork.fn(otherSaga), dynamic(() => fakeTask)],
-    ])
-    .put({ type: 'DONE', payload: fakeTask })
-    .run()
-));
-
-test('dynamic values have access to effect', () => (
-  expectSaga(sagaOne)
-    .provide([
-      [m.fork.fn(otherSaga), dynamic(({ fn }) => {
-        expect(fn).toBe(otherSaga);
-        return fakeTask;
-      })],
-    ])
-    .put({ type: 'DONE', payload: fakeTask })
-    .run()
-));
-
-test('provides values in forked sagas', () => (
+test('provides values in forked sagas', () =>
   expectSaga(sagaTwo)
     .provide({
       call({ fn }, next) {
@@ -107,56 +96,45 @@ test('provides values in forked sagas', () => (
       },
     })
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
-    .run()
-));
+    .run());
 
-test('uses static provided values in forked sagas from redux-saga/effects', () => (
+test('uses static provided values in forked sagas from redux-saga/effects', () =>
+  expectSaga(sagaTwo)
+    .provide([[call(fetchUser), fakeUser]])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run());
+
+test('uses static provided values in forked sagas from matchers', () =>
+  expectSaga(sagaTwo)
+    .provide([[m.call(fetchUser), fakeUser]])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run());
+
+test('uses partial static provided values in forked sagas from matchers', () =>
+  expectSaga(sagaTwo)
+    .provide([[m.call.fn(fetchUser), fakeUser]])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run());
+
+test('forked sagas dynamic values for static providers', () =>
+  expectSaga(sagaTwo)
+    .provide([[m.call.fn(fetchUser), dynamic(() => fakeUser)]])
+    .put({ type: 'RECEIVE_USER', payload: fakeUser })
+    .run());
+
+test('forked sagas dynamic values have access to effect', () =>
   expectSaga(sagaTwo)
     .provide([
-      [call(fetchUser), fakeUser],
+      [
+        m.call.fn(fetchUser),
+        dynamic(({ fn }) => {
+          expect(fn).toBe(fetchUser);
+          return fakeUser;
+        }),
+      ],
     ])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
-    .run()
-));
-
-test('uses static provided values in forked sagas from matchers', () => (
-  expectSaga(sagaTwo)
-    .provide([
-      [m.call(fetchUser), fakeUser],
-    ])
-    .put({ type: 'RECEIVE_USER', payload: fakeUser })
-    .run()
-));
-
-test('uses partial static provided values in forked sagas from matchers', () => (
-  expectSaga(sagaTwo)
-    .provide([
-      [m.call.fn(fetchUser), fakeUser],
-    ])
-    .put({ type: 'RECEIVE_USER', payload: fakeUser })
-    .run()
-));
-
-test('forked sagas dynamic values for static providers', () => (
-  expectSaga(sagaTwo)
-    .provide([
-      [m.call.fn(fetchUser), dynamic(() => fakeUser)],
-    ])
-    .put({ type: 'RECEIVE_USER', payload: fakeUser })
-    .run()
-));
-
-test('forked sagas dynamic values have access to effect', () => (
-  expectSaga(sagaTwo)
-    .provide([
-      [m.call.fn(fetchUser), dynamic(({ fn }) => {
-        expect(fn).toBe(fetchUser);
-        return fakeUser;
-      })],
-    ])
-    .put({ type: 'RECEIVE_USER', payload: fakeUser })
-    .run()
-));
+    .run());
 
 test('provides values in deeply forked sagas', () => {
   function* anotherSaga() {

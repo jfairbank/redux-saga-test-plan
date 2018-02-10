@@ -14,7 +14,7 @@ function* saga() {
   }
 }
 
-test('handles errors', () => (
+test('handles errors', () =>
   expectSaga(saga)
     .provide({
       call({ fn }) {
@@ -24,26 +24,23 @@ test('handles errors', () => (
       },
     })
     .put({ type: 'DONE', payload: error })
-    .run()
-));
+    .run());
 
-test('handles dynamically thrown errors', () => (
+test('handles dynamically thrown errors', () =>
   expectSaga(saga)
     .provide([
       [
         call(errorFunction),
-        dynamic(() => { throw error; }),
+        dynamic(() => {
+          throw error;
+        }),
       ],
     ])
     .put({ type: 'DONE', payload: error })
-    .run()
-));
+    .run());
 
-test('handles statically provided errors', () => (
+test('handles statically provided errors', () =>
   expectSaga(saga)
-    .provide([
-      [call(errorFunction), throwError(error)],
-    ])
+    .provide([[call(errorFunction), throwError(error)]])
     .put({ type: 'DONE', payload: error })
-    .run()
-));
+    .run());

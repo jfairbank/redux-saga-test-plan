@@ -6,92 +6,81 @@ function* saga() {
   yield put({ type: 'READY', payload: 42 });
 }
 
-test('put assertion passes', () => (
+test('put assertion passes', () =>
   expectSaga(saga)
     .put({ type: 'READY', payload: 42 })
-    .run()
-));
+    .run());
 
-test('put matching assertion action type passes', () => (
+test('put matching assertion action type passes', () =>
   expectSaga(saga)
     .put.actionType('READY')
-    .run()
-));
+    .run());
 
-test('negative put assertion passes with wrong type', () => (
+test('negative put assertion passes with wrong type', () =>
   expectSaga(saga)
     .not.put({ type: 'FOO', payload: 42 })
-    .run()
-));
+    .run());
 
-test('negative put matching assertion passes with wrong type', () => (
+test('negative put matching assertion passes with wrong type', () =>
   expectSaga(saga)
     .not.put.actionType('FOO')
-    .run()
-));
+    .run());
 
-test('negative put assertion passes with wrong payload', () => (
+test('negative put assertion passes with wrong payload', () =>
   expectSaga(saga)
     .not.put({ type: 'READY', payload: 43 })
-    .run()
-));
+    .run());
 
-test('put assertion fails with wrong type', () => (
+test('put assertion fails with wrong type', () =>
   expectSaga(saga)
     .put({ type: 'FOO', payload: 42 })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('put matching assertion fails with wrong type', () => (
+test('put matching assertion fails with wrong type', () =>
   expectSaga(saga)
     .put.actionType({ type: 'FOO', payload: 42 })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative put assertion fails with correct type', () => (
+test('negative put assertion fails with correct type', () =>
   expectSaga(saga)
     .not.put({ type: 'READY', payload: 42 })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative put matching assertion fails with correct type', () => (
+test('negative put matching assertion fails with correct type', () =>
   expectSaga(saga)
     .not.put.actionType('READY')
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('put assertion fails with wrong payload', () => (
+test('put assertion fails with wrong payload', () =>
   expectSaga(saga)
     .put({ type: 'READY', payload: 43 })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative put assertion fails with correct payload', () => (
+test('negative put assertion fails with correct payload', () =>
   expectSaga(saga)
     .not.put({ type: 'READY', payload: 42 })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));

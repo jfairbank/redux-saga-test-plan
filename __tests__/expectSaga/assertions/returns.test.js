@@ -8,37 +8,33 @@ function* saga() {
   return { foo: 'bar' };
 }
 
-test('asserts return value', () => (
+test('asserts return value', () =>
   expectSaga(saga)
     .returns({ foo: 'bar' })
-    .run()
-));
+    .run());
 
-test('negative call assertion passes', () => (
+test('negative call assertion passes', () =>
   expectSaga(saga)
     .not.returns({ hello: 'world' })
-    .run()
-));
+    .run());
 
-test('call assertion fails', () => (
+test('call assertion fails', () =>
   expectSaga(saga)
     .returns({ hello: 'world' })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(/expected to return/i);
-    })
-));
+    }));
 
-test('negative call assertion fails', () => (
+test('negative call assertion fails', () =>
   expectSaga(saga)
     .not.returns({ foo: 'bar' })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(/did not expect to return/i);
-    })
-));
+    }));
 
 test('called sagas do not affect return value', () => {
   function* otherSaga() {

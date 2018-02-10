@@ -14,8 +14,9 @@ export default function createErrorMessage(
     const serializedExpected = serializeEffect(expected, effectKey);
     const serializedActual = serializeEffect(actual, effectKey);
 
-    errorMessage += `\nExpected\n--------\n${serializedExpected}\n\n`
-                  + `Actual\n------\n${serializedActual}\n`;
+    errorMessage +=
+      `\nExpected\n--------\n${serializedExpected}\n\n` +
+      `Actual\n------\n${serializedActual}\n`;
   }
 
   return errorMessage;

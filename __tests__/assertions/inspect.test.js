@@ -20,7 +20,7 @@ test('does not error with correct assertions', () => {
   expect(() => {
     testSaga(saga)
       .next()
-      .inspect((value) => {
+      .inspect(value => {
         expect(value).toBe(42);
       });
   }).not.toThrow();
@@ -30,7 +30,7 @@ test('allows assertion errors to bubble up', () => {
   expect(() => {
     testSaga(saga)
       .next()
-      .inspect((value) => {
+      .inspect(value => {
         expect(value).toBe(43);
       });
   }).toThrow();

@@ -28,141 +28,122 @@ function* unusedSaga() {
   yield put({ type: 'FORKED' });
 }
 
-test('fork assertion passes', () => (
+test('fork assertion passes', () =>
   expectSaga(saga)
     .fork(otherSaga)
-    .run()
-));
+    .run());
 
-test('fork matching assertion fn passes', () => (
+test('fork matching assertion fn passes', () =>
   expectSaga(saga)
     .fork.fn(otherSaga)
-    .run()
-));
+    .run());
 
-test('negative fork assertion passes', () => (
+test('negative fork assertion passes', () =>
   expectSaga(saga)
     .not.fork(unusedSaga)
-    .run()
-));
+    .run());
 
-test('negative fork matching assertion fn passes', () => (
+test('negative fork matching assertion fn passes', () =>
   expectSaga(saga)
     .not.fork.fn(unusedSaga)
-    .run()
-));
+    .run());
 
-test('fork assertion with arg passes', () => (
+test('fork assertion with arg passes', () =>
   expectSaga(sagaWithArg, 42)
     .fork(otherSagaWithArg, 42)
-    .run()
-));
+    .run());
 
-test('negative fork assertion with arg passes', () => (
+test('negative fork assertion with arg passes', () =>
   expectSaga(sagaWithArg, 42)
     .not.fork(otherSagaWithArg, 43)
-    .run()
-));
+    .run());
 
-test('fork.like matching fn and args passes', () => (
+test('fork.like matching fn and args passes', () =>
   expectSaga(sagaWithArg, 42)
     .fork.like({ fn: otherSagaWithArg, args: [42] })
-    .run()
-));
+    .run());
 
-test('negative fork.like matching fn and args passes with bad fn', () => (
+test('negative fork.like matching fn and args passes with bad fn', () =>
   expectSaga(sagaWithArg, 42)
     .not.fork.like({ fn: unusedSaga, args: [42] })
-    .run()
-));
+    .run());
 
-test('negative fork.like matching fn and args passes with bad args', () => (
+test('negative fork.like matching fn and args passes with bad args', () =>
   expectSaga(sagaWithArg, 42)
     .not.fork.like({ fn: otherSagaWithArg, args: [43] })
-    .run()
-));
+    .run());
 
-test('negative fork.like matching fn and args passes with bad fn and args', () => (
+test('negative fork.like matching fn and args passes with bad fn and args', () =>
   expectSaga(sagaWithArg, 42)
     .not.fork.like({ fn: unusedSaga, args: [43] })
-    .run()
-));
+    .run());
 
-test('forked saga runs', () => (
+test('forked saga runs', () =>
   expectSaga(saga)
     .put({ type: 'FORKED' })
-    .run()
-));
+    .run());
 
-test('takeEvery saga runs', () => (
+test('takeEvery saga runs', () =>
   expectSaga(sagaWithTakeEvery)
     .put({ type: 'FORKED' })
     .dispatch({ type: 'TAKE_EVERY' })
-    .run()
-));
+    .run());
 
-test('forked saga with arg runs', () => (
+test('forked saga with arg runs', () =>
   expectSaga(sagaWithArg, 42)
     .put({ type: 'FORKED', payload: 42 })
-    .run()
-));
+    .run());
 
-test('fork assertion fails', () => (
+test('fork assertion fails', () =>
   expectSaga(saga)
     .fork(otherSagaWithArg)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative fork assertion fails', () => (
+test('negative fork assertion fails', () =>
   expectSaga(saga)
     .not.fork(otherSaga)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('fork.like matching assertion fn fails', () => (
+test('fork.like matching assertion fn fails', () =>
   expectSaga(saga)
     .fork.fn(otherSagaWithArg)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative fork.like matching assertion fn fails', () => (
+test('negative fork.like matching assertion fn fails', () =>
   expectSaga(saga)
     .not.fork.fn(otherSaga)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('fork assertion with arg fails', () => (
+test('fork assertion with arg fails', () =>
   expectSaga(sagaWithArg, 42)
     .fork(otherSagaWithArg, 43)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative fork assertion with arg fails', () => (
+test('negative fork assertion with arg fails', () =>
   expectSaga(sagaWithArg, 42)
     .not.fork(otherSagaWithArg, 42)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));

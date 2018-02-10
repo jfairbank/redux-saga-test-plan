@@ -46,11 +46,7 @@ test('can receive falsy values from calls in parallel', () => {
 
 test('can receive falsy values from calls in `all`', () => {
   function* saga() {
-    yield all([
-      call(returnFalse),
-      call(returnNull),
-      call(returnUndefined),
-    ]);
+    yield all([call(returnFalse), call(returnNull), call(returnUndefined)]);
 
     yield all({
       foo: call(returnEmptyString),
@@ -147,11 +143,7 @@ test('can receive falsy values from providers in parallel', () => {
 
 test('can receive falsy values from providers in `all`', () => {
   function* saga() {
-    yield all([
-      call(returnFalse),
-      call(returnNull),
-      call(returnUndefined),
-    ]);
+    yield all([call(returnFalse), call(returnNull), call(returnUndefined)]);
 
     yield all({
       foo: call(returnEmptyString),

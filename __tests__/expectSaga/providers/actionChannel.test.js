@@ -13,10 +13,7 @@ function* saga() {
   const channel = yield actionChannel('FOO');
   const otherChannel = yield actionChannel('BAR');
 
-  const [action, otherAction] = yield [
-    take(channel),
-    take(otherChannel),
-  ];
+  const [action, otherAction] = yield [take(channel), take(otherChannel)];
 
   const payload = action.payload + otherAction.payload;
 
@@ -37,7 +34,7 @@ const takeProvider = {
   },
 };
 
-test('uses provided value for `actionChannel`', () => (
+test('uses provided value for `actionChannel`', () =>
   expectSaga(saga)
     .provide({
       actionChannel({ pattern }, next) {
@@ -51,59 +48,47 @@ test('uses provided value for `actionChannel`', () => (
       take: takeProvider.take,
     })
     .put({ type: 'DONE', payload: 42 })
-    .run()
-));
+    .run());
 
-test('uses static provided values from redux-saga/effects', () => (
+test('uses static provided values from redux-saga/effects', () =>
   expectSaga(saga)
-    .provide([
-      [actionChannel('FOO'), fakeChannel],
-      takeProvider,
-    ])
+    .provide([[actionChannel('FOO'), fakeChannel], takeProvider])
     .put({ type: 'DONE', payload: 42 })
-    .run()
-));
+    .run());
 
-test('uses static provided values from matchers', () => (
+test('uses static provided values from matchers', () =>
   expectSaga(saga)
-    .provide([
-      [m.actionChannel('FOO'), fakeChannel],
-      takeProvider,
-    ])
+    .provide([[m.actionChannel('FOO'), fakeChannel], takeProvider])
     .put({ type: 'DONE', payload: 42 })
-    .run()
-));
+    .run());
 
-test('uses partial static provided values from matchers', () => (
+test('uses partial static provided values from matchers', () =>
   expectSaga(saga)
-    .provide([
-      [m.actionChannel.pattern('FOO'), fakeChannel],
-      takeProvider,
-    ])
+    .provide([[m.actionChannel.pattern('FOO'), fakeChannel], takeProvider])
     .put({ type: 'DONE', payload: 42 })
-    .run()
-));
+    .run());
 
-test('uses dynamic values for static providers', () => (
+test('uses dynamic values for static providers', () =>
   expectSaga(saga)
     .provide([
       [m.actionChannel('FOO'), dynamic(() => fakeChannel)],
       takeProvider,
     ])
     .put({ type: 'DONE', payload: 42 })
-    .run()
-));
+    .run());
 
-test('dynamic values have access to effect', () => (
+test('dynamic values have access to effect', () =>
   expectSaga(saga)
     .provide([
-      [m.actionChannel('FOO'), dynamic((effect) => {
-        expect(effect.pattern).toBe('FOO');
-        return fakeChannel;
-      })],
+      [
+        m.actionChannel('FOO'),
+        dynamic(effect => {
+          expect(effect.pattern).toBe('FOO');
+          return fakeChannel;
+        }),
+      ],
 
       takeProvider,
     ])
     .put({ type: 'DONE', payload: 42 })
-    .run()
-));
+    .run());

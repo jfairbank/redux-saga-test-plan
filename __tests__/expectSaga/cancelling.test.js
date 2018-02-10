@@ -58,7 +58,8 @@ test('canceling multiple tasks', () => {
     yield cancel(task1, task2);
   }
 
-  const cancelSpy = jest.fn()
+  const cancelSpy = jest
+    .fn()
     .mockImplementationOnce((task, next) => {
       expect(is.task(task)).toBe(true);
       expect(task.name).toBe('backgroundOneSaga');

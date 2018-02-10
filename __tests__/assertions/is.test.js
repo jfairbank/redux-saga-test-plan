@@ -6,10 +6,14 @@ test('handles primitive values', () => {
     yield 42;
   }
 
-  testSaga(mainSaga).next().is(42);
+  testSaga(mainSaga)
+    .next()
+    .is(42);
 
   expect(_ => {
-    testSaga(mainSaga).next().is('foo');
+    testSaga(mainSaga)
+      .next()
+      .is('foo');
   }).toThrowError('yielded values do not match');
 });
 

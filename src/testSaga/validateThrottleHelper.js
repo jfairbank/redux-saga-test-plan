@@ -32,13 +32,15 @@ export default function validateThrottleHelper(
     );
   }
 
-  const expectedActionChannelPattern = expectedActionChannel[ACTION_CHANNEL].pattern;
-  const actualActionChannelPattern = actualActionChannel[ACTION_CHANNEL].pattern;
+  const expectedActionChannelPattern =
+    expectedActionChannel[ACTION_CHANNEL].pattern;
+  const actualActionChannelPattern =
+    actualActionChannel[ACTION_CHANNEL].pattern;
 
   if (!isEqual(actualActionChannelPattern, expectedActionChannelPattern)) {
     return createErrorMessage(
       `expected ${effectName} to watch pattern ` +
-      `${serializeTakePattern(expectedActionChannelPattern)}`,
+        `${serializeTakePattern(expectedActionChannelPattern)}`,
       stepNumber,
       actualActionChannelPattern,
       expectedActionChannelPattern,
@@ -60,10 +62,7 @@ export default function validateThrottleHelper(
   }
 
   if (actualFork == null) {
-    return createErrorMessage(
-      `actual ${effectName} did not fork`,
-      stepNumber,
-    );
+    return createErrorMessage(`actual ${effectName} did not fork`, stepNumber);
   }
 
   const { fn: expectedForkFn, args: expectedForkArgs } = expectedFork[FORK];

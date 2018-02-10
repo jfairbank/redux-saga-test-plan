@@ -20,10 +20,11 @@ function* mainSaga() {
   yield* takeEvery('READY', backgroundSaga, 42);
 }
 
-const mainSagaYielding = (helper) => function* generatedMainSagaYielding() {
-  yield call(identity, 'foo');
-  yield helper('READY', backgroundSaga, 42);
-};
+const mainSagaYielding = helper =>
+  function* generatedMainSagaYielding() {
+    yield call(identity, 'foo');
+    yield helper('READY', backgroundSaga, 42);
+  };
 
 test('handles delegating takeEvery', () => {
   expect(_ => {

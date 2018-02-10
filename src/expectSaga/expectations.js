@@ -12,7 +12,7 @@ type ExpectationThunkArgs = {
   returnValue: mixed,
 };
 
-export type Expectation = (ExpectationThunkArgs) => void;
+export type Expectation = ExpectationThunkArgs => void;
 
 type EffectExpectationArgs = {
   effectName: string,
@@ -43,13 +43,15 @@ export function createEffectExpectation({
     if (deleted && !expected) {
       const serializedEffect = serializeEffect(expectedEffect, storeKey);
 
-      errorMessage = `\n${effectName} expectation unmet:` +
-                     `\n\nNot Expected\n------------\n${serializedEffect}\n`;
+      errorMessage =
+        `\n${effectName} expectation unmet:` +
+        `\n\nNot Expected\n------------\n${serializedEffect}\n`;
     } else if (!deleted && expected) {
       const serializedEffect = serializeEffect(expectedEffect, storeKey);
 
-      errorMessage = `\n${effectName} expectation unmet:` +
-                     `\n\nExpected\n--------\n${serializedEffect}\n`;
+      errorMessage =
+        `\n${effectName} expectation unmet:` +
+        `\n\nExpected\n--------\n${serializedEffect}\n`;
 
       errorMessage += reportActualEffects(store, storeKey, effectName);
     }
@@ -65,7 +67,10 @@ type ReturnExpectationArgs = {
   expected: boolean,
 };
 
-export function createReturnExpectation({ value, expected }: ReturnExpectationArgs): Expectation {
+export function createReturnExpectation({
+  value,
+  expected,
+}: ReturnExpectationArgs): Expectation {
   return ({ returnValue }: ExpectationThunkArgs) => {
     if (expected && !isEqual(value, returnValue)) {
       const serializedActual = inspect(returnValue, { depth: 3 });
@@ -101,9 +106,10 @@ type StoreStateExpectationArgs = {
   expected: boolean,
 };
 
-export function createStoreStateExpectation(
-  { state: expectedState, expected }: StoreStateExpectationArgs,
-): Expectation {
+export function createStoreStateExpectation({
+  state: expectedState,
+  expected,
+}: StoreStateExpectationArgs): Expectation {
   return ({ storeState }: ExpectationThunkArgs) => {
     if (expected && !isEqual(expectedState, storeState)) {
       const serializedActual = inspect(storeState, { depth: 3 });

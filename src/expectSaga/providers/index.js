@@ -6,7 +6,9 @@ export function dynamic(fn: Function): any {
 }
 
 export function throwError(error: any): void {
-  return dynamic(() => { throw error; });
+  return dynamic(() => {
+    throw error;
+  });
 }
 
 export { composeProviders };

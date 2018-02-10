@@ -67,7 +67,9 @@ test('assert on effects that provide thrown error', () => {
 
   return expectSaga(saga)
     .provide({
-      call() { throw error; },
+      call() {
+        throw error;
+      },
     })
     .call(fn)
     .run();

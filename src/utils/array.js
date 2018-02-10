@@ -3,27 +3,23 @@
 
 type FindIndexFn = (any, number, any[]) => boolean;
 
-export const findIndex = [].findIndex ?
-  function findIndex(array: any[], fn: FindIndexFn): number {
-    return array.findIndex(fn);
-  } :
-
-  function findIndex(array: any[], fn: FindIndexFn): number {
-    for (let i = 0, l = array.length; i < l; i++) {
-      if (fn(array[i], i, array)) {
-        return i;
-      }
+export const findIndex = [].findIndex
+  ? function findIndex(array: any[], fn: FindIndexFn): number {
+      return array.findIndex(fn);
     }
+  : function findIndex(array: any[], fn: FindIndexFn): number {
+      for (let i = 0, l = array.length; i < l; i++) {
+        if (fn(array[i], i, array)) {
+          return i;
+        }
+      }
 
-    return -1;
-  };
+      return -1;
+    };
 
 export function splitAt<T>(
   array: Array<T>,
   index: number,
 ): [Array<T>, Array<T>] {
-  return [
-    array.slice(0, index),
-    array.slice(index),
-  ];
+  return [array.slice(0, index), array.slice(index)];
 }

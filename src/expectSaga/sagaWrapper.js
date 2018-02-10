@@ -31,7 +31,9 @@ export function isSagaWrapper(saga: Function): boolean {
   return saga[SAGA_WRAPPER];
 }
 
-export default function createSagaWrapper(name: string = 'sagaWrapper'): Function {
+export default function createSagaWrapper(
+  name: string = 'sagaWrapper',
+): Function {
   function sagaWrapper(
     wrappedIterator: Generator<*, *, *>,
     refineYieldedValue: Function,
@@ -105,7 +107,7 @@ export default function createSagaWrapper(name: string = 'sagaWrapper'): Functio
 
   try {
     Object.defineProperty(sagaWrapper, 'name', { value: name });
-  // eslint-disable-next-line no-empty
+    // eslint-disable-next-line no-empty
   } catch (e) {}
 
   return sagaWrapper;

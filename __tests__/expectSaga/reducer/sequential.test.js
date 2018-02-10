@@ -41,7 +41,7 @@ function* saga() {
   yield put({ type: BARK_COUNT_AFTER, payload: barkCountAfter });
 }
 
-test('handles puts from within saga sequentially', () => (
+test('handles puts from within saga sequentially', () =>
   expectSaga(saga)
     .withReducer(dogReducer)
 
@@ -50,5 +50,4 @@ test('handles puts from within saga sequentially', () => (
 
     .dispatch({ type: READY })
 
-    .run()
-));
+    .run());

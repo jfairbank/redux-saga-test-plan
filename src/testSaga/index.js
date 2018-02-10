@@ -10,13 +10,7 @@ import {
   throttle,
 } from 'redux-saga';
 
-import {
-  ARGUMENT,
-  ERROR,
-  NONE,
-  FINISH,
-  FINISH_ARGUMENT,
-} from './historyTypes';
+import { ARGUMENT, ERROR, NONE, FINISH, FINISH_ARGUMENT } from './historyTypes';
 
 import {
   ALL,
@@ -59,7 +53,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
   let finalSagaArgs = sagaArgs;
   let iterator = createIterator();
 
-  const allEffectTester = yieldedValue => (expectedEffects) => {
+  const allEffectTester = yieldedValue => expectedEffects => {
     if (Array.isArray(yieldedValue)) {
       assertSameEffect(
         eventChannel,
@@ -91,7 +85,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     effect: Function,
     isForkedEffect: boolean = false,
   ): EffectTesterCreator {
-    return (yieldedValue) => (...args) => {
+    return yieldedValue => (...args) => {
       assertSameEffect(
         eventChannel,
         name,
@@ -120,12 +114,17 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     return createEffectTester(name, undefined, helperCreator);
   }
 
-  function createEffectTesterFromHelperEffect(name: string): EffectTesterCreator {
+  function createEffectTesterFromHelperEffect(
+    name: string,
+  ): EffectTesterCreator {
     return createEffectTester(name, undefined, effects[name], true);
   }
 
   const effectsTestersCreators: EffectTestersCreator = {
-    actionChannel: createEffectTesterFromEffects('actionChannel', ACTION_CHANNEL),
+    actionChannel: createEffectTesterFromEffects(
+      'actionChannel',
+      ACTION_CHANNEL,
+    ),
     all: allEffectTester,
     apply: createEffectTesterFromEffects('apply', CALL),
     call: createEffectTesterFromEffects('call', CALL),
@@ -148,7 +147,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     takeLatestEffect: createEffectTesterFromHelperEffect('takeLatest'),
     throttleEffect: createEffectTesterFromHelperEffect('throttle'),
 
-    isDone: (done) => () => {
+    isDone: done => () => {
       if (!done) {
         throw new SagaTestError('saga not done');
       }
@@ -156,7 +155,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       return api;
     },
 
-    is: (value) => (arg) => {
+    is: value => arg => {
       if (!isEqual(arg, value)) {
         const errorMessage = createErrorMessage(
           'yielded values do not match',
@@ -171,12 +170,12 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       return api;
     },
 
-    inspect: (value) => (fn) => {
+    inspect: value => fn => {
       fn(value);
       return api;
     },
 
-    returns: (value, done) => (arg) => {
+    returns: (value, done) => arg => {
       if (!done) {
         throw new SagaTestError('saga not done');
       }
@@ -212,9 +211,10 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     return saga(...finalSagaArgs);
   }
 
-  function apiWithEffectsTesters(
-    { value, done }: IteratorResult<*, *>,
-  ): ApiWithEffectsTesters {
+  function apiWithEffectsTesters({
+    value,
+    done,
+  }: IteratorResult<*, *>): ApiWithEffectsTesters {
     const newApi = assign({}, api, {
       actionChannel: effectsTestersCreators.actionChannel(value),
       all: effectsTestersCreators.all(value),
@@ -284,7 +284,9 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       history.push(({ type: FINISH }: HistoryItemFinish));
       result = iterator.return();
     } else {
-      history.push(({ type: FINISH_ARGUMENT, value: arg }: HistoryItemFinishArgument));
+      history.push(
+        ({ type: FINISH_ARGUMENT, value: arg }: HistoryItemFinishArgument),
+      );
       result = iterator.return(arg);
     }
 

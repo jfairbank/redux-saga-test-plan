@@ -15,7 +15,7 @@ function* saga() {
   yield put({ type: 'DONE', payload: value + otherValue });
 }
 
-test('uses provided value for `apply` via `call`', () => (
+test('uses provided value for `apply` via `call`', () =>
   expectSaga(saga)
     .provide({
       call({ fn, context: ctx, args: [arg] }, next) {
@@ -27,50 +27,34 @@ test('uses provided value for `apply` via `call`', () => (
       },
     })
     .put({ type: 'DONE', payload: 43 })
-    .run()
-));
+    .run());
 
-test('uses static provided values from redux-saga/effects', () => (
+test('uses static provided values from redux-saga/effects', () =>
   expectSaga(saga)
-    .provide([
-      [apply(context, apiFunction, [21]), 42],
-    ])
+    .provide([[apply(context, apiFunction, [21]), 42]])
     .put({ type: 'DONE', payload: 43 })
-    .run()
-));
+    .run());
 
-test('uses static provided values from matchers', () => (
+test('uses static provided values from matchers', () =>
   expectSaga(saga)
-    .provide([
-      [m.apply(context, apiFunction, [21]), 42],
-    ])
+    .provide([[m.apply(context, apiFunction, [21]), 42]])
     .put({ type: 'DONE', payload: 43 })
-    .run()
-));
+    .run());
 
-test('uses partial static provided values from matchers', () => (
+test('uses partial static provided values from matchers', () =>
   expectSaga(saga)
-    .provide([
-      [m.apply.fn(apiFunction), 42],
-    ])
+    .provide([[m.apply.fn(apiFunction), 42]])
     .put({ type: 'DONE', payload: 43 })
-    .run()
-));
+    .run());
 
-test('uses dynamic values for static providers', () => (
+test('uses dynamic values for static providers', () =>
   expectSaga(saga)
-    .provide([
-      [m.apply.fn(apiFunction), dynamic(() => 42)],
-    ])
+    .provide([[m.apply.fn(apiFunction), dynamic(() => 42)]])
     .put({ type: 'DONE', payload: 43 })
-    .run()
-));
+    .run());
 
-test('dynamic values have access to effect', () => (
+test('dynamic values have access to effect', () =>
   expectSaga(saga)
-    .provide([
-      [m.apply.fn(apiFunction), dynamic(effect => effect.args[0] * 3)],
-    ])
+    .provide([[m.apply.fn(apiFunction), dynamic(effect => effect.args[0] * 3)]])
     .put({ type: 'DONE', payload: 64 })
-    .run()
-));
+    .run());

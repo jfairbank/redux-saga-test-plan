@@ -31,5 +31,7 @@ test('returns error message if expected parallel but actual is not array', () =>
     1,
   );
 
-  expect(result).toMatch(/expected parallel effects, but the saga yielded a single effect/);
+  expect(result).toMatch(
+    /expected parallel effects, but the saga yielded a single effect/,
+  );
 });

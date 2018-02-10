@@ -17,92 +17,82 @@ function* saga() {
   yield put({ type: 'DATA', payload: data });
 }
 
-test('select assertion passes', () => (
+test('select assertion passes', () =>
   expectSaga(saga)
     .withState(storeState)
     .select(getData)
-    .run()
-));
+    .run());
 
-test('select matching assertion selector passes', () => (
+test('select matching assertion selector passes', () =>
   expectSaga(saga)
     .withState(storeState)
     .select.selector(getData)
-    .run()
-));
+    .run());
 
-test('negative select assertion passes', () => (
+test('negative select assertion passes', () =>
   expectSaga(saga)
     .withState(storeState)
     .not.select(state => state.data)
-    .run()
-));
+    .run());
 
-test('negative select matching assertion selector passes', () => (
+test('negative select matching assertion selector passes', () =>
   expectSaga(saga)
     .withState(storeState)
     .not.select.selector(state => state.data)
-    .run()
-));
+    .run());
 
-test('put assertion passes', () => (
+test('put assertion passes', () =>
   expectSaga(saga)
     .withState(storeState)
     .put({ type: 'DATA', payload: storeState.data })
-    .run()
-));
+    .run());
 
-test('select assertion fails with wrong function', () => (
+test('select assertion fails with wrong function', () =>
   expectSaga(saga)
     .withState(storeState)
     .select(state => state.data)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('select matching assertion fails with wrong function', () => (
+test('select matching assertion fails with wrong function', () =>
   expectSaga(saga)
     .withState(storeState)
     .select.selector(state => state.data)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative select assertion fails with correct function', () => (
+test('negative select assertion fails with correct function', () =>
   expectSaga(saga)
     .withState(storeState)
     .not.select(getData)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative select matching assertion fails with correct function', () => (
+test('negative select matching assertion fails with correct function', () =>
   expectSaga(saga)
     .withState(storeState)
     .not.select.selector(getData)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('put assertion fails with wrong payload', () => (
+test('put assertion fails with wrong payload', () =>
   expectSaga(saga)
     .withState(storeState)
     .put({ type: 'DATA', payload: 'hello' })
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));

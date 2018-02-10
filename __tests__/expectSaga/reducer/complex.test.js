@@ -46,7 +46,7 @@ function* saga() {
   yield put({ type: AGE_AFTER, payload: ageAfter });
 }
 
-test('handles dispatches only for reducer', () => (
+test('handles dispatches only for reducer', () =>
   expectSaga(saga)
     .withReducer(dogReducer)
 
@@ -58,10 +58,9 @@ test('handles dispatches only for reducer', () => (
     .dispatch({ type: HAD_BIRTHDAY })
     .dispatch({ type: DONE })
 
-    .run()
-));
+    .run());
 
-test('fails with wrong put payload', () => (
+test('fails with wrong put payload', () =>
   expectSaga(saga)
     .withReducer(dogReducer)
 
@@ -75,7 +74,6 @@ test('fails with wrong put payload', () => (
 
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));

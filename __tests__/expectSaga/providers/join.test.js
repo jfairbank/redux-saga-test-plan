@@ -17,9 +17,7 @@ function* saga() {
 }
 
 const forkProvider = task => ({
-  fork: ({ fn }, next) => (
-    fn === backgroundSaga ? task : next()
-  ),
+  fork: ({ fn }, next) => (fn === backgroundSaga ? task : next()),
 });
 
 test('uses provided value for `join`', () => {
@@ -45,10 +43,7 @@ test('uses static provided values from redux-saga/effects', () => {
   const fakeTask = createMockTask();
 
   return expectSaga(saga)
-    .provide([
-      [join(fakeTask), 'hello'],
-      forkProvider(fakeTask),
-    ])
+    .provide([[join(fakeTask), 'hello'], forkProvider(fakeTask)])
     .put({ type: 'DONE', payload: 'hello' })
     .run();
 });
@@ -57,10 +52,7 @@ test('uses static provided values from matchers', () => {
   const fakeTask = createMockTask();
 
   return expectSaga(saga)
-    .provide([
-      [m.join(fakeTask), 'hello'],
-      forkProvider(fakeTask),
-    ])
+    .provide([[m.join(fakeTask), 'hello'], forkProvider(fakeTask)])
     .put({ type: 'DONE', payload: 'hello' })
     .run();
 });
@@ -82,10 +74,13 @@ test('dynamic values have access to task', () => {
 
   return expectSaga(saga)
     .provide([
-      [m.join(fakeTask), dynamic((task) => {
-        expect(task).toBe(fakeTask);
-        return 'hello';
-      })],
+      [
+        m.join(fakeTask),
+        dynamic(task => {
+          expect(task).toBe(fakeTask);
+          return 'hello';
+        }),
+      ],
 
       forkProvider(fakeTask),
     ])

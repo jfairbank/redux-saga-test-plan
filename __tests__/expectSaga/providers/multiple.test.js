@@ -13,17 +13,13 @@ const fakeUser = { name: 'John Doe' };
 const fakeDog = { name: 'Tucker' };
 const fakeOtherData = { foo: 'bar' };
 
-const provideUser = ({ fn, args: [id] }, next) => (
-  fn === findUser && id === 1 ? fakeUser : next()
-);
+const provideUser = ({ fn, args: [id] }, next) =>
+  fn === findUser && id === 1 ? fakeUser : next();
 
-const provideDog = ({ fn }, next) => (
-  fn === findDog ? fakeDog : next()
-);
+const provideDog = ({ fn }, next) => (fn === findDog ? fakeDog : next());
 
-const provideOtherData = ({ selector }, next) => (
-  selector === getOtherData ? fakeOtherData : next()
-);
+const provideOtherData = ({ selector }, next) =>
+  selector === getOtherData ? fakeOtherData : next();
 
 function* saga() {
   const user = yield call(findUser, 1);
@@ -52,10 +48,7 @@ function* parallelSaga() {
 }
 
 function* allSaga() {
-  const [user, dog] = yield all([
-    call(findUser, 1),
-    call(findDog),
-  ]);
+  const [user, dog] = yield all([call(findUser, 1), call(findDog)]);
 
   const { greeting, otherData } = yield all({
     greeting: call(findGreeting),
@@ -68,13 +61,10 @@ function* allSaga() {
   });
 }
 
-test('composes multiple providers', () => (
+test('composes multiple providers', () =>
   expectSaga(saga)
     .provide({
-      call: composeProviders(
-        provideUser,
-        provideDog,
-      ),
+      call: composeProviders(provideUser, provideDog),
 
       select: provideOtherData,
     })
@@ -87,10 +77,9 @@ test('composes multiple providers', () => (
         otherData: fakeOtherData,
       },
     })
-    .run()
-));
+    .run());
 
-test('takes multiple providers and composes them', () => (
+test('takes multiple providers and composes them', () =>
   expectSaga(saga)
     .provide([
       { call: provideUser, select: provideOtherData },
@@ -105,10 +94,9 @@ test('takes multiple providers and composes them', () => (
         otherData: fakeOtherData,
       },
     })
-    .run()
-));
+    .run());
 
-test('takes static providers from redux-saga/effects or matchers', () => (
+test('takes static providers from redux-saga/effects or matchers', () =>
   expectSaga(saga)
     .provide([
       [call(findUser, 1), fakeUser],
@@ -124,10 +112,9 @@ test('takes static providers from redux-saga/effects or matchers', () => (
         otherData: fakeOtherData,
       },
     })
-    .run()
-));
+    .run());
 
-test('takes static and dynamics providers', () => (
+test('takes static and dynamics providers', () =>
   expectSaga(saga)
     .provide([
       [call(findUser, 1), fakeUser],
@@ -143,10 +130,9 @@ test('takes static and dynamics providers', () => (
         otherData: fakeOtherData,
       },
     })
-    .run()
-));
+    .run());
 
-test('provides for effects yielded in parallel', () => (
+test('provides for effects yielded in parallel', () =>
   expectSaga(parallelSaga)
     .provide([
       [call(findUser, 1), fakeUser],
@@ -162,10 +148,9 @@ test('provides for effects yielded in parallel', () => (
         otherData: fakeOtherData,
       },
     })
-    .run()
-));
+    .run());
 
-test('provides for effects yielded in `all`', () => (
+test('provides for effects yielded in `all`', () =>
   expectSaga(allSaga)
     .provide([
       [call(findUser, 1), fakeUser],
@@ -181,8 +166,7 @@ test('provides for effects yielded in `all`', () => (
         otherData: fakeOtherData,
       },
     })
-    .run()
-));
+    .run());
 
 test('works with multiple dynamic providers', () => {
   const fn = a => a + 2;
@@ -195,13 +179,9 @@ test('works with multiple dynamic providers', () => {
     yield put({ type: 'DONE', payload: x + y + z });
   }
 
-  const provideDouble = ({ args: [a] }, next) => (
-    a === 6 ? a * 2 : next()
-  );
+  const provideDouble = ({ args: [a] }, next) => (a === 6 ? a * 2 : next());
 
-  const provideTriple = ({ args: [a] }, next) => (
-    a > 4 ? a * 3 : next()
-  );
+  const provideTriple = ({ args: [a] }, next) => (a > 4 ? a * 3 : next());
 
   return expectSaga(someSaga)
     .provide([

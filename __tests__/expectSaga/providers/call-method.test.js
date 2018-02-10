@@ -20,7 +20,7 @@ function* saga() {
   yield put({ type: 'DONE', payload: value + otherValue });
 }
 
-test('uses provided value for `call` with method string', () => (
+test('uses provided value for `call` with method string', () =>
   expectSaga(saga)
     .provide({
       call({ fn, args: [arg] }, next) {
@@ -32,8 +32,7 @@ test('uses provided value for `call` with method string', () => (
       },
     })
     .put({ type: 'DONE', payload: 43 })
-    .run()
-));
+    .run());
 
 test('provides values in deeply called sagas', () => {
   const context = {
@@ -41,20 +40,19 @@ test('provides values in deeply called sagas', () => {
   };
 
   const sagas = {
-    * fetchUserSaga() {
+    *fetchUserSaga() {
       const user = yield call([context, 'fetchUser']);
       yield put({ type: 'RECEIVE_USER', payload: user });
     },
 
-    * anotherSaga() {
+    *anotherSaga() {
       yield call([sagas, 'fetchUserSaga']);
     },
 
-    * someSaga() {
+    *someSaga() {
       yield call([sagas, 'anotherSaga']);
     },
   };
-
 
   function* localSaga() {
     yield call([sagas, 'someSaga']);
@@ -74,47 +72,34 @@ test('provides values in deeply called sagas', () => {
     .run();
 });
 
-test('uses static provided values from redux-saga/effects', () => (
+test('uses static provided values from redux-saga/effects', () =>
   expectSaga(saga)
-    .provide([
-      [call([object, 'apiFunction'], 21), 42],
-    ])
+    .provide([[call([object, 'apiFunction'], 21), 42]])
     .put({ type: 'DONE', payload: 43 })
-    .run()
-));
+    .run());
 
-test('uses static provided values from matchers', () => (
+test('uses static provided values from matchers', () =>
   expectSaga(saga)
-    .provide([
-      [m.call([object, 'apiFunction'], 21), 42],
-    ])
+    .provide([[m.call([object, 'apiFunction'], 21), 42]])
     .put({ type: 'DONE', payload: 43 })
-    .run()
-));
+    .run());
 
-test('uses partial static provided values from matchers', () => (
+test('uses partial static provided values from matchers', () =>
   expectSaga(saga)
-    .provide([
-      [m.call.fn(object.apiFunction), 42],
-    ])
+    .provide([[m.call.fn(object.apiFunction), 42]])
     .put({ type: 'DONE', payload: 43 })
-    .run()
-));
+    .run());
 
-test('uses dynamic values for static providers', () => (
+test('uses dynamic values for static providers', () =>
   expectSaga(saga)
-    .provide([
-      [m.call.fn(object.apiFunction), dynamic(() => 42)],
-    ])
+    .provide([[m.call.fn(object.apiFunction), dynamic(() => 42)]])
     .put({ type: 'DONE', payload: 43 })
-    .run()
-));
+    .run());
 
-test('dynamic values have access to effect', () => (
+test('dynamic values have access to effect', () =>
   expectSaga(saga)
     .provide([
       [m.call.fn(object.apiFunction), dynamic(effect => effect.args[0] * 3)],
     ])
     .put({ type: 'DONE', payload: 64 })
-    .run()
-));
+    .run());

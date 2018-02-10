@@ -1,6 +1,4 @@
-const local = typeof window !== 'undefined'
-  ? window
-  : global;
+const local = typeof window !== 'undefined' ? window : global;
 
 delete local.setImmediate;
 

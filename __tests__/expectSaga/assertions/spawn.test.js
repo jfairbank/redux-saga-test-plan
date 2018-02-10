@@ -22,134 +22,116 @@ function* unusedSaga() {
   yield put({ type: 'SPAWNED' });
 }
 
-test('spawn assertion passes', () => (
+test('spawn assertion passes', () =>
   expectSaga(saga)
     .spawn(otherSaga)
-    .run()
-));
+    .run());
 
-test('spawn matching assertion fn passes', () => (
+test('spawn matching assertion fn passes', () =>
   expectSaga(saga)
     .spawn.fn(otherSaga)
-    .run()
-));
+    .run());
 
-test('negative spawn assertion passes', () => (
+test('negative spawn assertion passes', () =>
   expectSaga(saga)
     .not.spawn(unusedSaga)
-    .run()
-));
+    .run());
 
-test('negative spawn matching assertion fn passes', () => (
+test('negative spawn matching assertion fn passes', () =>
   expectSaga(saga)
     .not.spawn.fn(unusedSaga)
-    .run()
-));
+    .run());
 
-test('spawn assertion with arg passes', () => (
+test('spawn assertion with arg passes', () =>
   expectSaga(sagaWithArg, 42)
     .spawn(otherSagaWithArg, 42)
-    .run()
-));
+    .run());
 
-test('negative spawn assertion with arg passes', () => (
+test('negative spawn assertion with arg passes', () =>
   expectSaga(sagaWithArg, 42)
     .not.spawn(otherSagaWithArg, 43)
-    .run()
-));
+    .run());
 
-test('spawn.like matching fn and args passes', () => (
+test('spawn.like matching fn and args passes', () =>
   expectSaga(sagaWithArg, 42)
     .spawn.like({ fn: otherSagaWithArg, args: [42] })
-    .run()
-));
+    .run());
 
-test('negative spawn.like matching fn and args passes with bad fn', () => (
+test('negative spawn.like matching fn and args passes with bad fn', () =>
   expectSaga(sagaWithArg, 42)
     .not.spawn.like({ fn: unusedSaga, args: [42] })
-    .run()
-));
+    .run());
 
-test('negative spawn.like matching fn and args passes with bad args', () => (
+test('negative spawn.like matching fn and args passes with bad args', () =>
   expectSaga(sagaWithArg, 42)
     .not.spawn.like({ fn: otherSagaWithArg, args: [43] })
-    .run()
-));
+    .run());
 
-test('negative spawn.like matching fn and args passes with bad fn and args', () => (
+test('negative spawn.like matching fn and args passes with bad fn and args', () =>
   expectSaga(sagaWithArg, 42)
     .not.spawn.like({ fn: unusedSaga, args: [43] })
-    .run()
-));
+    .run());
 
-test('spawned saga runs', () => (
+test('spawned saga runs', () =>
   expectSaga(saga)
     .put({ type: 'SPAWNED' })
-    .run()
-));
+    .run());
 
-test('spawned saga with arg runs', () => (
+test('spawned saga with arg runs', () =>
   expectSaga(sagaWithArg, 42)
     .put({ type: 'SPAWNED', payload: 42 })
-    .run()
-));
+    .run());
 
-test('spawn assertion fails', () => (
+test('spawn assertion fails', () =>
   expectSaga(saga)
     .spawn(otherSagaWithArg)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative spawn assertion fails', () => (
+test('negative spawn assertion fails', () =>
   expectSaga(saga)
     .not.spawn(otherSaga)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('spawn matching assertion fn fails', () => (
+test('spawn matching assertion fn fails', () =>
   expectSaga(saga)
     .spawn.fn(otherSagaWithArg)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative spawn matching assertion fn fails', () => (
+test('negative spawn matching assertion fn fails', () =>
   expectSaga(saga)
     .not.spawn.fn(otherSaga)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('spawn assertion with arg fails', () => (
+test('spawn assertion with arg fails', () =>
   expectSaga(sagaWithArg, 42)
     .spawn(otherSagaWithArg, 43)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative spawn assertion with arg fails', () => (
+test('negative spawn assertion with arg fails', () =>
   expectSaga(sagaWithArg, 42)
     .not.spawn(otherSagaWithArg, 42)
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));

@@ -58,12 +58,7 @@ export default function validateEffects(
       );
     }
 
-    return validateTakeHelper(
-      effectName,
-      actual,
-      expected,
-      stepNumber,
-    );
+    return validateTakeHelper(effectName, actual, expected, stepNumber);
   }
 
   if (Array.isArray(actual) && !Array.isArray(expected)) {
@@ -88,16 +83,11 @@ export default function validateEffects(
 
   const bothEqual = isEqual(actual, expected);
 
-  const effectsDifferent = (
+  const effectsDifferent =
     (isHelperEffect && !bothEqual) ||
-    (
-      !isHelperEffect &&
-      (
-        (!Array.isArray(actual) && !actual[effectKey]) ||
-        (!Array.isArray(expected) && !expected[effectKey])
-      )
-    )
-  );
+    (!isHelperEffect &&
+      ((!Array.isArray(actual) && !actual[effectKey]) ||
+        (!Array.isArray(expected) && !expected[effectKey])));
 
   if (effectsDifferent) {
     return createErrorMessage(

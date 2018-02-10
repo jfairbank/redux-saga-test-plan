@@ -90,7 +90,7 @@ test('exposes all yielded effects in order', () => {
 
   return expectSaga(saga)
     .run()
-    .then((result) => {
+    .then(result => {
       expect(result.allEffects).toEqual([
         call(identity, 42),
         put({ type: 'HELLO' }),

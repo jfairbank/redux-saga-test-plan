@@ -14,7 +14,7 @@ export default function validateHelperNamesMatch(
     if (actualEffectName !== effectName) {
       return createErrorMessage(
         `expected a ${effectName} helper effect, but the saga used a ` +
-        `${actualEffectName} helper effect`,
+          `${actualEffectName} helper effect`,
         stepNumber,
         actualEffectName,
         effectName,

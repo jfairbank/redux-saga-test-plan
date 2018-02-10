@@ -17,25 +17,31 @@ function* regularBackgroundSaga() {
   yield put({ type: 'DONE' });
 }
 
-const createRegularSaga = effectCreator => function* saga() {
-  const task = yield effectCreator(regularBackgroundSaga);
-  return task.name;
-};
+const createRegularSaga = effectCreator =>
+  function* saga() {
+    const task = yield effectCreator(regularBackgroundSaga);
+    return task.name;
+  };
 
-const createParallelSaga = effectCreator => function* saga() {
-  const [task] = yield [effectCreator(regularBackgroundSaga)];
-  return task.name;
-};
+const createParallelSaga = effectCreator =>
+  function* saga() {
+    const [task] = yield [effectCreator(regularBackgroundSaga)];
+    return task.name;
+  };
 
-const createAllSaga = effectCreator => function* saga() {
-  const [task] = yield all([effectCreator(regularBackgroundSaga)]);
-  return task.name;
-};
+const createAllSaga = effectCreator =>
+  function* saga() {
+    const [task] = yield all([effectCreator(regularBackgroundSaga)]);
+    return task.name;
+  };
 
-const createRaceSaga = effectCreator => function* saga() {
-  const { saga: task } = yield race({ saga: effectCreator(regularBackgroundSaga) });
-  return task.name;
-};
+const createRaceSaga = effectCreator =>
+  function* saga() {
+    const { saga: task } = yield race({
+      saga: effectCreator(regularBackgroundSaga),
+    });
+    return task.name;
+  };
 
 function* cancelledBackgroundSaga() {
   try {
@@ -49,29 +55,35 @@ function* cancelledBackgroundSaga() {
   }
 }
 
-const createCancelSaga = effectCreator => function* saga() {
-  const task = yield effectCreator(cancelledBackgroundSaga);
-  yield call(delay, 50);
-  yield cancel(task);
-};
+const createCancelSaga = effectCreator =>
+  function* saga() {
+    const task = yield effectCreator(cancelledBackgroundSaga);
+    yield call(delay, 50);
+    yield cancel(task);
+  };
 
-const createCancelParallelSaga = effectCreator => function* saga() {
-  const [task] = yield [effectCreator(cancelledBackgroundSaga)];
-  yield call(delay, 50);
-  yield cancel(task);
-};
+const createCancelParallelSaga = effectCreator =>
+  function* saga() {
+    const [task] = yield [effectCreator(cancelledBackgroundSaga)];
+    yield call(delay, 50);
+    yield cancel(task);
+  };
 
-const createCancelAllSaga = effectCreator => function* saga() {
-  const [task] = yield all([effectCreator(cancelledBackgroundSaga)]);
-  yield call(delay, 50);
-  yield cancel(task);
-};
+const createCancelAllSaga = effectCreator =>
+  function* saga() {
+    const [task] = yield all([effectCreator(cancelledBackgroundSaga)]);
+    yield call(delay, 50);
+    yield cancel(task);
+  };
 
-const createCancelRaceSaga = effectCreator => function* saga() {
-  const { saga: task } = yield race({ saga: effectCreator(cancelledBackgroundSaga) });
-  yield call(delay, 50);
-  yield cancel(task);
-};
+const createCancelRaceSaga = effectCreator =>
+  function* saga() {
+    const { saga: task } = yield race({
+      saga: effectCreator(cancelledBackgroundSaga),
+    });
+    yield call(delay, 50);
+    yield cancel(task);
+  };
 
 test('wrapped sagas return a task with a name referring to the forked saga', () => {
   const saga = createRegularSaga(fork);

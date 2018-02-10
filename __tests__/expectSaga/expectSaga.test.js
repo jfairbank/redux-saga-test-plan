@@ -1,5 +1,13 @@
 /* eslint-disable no-constant-condition */
-import { call, take, takeEvery, fork, join, put, spawn } from 'redux-saga/effects';
+import {
+  call,
+  take,
+  takeEvery,
+  fork,
+  join,
+  put,
+  spawn,
+} from 'redux-saga/effects';
 import { warn } from 'utils/logging';
 import { delay } from 'utils/async';
 import expectSaga from 'expectSaga';
@@ -28,7 +36,9 @@ test('warns if times out with default timeout', async () => {
   expect(warn).toHaveBeenCalledTimes(1);
 
   const [[actual]] = warn.mock.calls;
-  const expected = `Saga exceeded async timeout of ${expectSaga.DEFAULT_TIMEOUT}ms`;
+  const expected = `Saga exceeded async timeout of ${
+    expectSaga.DEFAULT_TIMEOUT
+  }ms`;
 
   expect(actual).toMatch(expected);
 });
@@ -189,7 +199,7 @@ test('waits for promises that were added later on', async () => {
   expect(mock).toHaveBeenCalled();
 });
 
-test('doesn\'t extend timeout period when new promises are added', async () => {
+test("doesn't extend timeout period when new promises are added", async () => {
   warn.mockClear();
 
   const mock = jest.fn();
@@ -205,7 +215,7 @@ test('doesn\'t extend timeout period when new promises are added', async () => {
   expect(mock).not.toHaveBeenCalled();
 });
 
-test('times out if promise doesn\'t resolve in time', async () => {
+test("times out if promise doesn't resolve in time", async () => {
   warn.mockClear();
 
   function* saga() {
@@ -238,14 +248,13 @@ test('times out even if promises keep getting added', async () => {
   }
 
   function* sagas() {
-    yield [
-      fork(saga),
-      fork(otherSaga),
-    ];
+    yield [fork(saga), fork(otherSaga)];
   }
 
   const promise = Promise.race([
-    expectSaga(sagas).run(200).then(() => false),
+    expectSaga(sagas)
+      .run(200)
+      .then(() => false),
     delay(250).then(() => true),
   ]);
 
@@ -290,8 +299,7 @@ test('terminates and does not wait for Call effect Promises', async () => {
     }
   }
 
-  await expectSaga(saga)
-    .run(false);
+  await expectSaga(saga).run(false);
 
   expect(warn).not.toHaveBeenCalled();
 });

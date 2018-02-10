@@ -14,7 +14,7 @@ function* putResolveSaga() {
   yield put({ type: 'WORLD', payload: result });
 }
 
-test('uses provided value for `put`', () => (
+test('uses provided value for `put`', () =>
   expectSaga(putSaga)
     .provide({
       put({ action }, next) {
@@ -26,61 +26,50 @@ test('uses provided value for `put`', () => (
       },
     })
     .put({ type: 'WORLD', payload: 42 })
-    .run()
-));
+    .run());
 
-test('`put` uses static provided values from redux-saga/effects', () => (
+test('`put` uses static provided values from redux-saga/effects', () =>
   expectSaga(putSaga)
-    .provide([
-      [put({ type: 'HELLO' }), 42],
-    ])
+    .provide([[put({ type: 'HELLO' }), 42]])
     .put({ type: 'WORLD', payload: 42 })
-    .run()
-));
+    .run());
 
-test('`put` uses static provided values from matchers', () => (
+test('`put` uses static provided values from matchers', () =>
   expectSaga(putSaga)
-    .provide([
-      [m.put({ type: 'HELLO' }), 42],
-    ])
+    .provide([[m.put({ type: 'HELLO' }), 42]])
     .put({ type: 'WORLD', payload: 42 })
-    .run()
-));
+    .run());
 
-test('`put` uses partial static provided values from matchers', () => (
+test('`put` uses partial static provided values from matchers', () =>
   expectSaga(putSaga)
-    .provide([
-      [m.put.actionType('HELLO'), 42],
-    ])
+    .provide([[m.put.actionType('HELLO'), 42]])
     .put({ type: 'WORLD', payload: 42 })
-    .run()
-));
+    .run());
 
-test('`put` uses dynamic values for static providers', () => (
+test('`put` uses dynamic values for static providers', () =>
   expectSaga(putSaga)
-    .provide([
-      [m.put.actionType('HELLO'), dynamic(() => 42)],
-    ])
+    .provide([[m.put.actionType('HELLO'), dynamic(() => 42)]])
     .put({ type: 'WORLD', payload: 42 })
-    .run()
-));
+    .run());
 
-test('`put` dynamic values have access to effect', () => (
+test('`put` dynamic values have access to effect', () =>
   expectSaga(putSaga)
     .provide([
-      [m.put.actionType('HELLO'), dynamic(effect => ({
-        type: effect.action.type,
-        payload: 42,
-      }))],
+      [
+        m.put.actionType('HELLO'),
+        dynamic(effect => ({
+          type: effect.action.type,
+          payload: 42,
+        })),
+      ],
     ])
     .put({
       type: 'WORLD',
       payload: { type: 'HELLO', payload: 42 },
     })
-    .run()
-));
+    .run());
 
-test('uses provided value for `put.resolve`', () => (
+test('uses provided value for `put.resolve`', () =>
   expectSaga(putResolveSaga)
     .provide({
       put({ resolve, action }, next) {
@@ -92,56 +81,45 @@ test('uses provided value for `put.resolve`', () => (
       },
     })
     .put({ type: 'WORLD', payload: 42 })
-    .run()
-));
+    .run());
 
-test('`put.resolve` uses static provided values from redux-saga/effects', () => (
+test('`put.resolve` uses static provided values from redux-saga/effects', () =>
   expectSaga(putResolveSaga)
-    .provide([
-      [put.resolve({ type: 'HELLO' }), 42],
-    ])
+    .provide([[put.resolve({ type: 'HELLO' }), 42]])
     .put({ type: 'WORLD', payload: 42 })
-    .run()
-));
+    .run());
 
-test('`put.resolve` uses static provided values from matchers', () => (
+test('`put.resolve` uses static provided values from matchers', () =>
   expectSaga(putResolveSaga)
-    .provide([
-      [m.put.resolve({ type: 'HELLO' }), 42],
-    ])
+    .provide([[m.put.resolve({ type: 'HELLO' }), 42]])
     .put({ type: 'WORLD', payload: 42 })
-    .run()
-));
+    .run());
 
-test('`put.resolve` uses partial static provided values from matchers', () => (
+test('`put.resolve` uses partial static provided values from matchers', () =>
   expectSaga(putResolveSaga)
-    .provide([
-      [m.put.resolve.actionType('HELLO'), 42],
-    ])
+    .provide([[m.put.resolve.actionType('HELLO'), 42]])
     .put({ type: 'WORLD', payload: 42 })
-    .run()
-));
+    .run());
 
-test('`put.resolve` uses dynamic values for static providers', () => (
+test('`put.resolve` uses dynamic values for static providers', () =>
   expectSaga(putResolveSaga)
-    .provide([
-      [m.put.resolve.actionType('HELLO'), dynamic(() => 42)],
-    ])
+    .provide([[m.put.resolve.actionType('HELLO'), dynamic(() => 42)]])
     .put({ type: 'WORLD', payload: 42 })
-    .run()
-));
+    .run());
 
-test('`put.resolve` dynamic values have access to effect', () => (
+test('`put.resolve` dynamic values have access to effect', () =>
   expectSaga(putResolveSaga)
     .provide([
-      [m.put.resolve.actionType('HELLO'), dynamic(effect => ({
-        type: effect.action.type,
-        payload: 42,
-      }))],
+      [
+        m.put.resolve.actionType('HELLO'),
+        dynamic(effect => ({
+          type: effect.action.type,
+          payload: 42,
+        })),
+      ],
     ])
     .put({
       type: 'WORLD',
       payload: { type: 'HELLO', payload: 42 },
     })
-    .run()
-));
+    .run());

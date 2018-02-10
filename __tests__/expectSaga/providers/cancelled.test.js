@@ -12,38 +12,28 @@ function* saga() {
   }
 }
 
-test('uses provided value for `cancelled`', () => (
+test('uses provided value for `cancelled`', () =>
   expectSaga(saga)
     .provide({
       cancelled: () => true,
     })
     .put({ type: 'CANCELLED' })
-    .run()
-));
+    .run());
 
-test('uses static provided values from redux-saga/effects', () => (
+test('uses static provided values from redux-saga/effects', () =>
   expectSaga(saga)
-    .provide([
-      [cancelled(), true],
-    ])
+    .provide([[cancelled(), true]])
     .put({ type: 'CANCELLED' })
-    .run()
-));
+    .run());
 
-test('uses static provided values from matchers', () => (
+test('uses static provided values from matchers', () =>
   expectSaga(saga)
-    .provide([
-      [m.cancelled(), true],
-    ])
+    .provide([[m.cancelled(), true]])
     .put({ type: 'CANCELLED' })
-    .run()
-));
+    .run());
 
-test('uses dynamic values for static providers', () => (
+test('uses dynamic values for static providers', () =>
   expectSaga(saga)
-    .provide([
-      [m.cancelled(), dynamic(() => true)],
-    ])
+    .provide([[m.cancelled(), dynamic(() => true)]])
     .put({ type: 'CANCELLED' })
-    .run()
-));
+    .run());

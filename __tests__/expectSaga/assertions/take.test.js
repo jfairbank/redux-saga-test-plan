@@ -8,34 +8,30 @@ function* saga() {
   yield take('READY');
 }
 
-test('take assertion passes', () => (
+test('take assertion passes', () =>
   expectSaga(saga)
     .take('READY')
-    .run()
-));
+    .run());
 
-test('negative take assertion passes', () => (
+test('negative take assertion passes', () =>
   expectSaga(saga)
     .not.take('FOO')
-    .run()
-));
+    .run());
 
-test('take assertion fails', () => (
+test('take assertion fails', () =>
   expectSaga(saga)
     .take('FOO')
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
 
-test('negative take assertion fails', () => (
+test('negative take assertion fails', () =>
   expectSaga(saga)
     .not.take('READY')
     .run()
     .then(unreachableError)
-    .catch((e) => {
+    .catch(e => {
       expect(e.message).toMatch(errorRegex);
-    })
-));
+    }));
