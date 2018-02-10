@@ -52,12 +52,15 @@ function* parallelSaga() {
 }
 
 function* allSaga() {
-  const [user, dog, greeting, otherData] = yield all([
+  const [user, dog] = yield all([
     call(findUser, 1),
     call(findDog),
-    call(findGreeting),
-    select(getOtherData),
   ]);
+
+  const { greeting, otherData } = yield all({
+    greeting: call(findGreeting),
+    otherData: select(getOtherData),
+  });
 
   yield put({
     type: 'DONE',

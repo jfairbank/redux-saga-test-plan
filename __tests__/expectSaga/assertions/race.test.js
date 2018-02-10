@@ -20,12 +20,30 @@ function* saga(fetchData) {
   yield put({ type: 'DONE', success: !!success });
 }
 
+function* sagaWithArray(fetchData) {
+  const [success] = yield race([
+    call(fetchData),
+    take('CANCEL'),
+  ]);
+
+  yield put({ type: 'DONE', success: !!success });
+}
+
 test('race assertion passes', () => (
   expectSaga(saga, quickFetchData)
     .race({
       success: call(quickFetchData),
       cancel: take('CANCEL'),
     })
+    .run()
+));
+
+test('race assertion with array passes', () => (
+  expectSaga(sagaWithArray, quickFetchData)
+    .race([
+      call(quickFetchData),
+      take('CANCEL'),
+    ])
     .run()
 ));
 

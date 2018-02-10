@@ -161,10 +161,10 @@ export default function expectSaga(generator: Function, ...sagaArgs: mixed[]): E
           effect: value,
         });
 
-        return race(mapValues(effect, refineYieldedValue));
+        return race(parsedEffect.mapEffects(refineYieldedValue));
 
       case type === ALL && !localProviders.all:
-        return parsedEffect.effects.map(refineYieldedValue);
+        return parsedEffect.mapEffects(refineYieldedValue);
 
       case type === FORK: {
         const { args, detached, context, fn } = effect;

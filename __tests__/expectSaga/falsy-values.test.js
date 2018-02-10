@@ -50,10 +50,13 @@ test('can receive falsy values from calls in `all`', () => {
       call(returnFalse),
       call(returnNull),
       call(returnUndefined),
-      call(returnEmptyString),
-      call(return0),
-      call(returnNaN),
     ]);
+
+    yield all({
+      foo: call(returnEmptyString),
+      bar: call(return0),
+      baz: call(returnNaN),
+    });
 
     yield put({ type: 'DONE' });
   }
@@ -73,6 +76,15 @@ test('can receive falsy values from calls in race', () => {
       zero: call(return0),
       NaN: call(returnNaN),
     });
+
+    yield race([
+      call(returnFalse),
+      call(returnNull),
+      call(returnUndefined),
+      call(returnEmptyString),
+      call(return0),
+      call(returnNaN),
+    ]);
 
     yield put({ type: 'DONE' });
   }
@@ -139,10 +151,13 @@ test('can receive falsy values from providers in `all`', () => {
       call(returnFalse),
       call(returnNull),
       call(returnUndefined),
-      call(returnEmptyString),
-      call(return0),
-      call(returnNaN),
     ]);
+
+    yield all({
+      foo: call(returnEmptyString),
+      bar: call(return0),
+      baz: call(returnNaN),
+    });
 
     yield put({ type: 'DONE' });
   }

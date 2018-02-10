@@ -19,7 +19,21 @@ import {
   TAKE,
 } from '../shared/keys';
 
+import { mapValues } from '../utils/object';
+
 const { asEffect, is } = utils;
+
+const createEffectWithNestedEffects = type => (effect, extra) => ({
+  type,
+  effect,
+  ...extra,
+  mapEffects: Array.isArray(effect)
+    ? f => effect.map(f)
+    : f => mapValues(effect, f),
+});
+
+const createAll = createEffectWithNestedEffects(ALL);
+const createRace = createEffectWithNestedEffects(RACE);
 
 export default function parseEffect(effect: Object): Object {
   let parsedEffect;
@@ -40,11 +54,7 @@ export default function parseEffect(effect: Object): Object {
       };
 
     case is.notUndef(parsedEffect = asEffect.race(effect)):
-      return {
-        type: RACE,
-        effect: parsedEffect,
-        providerKey: 'race',
-      };
+      return createRace(parsedEffect, { providerKey: 'race' });
 
     case is.notUndef(parsedEffect = asEffect.call(effect)):
       return {
@@ -110,10 +120,10 @@ export default function parseEffect(effect: Object): Object {
       };
 
     case is.notUndef(parsedEffect = asEffect.all(effect)):
-      return { type: ALL, effects: parsedEffect };
+      return createAll(parsedEffect);
 
     case Array.isArray(effect):
-      return { type: ALL, effects: effect };
+      return createAll(effect);
 
     default:
       return { type: NONE };

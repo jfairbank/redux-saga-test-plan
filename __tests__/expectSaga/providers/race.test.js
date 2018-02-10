@@ -25,10 +25,10 @@ function* sagaTwo(fetchUser) {
   const action = yield take('REQUEST_USER');
   const id = action.payload;
 
-  const { user } = yield race({
-    user: call(fetchUser, id),
-    timeout: call(delay, 500),
-  });
+  const [user] = yield race([
+    call(fetchUser, id),
+    call(delay, 500),
+  ]);
 
   if (user) {
     yield put({ type: 'RECEIVE_USER', payload: user });
