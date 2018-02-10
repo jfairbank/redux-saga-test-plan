@@ -1,3 +1,37 @@
+## v3.5.0
+
+### NEW - Support `all` effect with inner object
+
+```js
+function* saga() {
+  const { name, age } = yield all({
+    name: select(selectors.getName),
+    age: select(selectors.getAge),
+  });
+
+  yield put({ type: 'USER', payload: { name, age } });
+}
+```
+
+### NEW - Support `race` effect with inner array
+
+```js
+function* saga(id) {
+  const [user] = yield race([
+    call(getUser, id),
+    call(delay, 1000),
+  ]);
+
+  if (user) {
+    yield put({ type: 'USER', payload: user });
+  } else {
+    yield put({ type: 'TIMEOUT' });
+  }
+}
+```
+
+---
+
 ## v3.4.1
 
 ### Bug Fixes
