@@ -72,7 +72,7 @@
     "gitbook-plugin-advanced-emoji": "^0.2.2",
     "gitbook-plugin-github": "^2.0.0",
     "jest": "^21.1.0",
-    "prettier": "1.10.2",
+    "prettier": "1.11.0",
     "redux": "^3.6.0",
     "redux-saga": "^0.16.0",
     "rimraf": "^2.5.4"
