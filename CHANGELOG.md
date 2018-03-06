@@ -1,3 +1,11 @@
+## v3.5.1
+
+### Bug Fixes
+
+* Fix incorrect TypeScript typing for `silentRun` (#154, credit [@mrijke](https://github.com/mrijke))
+
+---
+
 ## v3.5.0
 
 ### NEW - Support `all` effect with inner object
