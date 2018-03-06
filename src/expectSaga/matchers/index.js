@@ -9,11 +9,13 @@ export const cancel = wrapEffectCreator(effects.cancel);
 export const cancelled = wrapEffectCreator(effects.cancelled);
 export const cps = wrapEffectCreator(effects.cps);
 export const flush = wrapEffectCreator(effects.flush);
+export const getContext = wrapEffectCreator(effects.getContext);
 export const fork = wrapEffectCreator(effects.fork);
 export const join = wrapEffectCreator(effects.join);
 export const put = wrapEffectCreator(effects.put);
 export const race = wrapEffectCreator(effects.race);
 export const select = wrapEffectCreator(effects.select);
+export const setContext = wrapEffectCreator(effects.setContext);
 export const spawn = wrapEffectCreator(effects.spawn);
 export const take = wrapEffectCreator(effects.take);
 

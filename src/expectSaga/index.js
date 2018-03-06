@@ -35,9 +35,11 @@ import {
   CALL,
   CPS,
   FORK,
+  GET_CONTEXT,
   PUT,
   RACE,
   SELECT,
+  SET_CONTEXT,
   TAKE,
 } from '../shared/keys';
 
@@ -83,7 +85,9 @@ const exposableEffects = {
   [CALL]: 'call',
   [CPS]: 'cps',
   [FORK]: 'fork',
+  [GET_CONTEXT]: 'getContext',
   [SELECT]: 'select',
+  [SET_CONTEXT]: 'setContext',
   [ACTION_CHANNEL]: 'actionChannel',
 };
 
@@ -99,6 +103,8 @@ export default function expectSaga(
     [CALL]: new ArraySet(),
     [CPS]: new ArraySet(),
     [FORK]: new ArraySet(),
+    [GET_CONTEXT]: new ArraySet(),
+    [SET_CONTEXT]: new ArraySet(),
     [SELECT]: new ArraySet(),
     [ACTION_CHANNEL]: new ArraySet(),
   };
@@ -484,10 +490,20 @@ export default function expectSaga(
     call: createEffectTesterFromEffects('call', CALL, asEffect.call),
     cps: createEffectTesterFromEffects('cps', CPS, asEffect.cps),
     fork: createEffectTesterFromEffects('fork', FORK, asEffect.fork),
+    getContext: createEffectTesterFromEffects(
+      'getContext',
+      GET_CONTEXT,
+      asEffect.getContext,
+    ),
     put: createEffectTesterFromEffects('put', PUT, asEffect.put),
     race: createEffectTesterFromEffects('race', RACE, asEffect.race),
     select: createEffectTesterFromEffects('select', SELECT, asEffect.select),
     spawn: createEffectTesterFromEffects('spawn', FORK, asEffect.fork),
+    setContext: createEffectTesterFromEffects(
+      'setContext',
+      SET_CONTEXT,
+      asEffect.setContext,
+    ),
     take: createEffectTesterFromEffects('take', TAKE, asEffect.take),
   };
 
