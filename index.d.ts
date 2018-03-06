@@ -38,7 +38,7 @@ export interface ExpectApi extends ExpectApiEffects {
     /** default timeout 250ms */
     run(timeout?: Timeout | TimeoutConfig): Promise<RunResult>;
     /** default timeout 250ms */
-    silentRun(timeout?: Timeout | TimeoutConfig): ExpectApi;
+    silentRun(timeout?: Timeout | TimeoutConfig): Promise<RunResult>;
     provide(newProviders: EffectProviders): ExpectApi;
     provide(newProviders: (EffectProviders | StaticProvider)[]): ExpectApi;
     withState<S>(state: S): ExpectApi;
