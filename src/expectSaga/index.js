@@ -177,7 +177,7 @@ export default function expectSaga(
         const { args, detached, context, fn } = effect;
         const yieldedHelperEffect = isHelper(fn);
 
-        if (!detached && !localProviders.fork) {
+        if (!detached && (yieldedHelperEffect || !localProviders.fork)) {
           // Because we wrap the `fork`, we need to manually store the effect,
           // so assertions on the `fork` work.
           processEffect({
