@@ -190,6 +190,40 @@ test('provides values in deeply forked and called sagas', () => {
     .run();
 });
 
+test('provides fork values in nested forks', () => {
+  function* forkSaga(arg1, arg2) {
+    const task = yield fork(otherSaga);
+    yield put({
+      type: 'FORKED_TASK',
+      payload: task,
+      meta: { args: [arg1, arg2] },
+    });
+  }
+
+  function* saga() {
+    yield fork(forkSaga, 42, 'hello');
+  }
+
+  return expectSaga(saga)
+    .provide({
+      fork({ fn }, next) {
+        if (fn === otherSaga) {
+          return fakeTask;
+        }
+
+        return next();
+      },
+    })
+    .put({
+      type: 'FORKED_TASK',
+      payload: fakeTask,
+      meta: {
+        args: [42, 'hello'],
+      },
+    })
+    .run();
+});
+
 test('test coverage for FORK handler', () => {
   const actual = handlers[FORK]({}, {});
   expect(actual).toBe(NEXT);
