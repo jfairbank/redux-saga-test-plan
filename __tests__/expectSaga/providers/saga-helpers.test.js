@@ -1,5 +1,12 @@
 // @flow
-import { all, call, fork, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import {
+  all,
+  call,
+  fork,
+  put,
+  takeEvery,
+  takeLatest,
+} from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 
 const fakeUser = {
