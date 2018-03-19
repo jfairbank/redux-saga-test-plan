@@ -210,7 +210,7 @@ export default function expectSaga(
           );
         }
 
-        if (detached && !localProviders.spawn) {
+        if (detached && !isProvided) {
           // Because we wrap the `spawn`, we need to manually store the effect,
           // so assertions on the `spawn` work.
           processEffect({

@@ -156,3 +156,37 @@ test('spawned sagas dynamic values have access to effect', () =>
     ])
     .put({ type: 'RECEIVE_USER', payload: fakeUser })
     .run());
+
+test('provides spawn values in nested spawns', () => {
+  function* spawnSaga(arg1, arg2) {
+    const task = yield spawn(otherSaga);
+    yield put({
+      type: 'SPAWNED_TASK',
+      payload: task,
+      meta: { args: [arg1, arg2] },
+    });
+  }
+
+  function* saga() {
+    yield spawn(spawnSaga, 42, 'hello');
+  }
+
+  return expectSaga(saga)
+    .provide({
+      spawn({ fn }, next) {
+        if (fn === otherSaga) {
+          return fakeTask;
+        }
+
+        return next();
+      },
+    })
+    .put({
+      type: 'SPAWNED_TASK',
+      payload: fakeTask,
+      meta: {
+        args: [42, 'hello'],
+      },
+    })
+    .run();
+});
