@@ -11,11 +11,13 @@ import {
   CPS,
   FLUSH,
   FORK,
+  GET_CONTEXT,
   JOIN,
   NONE,
   PUT,
   RACE,
   SELECT,
+  SET_CONTEXT,
   TAKE,
 } from '../shared/keys';
 
@@ -98,6 +100,13 @@ export default function parseEffect(effect: Object): Object {
         providerKey: parsedEffect.detached ? 'spawn' : 'fork',
       };
 
+    case is.notUndef((parsedEffect = asEffect.getContext(effect))):
+      return {
+        type: GET_CONTEXT,
+        effect: parsedEffect,
+        providerKey: 'getContext',
+      };
+
     case is.notUndef((parsedEffect = asEffect.join(effect))):
       return {
         type: JOIN,
@@ -110,6 +119,13 @@ export default function parseEffect(effect: Object): Object {
         type: SELECT,
         effect: parsedEffect,
         providerKey: 'select',
+      };
+
+    case is.notUndef((parsedEffect = asEffect.setContext(effect))):
+      return {
+        type: SET_CONTEXT,
+        effect: parsedEffect,
+        providerKey: 'setContext',
       };
 
     case is.notUndef((parsedEffect = asEffect.actionChannel(effect))):

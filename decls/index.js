@@ -228,10 +228,12 @@ type Providers = {
   cps?: Provider,
   flush?: Provider,
   fork?: Provider,
+  getContext?: Provider,
   join?: Provider,
   put?: Provider,
   race?: Provider,
   select?: Provider,
+  setContext?: Provider,
   spawn?: Provider,
   take?: Provider,
 };

@@ -11,10 +11,12 @@ import {
   CPS,
   FLUSH,
   FORK,
+  GET_CONTEXT,
   JOIN,
   PUT,
   RACE,
   SELECT,
+  SET_CONTEXT,
   TAKE,
 } from '../shared/keys';
 
@@ -50,10 +52,12 @@ export const handlers = {
 
     return NEXT;
   },
+  [GET_CONTEXT]: 'getContext',
   [JOIN]: 'join',
   [PUT]: 'put',
   [RACE]: 'race',
   [SELECT]: 'select',
+  [SET_CONTEXT]: 'setContext',
   [TAKE]: 'take',
 };
 
