@@ -24,10 +24,12 @@ declare type ApiWithEffectsTesters = Api & {
   cps: EffectTester,
   flush: EffectTester,
   fork: EffectTester,
+  getContext: EffectTester,
   join: EffectTester,
   put: EffectTester,
   race: EffectTester,
   select: EffectTester,
+  setContext: EffectTester,
   spawn: EffectTester,
   take: EffectTester,
   takem: EffectTester,
@@ -93,8 +95,8 @@ declare type HistoryItemFinishArgument = {
   value: any,
 };
 
-declare type HistoryItem
-  = HistoryItemArgument
+declare type HistoryItem =
+  | HistoryItemArgument
   | HistoryItemError
   | HistoryItemNone
   | HistoryItemFinish
@@ -113,10 +115,12 @@ declare type EffectTestersCreator = {
   cps: EffectTesterCreator,
   flush: EffectTesterCreator,
   fork: EffectTesterCreator,
+  getContext: EffectTesterCreator,
   join: EffectTesterCreator,
   put: EffectTesterCreator,
   race: EffectTesterCreator,
   select: EffectTesterCreator,
+  setContext: EffectTesterCreator,
   spawn: EffectTesterCreator,
   take: EffectTesterCreator,
   takem: EffectTesterCreator,
@@ -175,29 +179,30 @@ declare type ThrottleCallEffect = Effect & {
 
 // These are hacks to get validateTakeHelperEffects and
 // validateThrottleHelperEffects to typecheck
-declare type TakeHelperEffect
-  = TakePatternEffect
-  & ForkEffect;
+declare type TakeHelperEffect = TakePatternEffect & ForkEffect;
 
-declare type ThrottleHelperEffect
-  = ActionChannelEffect
-  & TakeChannelEffect
-  & ForkEffect
-  & ThrottleCallEffect;
+declare type ThrottleHelperEffect = ActionChannelEffect &
+  TakeChannelEffect &
+  ForkEffect &
+  ThrottleCallEffect;
 
 declare type TakeHelperGenerator = Generator<?TakeHelperEffect, void, void> & {
   name?: string,
   '@@redux-saga/HELPER'?: true,
 };
 
-declare type ThrottleHelperGenerator = Generator<?ThrottleHelperEffect, void, void> & {
+declare type ThrottleHelperGenerator = Generator<
+  ?ThrottleHelperEffect,
+  void,
+  void,
+> & {
   name?: string,
   '@@redux-saga/HELPER'?: true,
 };
 
 // expectSaga
 
-type Pattern = string | (Action) => boolean | Array<Pattern>;
+type Pattern = string | (Action => boolean | Array<Pattern>);
 
 type Action = {
   type: string | Symbol,
@@ -243,18 +248,20 @@ type ExpectApi = {
   run: Function,
   silentRun: Function,
   provide: (Providers | Array<Providers | [Object, any]>) => ExpectApi,
-  withState: (any) => ExpectApi,
+  withState: any => ExpectApi,
   withReducer: (Reducer, any) => ExpectApi,
   actionChannel: Function,
   apply: Function,
   call: Function,
   cps: Function,
   fork: Function,
+  getContext: Function,
   hasFinalState: Function,
   put: Function,
   race: Function,
   returns: Function,
   select: Function,
+  setContext: Function,
   spawn: Function,
   take: Function,
 };

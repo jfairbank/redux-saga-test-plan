@@ -19,10 +19,12 @@ export type EffectProviders = {
     cps?: EffectProvider<E.CallEffectDescriptor>;
     flush?: EffectProvider<E.FlushEffectDescriptor<any>>;
     fork?: EffectProvider<E.ForkEffectDescriptor>;
+    getContext?: EffectProvider<E.GetContextEffectDescriptor>;
     join?: EffectProvider<E.JoinEffectDescriptor>;
     put?: EffectProvider<E.PutEffectDescriptor<any>>;
     race?: EffectProvider<E.RaceEffectDescriptor>;
     select?: EffectProvider<E.SelectEffectDescriptor>;
+    setContext?: EffectProvider<E.SetContextEffectDescriptor<any>>;
     spawn?: EffectProvider<E.CallEffectDescriptor>;
     take?: EffectProvider<E.TakeEffectDescriptor & E.ChannelTakeEffectDescriptor<any>>;
 };

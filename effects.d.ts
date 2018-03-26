@@ -28,6 +28,8 @@ interface EffectApi<R> {
     apply<T, K extends keyof T>(context: T, fnName: K, ...args: any[]): R;
     apply(context: any, fn: Function, ...args: any[]): R;
     cps(fn: Function, ...args: any[]): R;
+    getContext(key: string): R;
+    setContext(prop: { [key: string]: any }): R;
     put: PutEffectApi<R> & {
         resolve: PutEffectApi<R>
     };
