@@ -1,5 +1,12 @@
 // @flow
-import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import {
+  all,
+  call,
+  fork,
+  put,
+  takeEvery,
+  takeLatest,
+} from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 
 const fakeUser = {
@@ -198,5 +205,89 @@ test('provides values in `all` takeEvery workers', () => {
     })
     .dispatch({ type: 'REQUEST_USER' })
     .dispatch({ type: 'REQUEST_OTHER' })
+    .run({ silenceTimeout: true });
+});
+
+test('provides fork values in takeEvery workers', () => {
+  const fakeTask = { hello: 'world' };
+
+  function* otherSaga() {
+    yield 42;
+  }
+
+  function* fooForkSaga(arg1, arg2, action) {
+    const task = yield fork(otherSaga);
+    yield put({
+      type: 'FORKED_TASK',
+      payload: task,
+      meta: { action, args: [arg1, arg2] },
+    });
+  }
+
+  function* saga() {
+    yield takeEvery('REQUEST_USER', fooForkSaga, 42, 'hello');
+  }
+
+  return expectSaga(saga)
+    .provide({
+      fork({ fn }, next) {
+        if (fn === otherSaga) {
+          return fakeTask;
+        }
+
+        return next();
+      },
+    })
+    .put({
+      type: 'FORKED_TASK',
+      payload: fakeTask,
+      meta: {
+        action: { type: 'REQUEST_USER' },
+        args: [42, 'hello'],
+      },
+    })
+    .dispatch({ type: 'REQUEST_USER' })
+    .run({ silenceTimeout: true });
+});
+
+test('provides fork values in takeLatest workers', () => {
+  const fakeTask = { hello: 'world' };
+
+  function* otherSaga() {
+    yield 42;
+  }
+
+  function* fooForkSaga(arg1, arg2, action) {
+    const task = yield fork(otherSaga);
+    yield put({
+      type: 'FORKED_TASK',
+      payload: task,
+      meta: { action, args: [arg1, arg2] },
+    });
+  }
+
+  function* saga() {
+    yield takeLatest('REQUEST_USER', fooForkSaga, 42, 'hello');
+  }
+
+  return expectSaga(saga)
+    .provide({
+      fork({ fn }, next) {
+        if (fn === otherSaga) {
+          return fakeTask;
+        }
+
+        return next();
+      },
+    })
+    .put({
+      type: 'FORKED_TASK',
+      payload: fakeTask,
+      meta: {
+        action: { type: 'REQUEST_USER' },
+        args: [42, 'hello'],
+      },
+    })
+    .dispatch({ type: 'REQUEST_USER' })
     .run({ silenceTimeout: true });
 });

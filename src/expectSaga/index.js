@@ -177,7 +177,10 @@ export default function expectSaga(
         const { args, detached, context, fn } = effect;
         const yieldedHelperEffect = isHelper(fn);
 
-        if (!detached && !localProviders.fork) {
+        const providedValue = useProvidedValue(value);
+        const isProvided = providedValue !== value;
+
+        if (!detached && !isProvided) {
           // Because we wrap the `fork`, we need to manually store the effect,
           // so assertions on the `fork` work.
           processEffect({
@@ -207,7 +210,7 @@ export default function expectSaga(
           );
         }
 
-        if (detached && !localProviders.spawn) {
+        if (detached && !isProvided) {
           // Because we wrap the `spawn`, we need to manually store the effect,
           // so assertions on the `spawn` work.
           processEffect({
@@ -222,7 +225,7 @@ export default function expectSaga(
           );
         }
 
-        return useProvidedValue(value);
+        return providedValue;
       }
 
       case type === CALL: {
