@@ -1,3 +1,17 @@
+## v3.6.0
+
+### NEW - Support `getContext` and `setContext` (#154)
+
+Credit [@matoilic](https://github.com/matoilic) for adding support.
+
+* You can now use `getContext` and `setContext` assertions, providers, and matchers with `expectSaga`.
+* You can now use `getContext` and `setContext` assertions with `testSaga`.
+
+### Bug Fixes
+
+* (#183) You can now provide mock values for nested forks and spawns.  
+  Credit [@jessjenk](https://github.com/jessjenk).
+
 ## v3.5.1
 
 ### Bug Fixes
