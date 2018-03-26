@@ -1,0 +1,619 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Timeout · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-advanced-emoji/emoji-website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="state.html" />
+    
+    
+    <link rel="prev" href="dispatching.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Table of Contents</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../getting-started.html">
+            
+                <a href="../getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Integration Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="effect-creators.html">
+            
+                <a href="effect-creators.html">
+            
+                    
+                    Effect Creator Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="dispatching.html">
+            
+                <a href="dispatching.html">
+            
+                    
+                    Dispatching
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.3" data-path="timeout.html">
+            
+                <a href="timeout.html">
+            
+                    
+                    Timeout
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="state.html">
+            
+                <a href="state.html">
+            
+                    
+                    State
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="mocking/">
+            
+                <a href="mocking/">
+            
+                    
+                    Mocking
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="mocking/static-providers.html">
+            
+                <a href="mocking/static-providers.html">
+            
+                    
+                    Static Providers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="mocking/dynamic-providers.html">
+            
+                <a href="mocking/dynamic-providers.html">
+            
+                    
+                    Dynamic Providers
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="partial-matching.html">
+            
+                <a href="partial-matching.html">
+            
+                    
+                    Partial Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="negated-assertions.html">
+            
+                <a href="negated-assertions.html">
+            
+                    
+                    Negated Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8" data-path="exposed-effects.html">
+            
+                <a href="exposed-effects.html">
+            
+                    
+                    Exposed Effects
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9" data-path="snapshot-testing.html">
+            
+                <a href="snapshot-testing.html">
+            
+                    
+                    Snapshot Testing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.10" data-path="return-value.html">
+            
+                <a href="return-value.html">
+            
+                    
+                    Return Value
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.11" data-path="forked-sagas.html">
+            
+                <a href="forked-sagas.html">
+            
+                    
+                    Forked Sagas
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../unit-testing/">
+            
+                <a href="../unit-testing/">
+            
+                    
+                    Unit Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../unit-testing/error-messages.html">
+            
+                <a href="../unit-testing/error-messages.html">
+            
+                    
+                    Error Messages
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../unit-testing/effect-creators.html">
+            
+                <a href="../unit-testing/effect-creators.html">
+            
+                    
+                    Effect Creators
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../unit-testing/saga-helpers.html">
+            
+                <a href="../unit-testing/saga-helpers.html">
+            
+                    
+                    Saga Helpers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../unit-testing/general-assertions.html">
+            
+                <a href="../unit-testing/general-assertions.html">
+            
+                    
+                    General Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../unit-testing/time-travel.html">
+            
+                <a href="../unit-testing/time-travel.html">
+            
+                    
+                    Time Travel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Timeout</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="timeout">Timeout</h1>
+<p>Because <code>expectSaga</code> runs sagas asynchronously, it has a default timeout in case
+your saga runs too long. This is needed for sagas that have multiple
+asynchronous actions, that have infinite loops, or that use saga helpers like
+<code>takeEvery</code>. <code>expectSaga</code> will cancel your saga if it times out and print a
+warning message.</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">mainSaga</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+    <span class="hljs-keyword">const</span> action = <span class="hljs-keyword">yield</span> take(<span class="hljs-string">&apos;READY&apos;</span>);
+    <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;DATA&apos;</span>, payload: action.payload });
+  }
+}
+
+it(<span class="hljs-string">&apos;times out&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(mainSaga)
+    .put({ type: <span class="hljs-string">&apos;DATA&apos;</span>, payload: <span class="hljs-number">42</span> })
+    .dispatch({ type: <span class="hljs-string">&apos;READY&apos;</span>, payload: <span class="hljs-number">42</span> })
+
+    <span class="hljs-comment">// saga never terminates on its own</span>
+    <span class="hljs-comment">// implicit timeout of 250ms will cancel saga</span>
+    <span class="hljs-comment">// and print warning message to console</span>
+    .run();
+});
+</code></pre>
+<h3 id="silencing-warnings">Silencing Warnings</h3>
+<p>The warning message is typically useful if a saga without an infinite loop is
+taking too long. If you have a saga with an infinite loop, though, you will want
+it to time out. Therefore, to silence the warning message, you can call the
+<code>silentRun</code> method instead. It functions the same as the <code>run</code> method but
+suppresses timeout warnings from Redux Saga Test Plan. <strong>NOTE:</strong> this will not
+suppress any timeout warnings from your test runner (e.g. Jest).</p>
+<pre><code class="lang-js">it(<span class="hljs-string">&apos;can be silenced&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(mainSaga)
+    .put({ type: <span class="hljs-string">&apos;DATA&apos;</span>, payload: <span class="hljs-number">42</span> })
+    .dispatch({ type: <span class="hljs-string">&apos;READY&apos;</span>, payload: <span class="hljs-number">42</span> })
+
+    <span class="hljs-comment">// no warning message will be printed</span>
+    <span class="hljs-comment">// this is useful if you expect the saga to time out</span>
+    .silentRun();
+});
+</code></pre>
+<p>The old method of silencing timeouts by passing a <code>silenceTimeout</code> option into
+<code>run</code> is still available, but you&apos;re encouraged to use the cleaner <code>silentRun</code>
+method.</p>
+<pre><code class="lang-js">it(<span class="hljs-string">&apos;can be silenced&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(mainSaga)
+    .put({ type: <span class="hljs-string">&apos;DATA&apos;</span>, payload: <span class="hljs-number">42</span> })
+    .dispatch({ type: <span class="hljs-string">&apos;READY&apos;</span>, payload: <span class="hljs-number">42</span> })
+
+    <span class="hljs-comment">// still works, but more to type</span>
+    .run({ silenceTimeout: <span class="hljs-literal">true</span> });
+});
+</code></pre>
+<h3 id="adjusting-timeout">Adjusting Timeout</h3>
+<p>Instead of silencing warnings, you can adjust the timeout length. The default
+timeout length is 250 milliseconds. You can change the default timeout by
+setting the <code>DEFAULT_TIMEOUT</code> property of <code>expectSaga</code> in milliseconds.</p>
+<pre><code class="lang-js">expectSaga.DEFAULT_TIMEOUT = <span class="hljs-number">500</span>; <span class="hljs-comment">// set it to 500ms</span>
+</code></pre>
+<p>If you want to override the timeout for a particular test case, then you can
+pass in a timeout length to the <code>run</code> (or <code>silentRun</code>) method.</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> delay = time =&gt; <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(resolve =&gt; setTimeout(resolve, time));
+
+<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">mainSaga</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">yield</span> call(delay, <span class="hljs-number">300</span>);
+  <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;HELLO&apos;</span> });
+}
+
+it(<span class="hljs-string">&apos;can have a different timeout length&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(mainSaga)
+    .put({ type: <span class="hljs-string">&apos;HELLO&apos;</span> })
+
+    <span class="hljs-comment">// saga will take at least 300ms,</span>
+    <span class="hljs-comment">// so time out after 500ms to be safe</span>
+    .run(<span class="hljs-number">500</span>);
+});
+</code></pre>
+<p>Alternatively, you can opt out of the timeout behavior and force <code>expectSaga</code> to
+wait until your saga is done on its own by passing in <code>false</code> to the <code>run</code>
+method. <strong>WARNING:</strong> this won&apos;t work with sagas with infinite loops because the
+saga will never finish on its own.</p>
+<pre><code class="lang-js">it(<span class="hljs-string">&apos;never times out&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(mainSaga)
+    .put({ type: <span class="hljs-string">&apos;HELLO&apos;</span> })
+
+    <span class="hljs-comment">// wait until the saga finishes on its own</span>
+    .run(<span class="hljs-literal">false</span>);
+});
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="dispatching.html" class="navigation navigation-prev " aria-label="Previous page: Dispatching">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="state.html" class="navigation navigation-next " aria-label="Next page: State">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Timeout","level":"1.3.3","depth":2,"next":{"title":"State","level":"1.3.4","depth":2,"path":"integration-testing/state.md","ref":"integration-testing/state.md","articles":[]},"previous":{"title":"Dispatching","level":"1.3.2","depth":2,"path":"integration-testing/dispatching.md","ref":"integration-testing/dispatching.md","articles":[]},"dir":"ltr"},"config":{"plugins":["advanced-emoji","github"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/jfairbank/redux-saga-test-plan"},"advanced-emoji":{"embedEmojis":false},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"3.2.2"},"file":{"path":"integration-testing/timeout.md","mtime":"2017-06-01T13:01:24.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-26T01:11:58.709Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

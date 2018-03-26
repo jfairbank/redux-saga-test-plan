@@ -1,0 +1,662 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Exposed Effects · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-advanced-emoji/emoji-website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="snapshot-testing.html" />
+    
+    
+    <link rel="prev" href="negated-assertions.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Table of Contents</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../getting-started.html">
+            
+                <a href="../getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Integration Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="effect-creators.html">
+            
+                <a href="effect-creators.html">
+            
+                    
+                    Effect Creator Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="dispatching.html">
+            
+                <a href="dispatching.html">
+            
+                    
+                    Dispatching
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="timeout.html">
+            
+                <a href="timeout.html">
+            
+                    
+                    Timeout
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="state.html">
+            
+                <a href="state.html">
+            
+                    
+                    State
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="mocking/">
+            
+                <a href="mocking/">
+            
+                    
+                    Mocking
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="mocking/static-providers.html">
+            
+                <a href="mocking/static-providers.html">
+            
+                    
+                    Static Providers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="mocking/dynamic-providers.html">
+            
+                <a href="mocking/dynamic-providers.html">
+            
+                    
+                    Dynamic Providers
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="partial-matching.html">
+            
+                <a href="partial-matching.html">
+            
+                    
+                    Partial Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="negated-assertions.html">
+            
+                <a href="negated-assertions.html">
+            
+                    
+                    Negated Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.8" data-path="exposed-effects.html">
+            
+                <a href="exposed-effects.html">
+            
+                    
+                    Exposed Effects
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9" data-path="snapshot-testing.html">
+            
+                <a href="snapshot-testing.html">
+            
+                    
+                    Snapshot Testing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.10" data-path="return-value.html">
+            
+                <a href="return-value.html">
+            
+                    
+                    Return Value
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.11" data-path="forked-sagas.html">
+            
+                <a href="forked-sagas.html">
+            
+                    
+                    Forked Sagas
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../unit-testing/">
+            
+                <a href="../unit-testing/">
+            
+                    
+                    Unit Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../unit-testing/error-messages.html">
+            
+                <a href="../unit-testing/error-messages.html">
+            
+                    
+                    Error Messages
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../unit-testing/effect-creators.html">
+            
+                <a href="../unit-testing/effect-creators.html">
+            
+                    
+                    Effect Creators
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../unit-testing/saga-helpers.html">
+            
+                <a href="../unit-testing/saga-helpers.html">
+            
+                    
+                    Saga Helpers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../unit-testing/general-assertions.html">
+            
+                <a href="../unit-testing/general-assertions.html">
+            
+                    
+                    General Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../unit-testing/time-travel.html">
+            
+                <a href="../unit-testing/time-travel.html">
+            
+                    
+                    Time Travel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Exposed Effects</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="exposed-effects">Exposed Effects</h1>
+<p>The <code>Promise</code> returned by the <code>run</code> method resolves with an object that contains
+any effects yielded by your saga and sagas that it forked. You can use this for
+finer-grained control over testing exact number of effects. Be careful when
+testing top-level sagas that fork other sagas because the effects object will
+include yielded effects from all forked sagas too. There currently is no way to
+distinguish between effects yielded by the top-level saga and forked sagas.</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">userSaga</span>(<span class="hljs-params">id</span>) </span>{
+  <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">yield</span> call(fetchUser, id);
+  <span class="hljs-keyword">const</span> pet = <span class="hljs-keyword">yield</span> call(fetchPet, user.petId);
+
+  <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;DONE&apos;</span>, payload: { user, pet } });
+}
+
+it(<span class="hljs-string">&apos;exposes effects&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> id = <span class="hljs-number">42</span>;
+  <span class="hljs-keyword">const</span> petId = <span class="hljs-number">20</span>;
+
+  <span class="hljs-keyword">const</span> user = { id, petId, name: <span class="hljs-string">&apos;Jeremy&apos;</span> };
+  <span class="hljs-keyword">const</span> pet = { name: <span class="hljs-string">&apos;Tucker&apos;</span> };
+
+  <span class="hljs-keyword">return</span> expectSaga(saga, id)
+    .provide([
+      [call(fetchUser, id), user],
+      [call(fetchPet, petId), pet],
+    ])
+    .run()
+    .then((result) =&gt; {
+      <span class="hljs-keyword">const</span> { effects } = result;
+
+      expect(effects.call).toHaveLength(<span class="hljs-number">2</span>);
+      expect(effects.put).toHaveLength(<span class="hljs-number">1</span>);
+
+      expect(effects.call[<span class="hljs-number">0</span>]).toEqual(call(fetchUser, id));
+      expect(effects.call[<span class="hljs-number">1</span>]).toEqual(call(fetchPet, petId));
+
+      expect(effects.put[<span class="hljs-number">0</span>]).toEqual(
+        put({ type: <span class="hljs-string">&apos;DONE&apos;</span>, payload: { user, pet } })
+      );
+    });
+});
+</code></pre>
+<p>Of course, <code>async</code> functions work nicely with this feature too.</p>
+<pre><code class="lang-js">it(<span class="hljs-string">&apos;exposes effects using async functions&apos;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> id = <span class="hljs-number">42</span>;
+  <span class="hljs-keyword">const</span> petId = <span class="hljs-number">20</span>;
+
+  <span class="hljs-keyword">const</span> user = { id, petId, name: <span class="hljs-string">&apos;Jeremy&apos;</span> };
+  <span class="hljs-keyword">const</span> pet = { name: <span class="hljs-string">&apos;Tucker&apos;</span> };
+
+  <span class="hljs-keyword">const</span> { effects } = <span class="hljs-keyword">await</span> expectSaga(saga, id)
+    .provide([
+      [call(fetchUser, id), user],
+      [call(fetchPet, petId), pet],
+    ])
+    .run();
+
+  expect(effects.call).toHaveLength(<span class="hljs-number">2</span>);
+  expect(effects.put).toHaveLength(<span class="hljs-number">1</span>);
+
+  expect(effects.call[<span class="hljs-number">0</span>]).toEqual(call(fetchUser, id));
+  expect(effects.call[<span class="hljs-number">1</span>]).toEqual(call(fetchPet, petId));
+
+  expect(effects.put[<span class="hljs-number">0</span>]).toEqual(
+    put({ type: <span class="hljs-string">&apos;DONE&apos;</span>, payload: { user, pet } })
+  );
+});
+</code></pre>
+<h2 id="inspect-specific-properties">Inspect Specific Properties</h2>
+<p>If you want to inspect specific properties on an effect, you can use the
+<code>asEffect</code> util from Redux Saga.</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> { asEffect } <span class="hljs-keyword">from</span> <span class="hljs-string">&apos;redux-saga/utils&apos;</span>;
+
+it(<span class="hljs-string">&apos;can test properties on effects&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> id = <span class="hljs-number">42</span>;
+  <span class="hljs-keyword">const</span> petId = <span class="hljs-number">20</span>;
+
+  <span class="hljs-keyword">const</span> user = { id, petId, name: <span class="hljs-string">&apos;Jeremy&apos;</span> };
+  <span class="hljs-keyword">const</span> pet = { name: <span class="hljs-string">&apos;Tucker&apos;</span> };
+
+  <span class="hljs-keyword">return</span> expectSaga(saga, id)
+    .provide([
+      [call(fetchUser, id), user],
+      [call(fetchPet, petId), pet],
+    ])
+    .run()
+    .then((result) =&gt; {
+      <span class="hljs-keyword">const</span> { effects } = result;
+
+      <span class="hljs-keyword">const</span> fetchUserCall = asEffect.call(effects.call[<span class="hljs-number">0</span>]);
+
+      expect(fetchUserCall.fn).toBe(fetchUser);
+      expect(fetchUserCall.args).toEqual([<span class="hljs-number">42</span>]);
+    });
+});
+</code></pre>
+<h2 id="all-effects">All Effects</h2>
+<p>If you want all the effects consolidated in the order they were yielded, you can
+use the <code>allEffects</code> property from the resolved object.</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">saga</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">yield</span> call(identity, <span class="hljs-number">42</span>);
+  <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;HELLO&apos;</span> });
+}
+
+it(<span class="hljs-string">&apos;exposes all yielded effects in order&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(saga)
+    .run()
+    .then((result) =&gt; {
+      <span class="hljs-keyword">const</span> { allEffects } = result;
+
+      expect(allEffects).toEqual([
+        call(identity, <span class="hljs-number">42</span>),
+        put({ type: <span class="hljs-string">&apos;HELLO&apos;</span> }),
+      ]);
+    });
+});
+</code></pre>
+<h2 id="available-effects">Available Effects</h2>
+<p>The available effects are:</p>
+<ul>
+<li><code>actionChannel</code></li>
+<li><code>call</code></li>
+<li><code>cps</code></li>
+<li><code>fork</code></li>
+<li><code>getContext</code></li>
+<li><code>join</code></li>
+<li><code>put</code></li>
+<li><code>race</code></li>
+<li><code>select</code></li>
+<li><code>setContext</code></li>
+<li><code>take</code></li>
+</ul>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="negated-assertions.html" class="navigation navigation-prev " aria-label="Previous page: Negated Assertions">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="snapshot-testing.html" class="navigation navigation-next " aria-label="Next page: Snapshot Testing">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Exposed Effects","level":"1.3.8","depth":2,"next":{"title":"Snapshot Testing","level":"1.3.9","depth":2,"path":"integration-testing/snapshot-testing.md","ref":"integration-testing/snapshot-testing.md","articles":[]},"previous":{"title":"Negated Assertions","level":"1.3.7","depth":2,"path":"integration-testing/negated-assertions.md","ref":"integration-testing/negated-assertions.md","articles":[]},"dir":"ltr"},"config":{"plugins":["advanced-emoji","github"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/jfairbank/redux-saga-test-plan"},"advanced-emoji":{"embedEmojis":false},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"3.2.2"},"file":{"path":"integration-testing/exposed-effects.md","mtime":"2018-03-26T01:09:17.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-26T01:11:58.709Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

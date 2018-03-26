@@ -1,0 +1,693 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Partial Assertions · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-advanced-emoji/emoji-website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="negated-assertions.html" />
+    
+    
+    <link rel="prev" href="mocking/dynamic-providers.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Table of Contents</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../getting-started.html">
+            
+                <a href="../getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Integration Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="effect-creators.html">
+            
+                <a href="effect-creators.html">
+            
+                    
+                    Effect Creator Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="dispatching.html">
+            
+                <a href="dispatching.html">
+            
+                    
+                    Dispatching
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="timeout.html">
+            
+                <a href="timeout.html">
+            
+                    
+                    Timeout
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="state.html">
+            
+                <a href="state.html">
+            
+                    
+                    State
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="mocking/">
+            
+                <a href="mocking/">
+            
+                    
+                    Mocking
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="mocking/static-providers.html">
+            
+                <a href="mocking/static-providers.html">
+            
+                    
+                    Static Providers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="mocking/dynamic-providers.html">
+            
+                <a href="mocking/dynamic-providers.html">
+            
+                    
+                    Dynamic Providers
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.6" data-path="partial-matching.html">
+            
+                <a href="partial-matching.html">
+            
+                    
+                    Partial Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="negated-assertions.html">
+            
+                <a href="negated-assertions.html">
+            
+                    
+                    Negated Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8" data-path="exposed-effects.html">
+            
+                <a href="exposed-effects.html">
+            
+                    
+                    Exposed Effects
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9" data-path="snapshot-testing.html">
+            
+                <a href="snapshot-testing.html">
+            
+                    
+                    Snapshot Testing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.10" data-path="return-value.html">
+            
+                <a href="return-value.html">
+            
+                    
+                    Return Value
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.11" data-path="forked-sagas.html">
+            
+                <a href="forked-sagas.html">
+            
+                    
+                    Forked Sagas
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../unit-testing/">
+            
+                <a href="../unit-testing/">
+            
+                    
+                    Unit Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../unit-testing/error-messages.html">
+            
+                <a href="../unit-testing/error-messages.html">
+            
+                    
+                    Error Messages
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../unit-testing/effect-creators.html">
+            
+                <a href="../unit-testing/effect-creators.html">
+            
+                    
+                    Effect Creators
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../unit-testing/saga-helpers.html">
+            
+                <a href="../unit-testing/saga-helpers.html">
+            
+                    
+                    Saga Helpers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../unit-testing/general-assertions.html">
+            
+                <a href="../unit-testing/general-assertions.html">
+            
+                    
+                    General Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../unit-testing/time-travel.html">
+            
+                <a href="../unit-testing/time-travel.html">
+            
+                    
+                    Time Travel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Partial Assertions</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="partial-matching-assertions">Partial Matching Assertions</h1>
+<p>Sometimes you&apos;re not interested in the exact arguments passed to a <code>call</code> effect
+creator or the payload inside an action from a <code>put</code> effect. Instead you&apos;re only
+concerned with <em>if</em> a particular function was invoked via <code>call</code> or <em>if</em> a
+particular action type was dispatched via <code>put</code>. You can handle these situations
+with partial matcher assertions.</p>
+<p>The following assertions have a <code>like</code> method along with convenient helper
+methods for partially matching assertions:</p>
+<ul>
+<li><code>actionChannel</code></li>
+<li><code>apply</code></li>
+<li><code>call</code></li>
+<li><code>cps</code></li>
+<li><code>fork</code></li>
+<li><code>put</code></li>
+<li><code>put.resolve</code></li>
+<li><code>select</code></li>
+<li><code>spawn</code></li>
+</ul>
+<p><strong>NOTE:</strong> the <code>like</code> method requires knowledge of the properties on effects such
+as the <code>fn</code> property of <code>call</code> and the <code>action</code> property of <code>put</code>. Essentially,
+<code>like</code> allows you to match effects with certain properties without worrying
+about the other properties. Therefore, you can match a <code>call</code> by <code>fn</code> without
+worrying about the <code>args</code> property.</p>
+<h2 id="example">Example</h2>
+<p>Here is a simple example using <code>like</code>:</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">userSaga</span>(<span class="hljs-params">id</span>) </span>{
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">yield</span> call(api.fetchUser, id);
+    <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;RECEIVE_USER&apos;</span>, payload: user });
+  } <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;FAIL_USER&apos;</span>, error: e });
+  }
+}
+
+it(<span class="hljs-string">&apos;fetches user&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(userSaga)
+    .call.like({ fn: api.fetchUser })
+    .run();
+});
+
+it(<span class="hljs-string">&apos;fails&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(userSaga)
+    .provide({
+      call() {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">&apos;Not Found&apos;</span>);
+      },
+    })
+    .put.like({ action: { type: <span class="hljs-string">&apos;FAIL_USER&apos;</span> } })
+    .run();
+});
+</code></pre>
+<p>Notice that we can assert that the <code>api.fetchUser</code> function was called without
+specifying the arguments. We can also assert in a failure scenario that an
+action of type <code>FAIL_USER</code> was dispatched without worrying about the <code>error</code>
+property of the action.</p>
+<h2 id="helper-methods-example">Helper Methods Example</h2>
+<p>We can simplify the previous example with the convenient matcher helper methods
+<code>call.fn</code> and <code>put.actionType</code>:</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">userSaga</span>(<span class="hljs-params">id</span>) </span>{
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">yield</span> call(api.fetchUser, id);
+    <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;RECEIVE_USER&apos;</span>, payload: user });
+  } <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;FAIL_USER&apos;</span>, error: e });
+  }
+}
+
+it(<span class="hljs-string">&apos;fetches user&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(userSaga)
+    .call.fn(api.fetchUser)
+    .run();
+});
+
+it(<span class="hljs-string">&apos;fails&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(userSaga)
+    .provide({
+      call() {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">&apos;Not Found&apos;</span>);
+      },
+    })
+    .put.actionType(<span class="hljs-string">&apos;FAIL_USER&apos;</span>)
+    .run();
+});
+</code></pre>
+<h2 id="multiple-properties">Multiple Properties</h2>
+<p>If you need it in rare cases, you can match on multiple shallow or deep
+properties via <code>like</code>:</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">saga</span>(<span class="hljs-params">id</span>) </span>{
+  <span class="hljs-keyword">yield</span> put({
+    type: <span class="hljs-string">&apos;FOO&apos;</span>,
+    payload: <span class="hljs-number">42</span>,
+    meta: { hello: <span class="hljs-string">&apos;world&apos;</span> },
+  });
+
+  <span class="hljs-comment">// This will be matched</span>
+  <span class="hljs-keyword">yield</span> put({
+    type: <span class="hljs-string">&apos;FOO&apos;</span>,
+    payload: <span class="hljs-number">43</span>,
+    meta: { hello: <span class="hljs-string">&apos;world&apos;</span> },
+  });
+}
+
+it(<span class="hljs-string">&apos;can match on multiple properties&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(saga)
+    .put.like({
+      action: {
+        type: <span class="hljs-string">&apos;FOO&apos;</span>,
+        payload: <span class="hljs-number">43</span>,
+      },
+    })
+    .run();
+});
+</code></pre>
+<h2 id="helper-methods">Helper Methods</h2>
+<p>There are other some common helper methods like <code>fn</code> and <code>actionType</code> available,
+appropriate to the kind of effect:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>actionChannel.pattern</code></td>
+<td>Match <code>actionChannel</code> by <code>pattern</code>. Useful if you use custom <code>buffers</code> with <code>actionChannel</code>.</td>
+</tr>
+<tr>
+<td><code>apply.fn</code></td>
+<td>Match <code>apply</code> by <code>fn</code>.</td>
+</tr>
+<tr>
+<td><code>call.fn</code></td>
+<td>Match <code>call</code> by <code>fn</code>.</td>
+</tr>
+<tr>
+<td><code>cps.fn</code></td>
+<td>Match <code>cps</code> by <code>fn</code>.</td>
+</tr>
+<tr>
+<td><code>fork.fn</code></td>
+<td>Match <code>fork</code> by <code>fn</code>.</td>
+</tr>
+<tr>
+<td><code>put.actionType</code></td>
+<td>Match <code>put</code> by <code>action.type</code>.</td>
+</tr>
+<tr>
+<td><code>put.resolve.actionType</code></td>
+<td>Match <code>put.resolve</code> by <code>action.type</code>.</td>
+</tr>
+<tr>
+<td><code>select.selector</code></td>
+<td>Match <code>select</code> by <code>selector</code> function.</td>
+</tr>
+<tr>
+<td><code>spawn.fn</code></td>
+<td>Match <code>spawn</code> by <code>fn</code>.</td>
+</tr>
+</tbody>
+</table>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="mocking/dynamic-providers.html" class="navigation navigation-prev " aria-label="Previous page: Dynamic Providers">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="negated-assertions.html" class="navigation navigation-next " aria-label="Next page: Negated Assertions">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Partial Assertions","level":"1.3.6","depth":2,"next":{"title":"Negated Assertions","level":"1.3.7","depth":2,"path":"integration-testing/negated-assertions.md","ref":"integration-testing/negated-assertions.md","articles":[]},"previous":{"title":"Dynamic Providers","level":"1.3.5.2","depth":3,"path":"integration-testing/mocking/dynamic-providers.md","ref":"integration-testing/mocking/dynamic-providers.md","articles":[]},"dir":"ltr"},"config":{"plugins":["advanced-emoji","github"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/jfairbank/redux-saga-test-plan"},"advanced-emoji":{"embedEmojis":false},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"3.2.2"},"file":{"path":"integration-testing/partial-matching.md","mtime":"2017-05-02T20:07:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-26T01:11:58.709Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

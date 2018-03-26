@@ -1,0 +1,633 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>State · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-advanced-emoji/emoji-website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="mocking/" />
+    
+    
+    <link rel="prev" href="timeout.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Table of Contents</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../getting-started.html">
+            
+                <a href="../getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Integration Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="effect-creators.html">
+            
+                <a href="effect-creators.html">
+            
+                    
+                    Effect Creator Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="dispatching.html">
+            
+                <a href="dispatching.html">
+            
+                    
+                    Dispatching
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="timeout.html">
+            
+                <a href="timeout.html">
+            
+                    
+                    Timeout
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.4" data-path="state.html">
+            
+                <a href="state.html">
+            
+                    
+                    State
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="mocking/">
+            
+                <a href="mocking/">
+            
+                    
+                    Mocking
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="mocking/static-providers.html">
+            
+                <a href="mocking/static-providers.html">
+            
+                    
+                    Static Providers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="mocking/dynamic-providers.html">
+            
+                <a href="mocking/dynamic-providers.html">
+            
+                    
+                    Dynamic Providers
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="partial-matching.html">
+            
+                <a href="partial-matching.html">
+            
+                    
+                    Partial Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="negated-assertions.html">
+            
+                <a href="negated-assertions.html">
+            
+                    
+                    Negated Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8" data-path="exposed-effects.html">
+            
+                <a href="exposed-effects.html">
+            
+                    
+                    Exposed Effects
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9" data-path="snapshot-testing.html">
+            
+                <a href="snapshot-testing.html">
+            
+                    
+                    Snapshot Testing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.10" data-path="return-value.html">
+            
+                <a href="return-value.html">
+            
+                    
+                    Return Value
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.11" data-path="forked-sagas.html">
+            
+                <a href="forked-sagas.html">
+            
+                    
+                    Forked Sagas
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../unit-testing/">
+            
+                <a href="../unit-testing/">
+            
+                    
+                    Unit Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../unit-testing/error-messages.html">
+            
+                <a href="../unit-testing/error-messages.html">
+            
+                    
+                    Error Messages
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../unit-testing/effect-creators.html">
+            
+                <a href="../unit-testing/effect-creators.html">
+            
+                    
+                    Effect Creators
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../unit-testing/saga-helpers.html">
+            
+                <a href="../unit-testing/saga-helpers.html">
+            
+                    
+                    Saga Helpers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../unit-testing/general-assertions.html">
+            
+                <a href="../unit-testing/general-assertions.html">
+            
+                    
+                    General Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../unit-testing/time-travel.html">
+            
+                <a href="../unit-testing/time-travel.html">
+            
+                    
+                    Time Travel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >State</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="state">State</h1>
+<p>You can test your saga&apos;s integration with your reducer and store state via the
+<code>withState</code>, <code>withReducer</code>, and <code>hasFinalState</code> methods.</p>
+<h2 id="static-state-via-withstate">Static State via <code>withState</code></h2>
+<p>For static state, you can just use the <code>withState</code> method to allow <code>select</code>
+effects to work. You can also use
+<a href="mocking/">providers</a> for this.</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> storeState = {
+  data: {
+    foo: <span class="hljs-string">&apos;bar&apos;</span>,
+  },
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getData</span>(<span class="hljs-params">state</span>) </span>{
+  <span class="hljs-keyword">return</span> state.data;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">saga</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">yield</span> select(getData);
+  <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;DATA&apos;</span>, payload: data });
+}
+
+it(<span class="hljs-string">&apos;can take store state&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(saga)
+    .withState(storeState)
+    .put({ type: <span class="hljs-string">&apos;DATA&apos;</span>, payload: storeState.data })
+    .run();
+});
+</code></pre>
+<h2 id="dynamic-state-via-withreducer">Dynamic State via <code>withReducer</code></h2>
+<p>For state that might change, you can use the <code>withReducer</code> method. It takes two
+arguments: your reducer and optional initial state. If you don&apos;t supply the
+initial state, then <code>withReducer</code> will extract it by passing an initial action
+into your reducer like Redux.</p>
+<p>Any <code>select</code> effects will reflect state changes where appropriate. More
+importantly, you can test your store state after the saga completes via
+<code>hasFinalState</code>.</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> initialDog = {
+  name: <span class="hljs-string">&apos;Tucker&apos;</span>,
+  age: <span class="hljs-number">11</span>,
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">dogReducer</span>(<span class="hljs-params">state = initialDog, action</span>) </span>{
+  <span class="hljs-keyword">if</span> (action.type === <span class="hljs-string">&apos;HAVE_BIRTHDAY&apos;</span>) {
+    <span class="hljs-keyword">return</span> {
+      ...state,
+      age: state.age + <span class="hljs-number">1</span>,
+    };
+  }
+
+  <span class="hljs-keyword">return</span> state;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">saga</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;HAVE_BIRTHDAY&apos;</span> });
+}
+
+it(<span class="hljs-string">&apos;handles reducers when not supplying initial state&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(saga)
+    .withReducer(dogReducer)
+    .hasFinalState({
+      name: <span class="hljs-string">&apos;Tucker&apos;</span>,
+      age: <span class="hljs-number">12</span>, <span class="hljs-comment">// &lt;-- age in store state changed</span>
+    })
+    .run();
+});
+
+it(<span class="hljs-string">&apos;handles reducers when supplying initial state&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(saga)
+    .withReducer(dogReducer, initialDog)
+    .hasFinalState({
+      name: <span class="hljs-string">&apos;Tucker&apos;</span>,
+      age: <span class="hljs-number">12</span>, <span class="hljs-comment">// &lt;-- age in store state changed</span>
+    })
+    .run();
+});
+</code></pre>
+<h2 id="exposed-store-state">Exposed Store State</h2>
+<p>The <code>Promise</code> returned from <code>run</code> resolves with a <code>storeState</code> object that you
+can inspect for more fine-grained testing.</p>
+<pre><code class="lang-js">it(<span class="hljs-string">&apos;exposes the store state&apos;</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expectSaga(saga)
+    .withReducer(dogReducer, initialDog)
+    .run()
+    .then((result) =&gt; {
+      expect(result.storeState).toEqual({
+        name: <span class="hljs-string">&apos;Tucker&apos;</span>,
+        age: <span class="hljs-number">12</span>, <span class="hljs-comment">// &lt;-- age in store state changed</span>
+      });
+    });
+});
+
+it(<span class="hljs-string">&apos;exposes the store state using async/await&apos;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> { storeState } = <span class="hljs-keyword">await</span> expectSaga(saga)
+    .withReducer(dogReducer, initialDog)
+    .run();
+
+  expect(storeState).toEqual({
+    name: <span class="hljs-string">&apos;Tucker&apos;</span>,
+    age: <span class="hljs-number">12</span>, <span class="hljs-comment">// &lt;-- age in store state changed</span>
+  });
+});
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="timeout.html" class="navigation navigation-prev " aria-label="Previous page: Timeout">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="mocking/" class="navigation navigation-next " aria-label="Next page: Mocking">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"State","level":"1.3.4","depth":2,"next":{"title":"Mocking","level":"1.3.5","depth":2,"path":"integration-testing/mocking/README.md","ref":"integration-testing/mocking/README.md","articles":[{"title":"Static Providers","level":"1.3.5.1","depth":3,"path":"integration-testing/mocking/static-providers.md","ref":"integration-testing/mocking/static-providers.md","articles":[]},{"title":"Dynamic Providers","level":"1.3.5.2","depth":3,"path":"integration-testing/mocking/dynamic-providers.md","ref":"integration-testing/mocking/dynamic-providers.md","articles":[]}]},"previous":{"title":"Timeout","level":"1.3.3","depth":2,"path":"integration-testing/timeout.md","ref":"integration-testing/timeout.md","articles":[]},"dir":"ltr"},"config":{"plugins":["advanced-emoji","github"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/jfairbank/redux-saga-test-plan"},"advanced-emoji":{"embedEmojis":false},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"3.2.2"},"file":{"path":"integration-testing/state.md","mtime":"2017-06-01T13:01:24.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-26T01:11:58.709Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

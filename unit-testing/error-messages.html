@@ -1,0 +1,633 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Error Messages · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-advanced-emoji/emoji-website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="effect-creators.html" />
+    
+    
+    <link rel="prev" href="./" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Table of Contents</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../getting-started.html">
+            
+                <a href="../getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../integration-testing/">
+            
+                <a href="../integration-testing/">
+            
+                    
+                    Integration Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../integration-testing/effect-creators.html">
+            
+                <a href="../integration-testing/effect-creators.html">
+            
+                    
+                    Effect Creator Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../integration-testing/dispatching.html">
+            
+                <a href="../integration-testing/dispatching.html">
+            
+                    
+                    Dispatching
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../integration-testing/timeout.html">
+            
+                <a href="../integration-testing/timeout.html">
+            
+                    
+                    Timeout
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../integration-testing/state.html">
+            
+                <a href="../integration-testing/state.html">
+            
+                    
+                    State
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../integration-testing/mocking/">
+            
+                <a href="../integration-testing/mocking/">
+            
+                    
+                    Mocking
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../integration-testing/mocking/static-providers.html">
+            
+                <a href="../integration-testing/mocking/static-providers.html">
+            
+                    
+                    Static Providers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../integration-testing/mocking/dynamic-providers.html">
+            
+                <a href="../integration-testing/mocking/dynamic-providers.html">
+            
+                    
+                    Dynamic Providers
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../integration-testing/partial-matching.html">
+            
+                <a href="../integration-testing/partial-matching.html">
+            
+                    
+                    Partial Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="../integration-testing/negated-assertions.html">
+            
+                <a href="../integration-testing/negated-assertions.html">
+            
+                    
+                    Negated Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8" data-path="../integration-testing/exposed-effects.html">
+            
+                <a href="../integration-testing/exposed-effects.html">
+            
+                    
+                    Exposed Effects
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9" data-path="../integration-testing/snapshot-testing.html">
+            
+                <a href="../integration-testing/snapshot-testing.html">
+            
+                    
+                    Snapshot Testing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.10" data-path="../integration-testing/return-value.html">
+            
+                <a href="../integration-testing/return-value.html">
+            
+                    
+                    Return Value
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.11" data-path="../integration-testing/forked-sagas.html">
+            
+                <a href="../integration-testing/forked-sagas.html">
+            
+                    
+                    Forked Sagas
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Unit Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.4.1" data-path="error-messages.html">
+            
+                <a href="error-messages.html">
+            
+                    
+                    Error Messages
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="effect-creators.html">
+            
+                <a href="effect-creators.html">
+            
+                    
+                    Effect Creators
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="saga-helpers.html">
+            
+                <a href="saga-helpers.html">
+            
+                    
+                    Saga Helpers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="general-assertions.html">
+            
+                <a href="general-assertions.html">
+            
+                    
+                    General Assertions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="time-travel.html">
+            
+                <a href="time-travel.html">
+            
+                    
+                    Time Travel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Error Messages</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="error-messages">Error Messages</h1>
+<p>If a yielded effect and assertion effect call don&apos;t match, then the mock saga
+will throw an error showing the difference between the two.</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">identity</span>(<span class="hljs-params">value</span>) </span>{
+  <span class="hljs-keyword">return</span> value;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">otherSaga</span>(<span class="hljs-params"></span>) </span>{}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">mainSaga</span>(<span class="hljs-params">x, y, z</span>) </span>{
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> action = <span class="hljs-keyword">yield</span> take(<span class="hljs-string">&apos;HELLO&apos;</span>);
+    <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;ADD&apos;</span>, payload: x + y });
+    <span class="hljs-keyword">yield</span> call(identity, action);
+    <span class="hljs-keyword">yield</span> fork(otherSaga, z);
+  } <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;ERROR&apos;</span>, payload: e });
+  }
+}
+
+<span class="hljs-keyword">const</span> action = { type: <span class="hljs-string">&apos;TEST&apos;</span> };
+
+<span class="hljs-keyword">let</span> saga = testSaga(mainSaga, <span class="hljs-number">40</span>, <span class="hljs-number">2</span>, <span class="hljs-number">20</span>);
+
+saga.next().take(<span class="hljs-string">&apos;HI&apos;</span>);
+
+<span class="hljs-comment">// Throws with below:</span>
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// SagaTestError:</span>
+<span class="hljs-comment">// Assertion 1 failed: take effects do not match</span>
+<span class="hljs-comment">// </span>
+<span class="hljs-comment">// Expected</span>
+<span class="hljs-comment">// --------</span>
+<span class="hljs-comment">// { channel: null, pattern: &apos;HI&apos; }</span>
+<span class="hljs-comment">// </span>
+<span class="hljs-comment">// Actual</span>
+<span class="hljs-comment">// ------</span>
+<span class="hljs-comment">// { channel: null, pattern: &apos;HELLO&apos; }</span>
+
+saga = testSaga(mainSaga, <span class="hljs-number">40</span>, <span class="hljs-number">2</span>, <span class="hljs-number">20</span>);
+saga
+  .next()
+  .take(<span class="hljs-string">&apos;HELLO&apos;</span>)
+
+  .next(action)
+  .put({ type: <span class="hljs-string">&apos;ADD&apos;</span>, payload: <span class="hljs-number">43</span> });
+
+<span class="hljs-comment">// Throws with below:</span>
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// SagaTestError:</span>
+<span class="hljs-comment">// Assertion 2 failed: put effects do not match</span>
+<span class="hljs-comment">// </span>
+<span class="hljs-comment">// Expected</span>
+<span class="hljs-comment">// --------</span>
+<span class="hljs-comment">// { channel: null, action: { type: &apos;ADD&apos;, payload: 43 } }</span>
+<span class="hljs-comment">// </span>
+<span class="hljs-comment">// Actual</span>
+<span class="hljs-comment">// ------</span>
+<span class="hljs-comment">// { channel: null, action: { type: &apos;ADD&apos;, payload: 42 } }</span>
+</code></pre>
+<p>If the yielded effect and asserted effect are different types of effects, then
+the saga will throw an error with a message showing the difference.</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">identity</span>(<span class="hljs-params">value</span>) </span>{
+  <span class="hljs-keyword">return</span> value;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">otherSaga</span>(<span class="hljs-params"></span>) </span>{}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">mainSaga</span>(<span class="hljs-params">x, y, z</span>) </span>{
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> action = <span class="hljs-keyword">yield</span> take(<span class="hljs-string">&apos;HELLO&apos;</span>);
+    <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;ADD&apos;</span>, payload: x + y });
+    <span class="hljs-keyword">yield</span> call(identity, action);
+    <span class="hljs-keyword">yield</span> fork(otherSaga, z);
+  } <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">yield</span> put({ type: <span class="hljs-string">&apos;ERROR&apos;</span>, payload: e });
+  }
+}
+
+<span class="hljs-keyword">const</span> action = { type: <span class="hljs-string">&apos;TEST&apos;</span> };
+
+<span class="hljs-keyword">const</span> saga = testSaga(mainSaga, <span class="hljs-number">40</span>, <span class="hljs-number">2</span>, <span class="hljs-number">20</span>);
+
+saga
+  .next()
+  .take(<span class="hljs-string">&apos;HELLO&apos;</span>)
+
+  .next(action)
+  .take(<span class="hljs-string">&apos;WORLD&apos;</span>);
+
+<span class="hljs-comment">// SagaTestError:</span>
+<span class="hljs-comment">// Assertion 2 Failed: expected take effect, but the saga yielded a different effect</span>
+<span class="hljs-comment">// </span>
+<span class="hljs-comment">// Expected</span>
+<span class="hljs-comment">// --------</span>
+<span class="hljs-comment">// { &apos;@@redux-saga/IO&apos;: true,</span>
+<span class="hljs-comment">//   TAKE: { channel: null, pattern: &apos;WORLD&apos; } }</span>
+<span class="hljs-comment">// </span>
+<span class="hljs-comment">// Actual</span>
+<span class="hljs-comment">// ------</span>
+<span class="hljs-comment">// { &apos;@@redux-saga/IO&apos;: true,</span>
+<span class="hljs-comment">//   PUT: { channel: null, action: { type: &apos;ADD&apos;, payload: 42 } } }</span>
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: Unit Testing">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="effect-creators.html" class="navigation navigation-next " aria-label="Next page: Effect Creators">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Error Messages","level":"1.4.1","depth":2,"next":{"title":"Effect Creators","level":"1.4.2","depth":2,"path":"unit-testing/effect-creators.md","ref":"unit-testing/effect-creators.md","articles":[]},"previous":{"title":"Unit Testing","level":"1.4","depth":1,"path":"unit-testing/README.md","ref":"unit-testing/README.md","articles":[{"title":"Error Messages","level":"1.4.1","depth":2,"path":"unit-testing/error-messages.md","ref":"unit-testing/error-messages.md","articles":[]},{"title":"Effect Creators","level":"1.4.2","depth":2,"path":"unit-testing/effect-creators.md","ref":"unit-testing/effect-creators.md","articles":[]},{"title":"Saga Helpers","level":"1.4.3","depth":2,"path":"unit-testing/saga-helpers.md","ref":"unit-testing/saga-helpers.md","articles":[]},{"title":"General Assertions","level":"1.4.4","depth":2,"path":"unit-testing/general-assertions.md","ref":"unit-testing/general-assertions.md","articles":[]},{"title":"Time Travel","level":"1.4.5","depth":2,"path":"unit-testing/time-travel.md","ref":"unit-testing/time-travel.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["advanced-emoji","github"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/jfairbank/redux-saga-test-plan"},"advanced-emoji":{"embedEmojis":false},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"3.2.2"},"file":{"path":"unit-testing/error-messages.md","mtime":"2017-03-28T19:59:24.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2018-03-26T01:11:58.709Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
