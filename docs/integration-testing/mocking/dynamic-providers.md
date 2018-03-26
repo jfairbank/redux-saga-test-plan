@@ -61,10 +61,12 @@ almost every effect creator\*:
 - `cps`
 - `flush`
 - `fork`
+- `getContext`
 - `join`
 - `put`
 - `race`
 - `select`
+- `setContext`
 - `spawn`
 - `take`
 

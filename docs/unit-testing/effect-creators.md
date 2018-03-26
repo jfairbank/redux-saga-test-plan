@@ -28,5 +28,7 @@ Saga. You can reference them in Redux Saga's docs
 - `cancelled()`
 - `all([...effects])`
 - `race(effects)`
+- `setContext(props)`
+- `getContext(prop)`
 - `takem(pattern)` **DEPRECATED:** Use `take.maybe`
 - `takem(channel)` **DEPRECATED:** Use `take.maybe`

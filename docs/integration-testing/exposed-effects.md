@@ -138,8 +138,10 @@ The available effects are:
 - `call`
 - `cps`
 - `fork`
+- `getContext`
 - `join`
 - `put`
 - `race`
 - `select`
+- `setContext`
 - `take`

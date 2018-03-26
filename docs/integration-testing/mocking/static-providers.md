@@ -58,11 +58,13 @@ creators in Redux Saga's docs
 - `flush(channel)`
 - `fork([context, fn], ...args)`
 - `fork(fn, ...args)`
+- `getContext(prop)`
 - `join(task)`
 - `put(action)`
 - `put.resolve(action)`
 - `race(effects)`
 - `select(selector, ...args)`
+- `setContext(props)`
 - `spawn([context, fn], ...args)`
 - `spawn(fn, ...args)`
 - `take(pattern)`

@@ -21,6 +21,8 @@ Redux Saga. You can reference effect creators in Redux Saga's docs
 - `select(selector, ...args)`
 - `actionChannel(pattern, [buffer])`
 - `race(effects)`
+- `setContext(props)`
+- `getContext(prop)`
 
 You can assert the return value of a saga via the `returns` method. This only
 works for the top-level saga under test, meaning other sagas that are invoked
