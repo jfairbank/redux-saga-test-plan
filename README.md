@@ -268,8 +268,8 @@ it('works with unit tests', () => {
 
 ### Redux Saga v0.15
 
-The current version of Redux Saga Test Plan **v3** only supports **v0.15**
-of Redux Saga.
+The current version of Redux Saga Test Plan **v3** supports **v0.15**
+or newer of Redux Saga.
 
 Install with yarn or npm.
 
