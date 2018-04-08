@@ -266,7 +266,7 @@ it('works with unit tests', () => {
 
 ## Install
 
-### Redux Saga v0.15
+### Redux Saga Support
 
 The current version of Redux Saga Test Plan **v3** supports **v0.15**
 or newer of Redux Saga.
