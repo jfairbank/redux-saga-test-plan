@@ -20,19 +20,19 @@ function* regularBackgroundSaga() {
 const createRegularSaga = effectCreator =>
   function* saga() {
     const task = yield effectCreator(regularBackgroundSaga);
-    return task.name;
+    return task.meta.name;
   };
 
 const createParallelSaga = effectCreator =>
   function* saga() {
     const [task] = yield [effectCreator(regularBackgroundSaga)];
-    return task.name;
+    return task.meta.name;
   };
 
 const createAllSaga = effectCreator =>
   function* saga() {
     const [task] = yield all([effectCreator(regularBackgroundSaga)]);
-    return task.name;
+    return task.meta.name;
   };
 
 const createRaceSaga = effectCreator =>
@@ -40,7 +40,7 @@ const createRaceSaga = effectCreator =>
     const { saga: task } = yield race({
       saga: effectCreator(regularBackgroundSaga),
     });
-    return task.name;
+    return task.meta.name;
   };
 
 function* cancelledBackgroundSaga() {
@@ -171,7 +171,7 @@ test('providers receive task with name referring to forked saga', () => {
   return expectSaga(saga)
     .provide({
       cancel(task, next) {
-        expect(task.name).toBe('cancelledBackgroundSaga');
+        expect(task.meta.name).toBe('cancelledBackgroundSaga');
         return next();
       },
     })
@@ -185,7 +185,7 @@ test('providers receive task with name referring to spawned saga', () => {
   return expectSaga(saga)
     .provide({
       cancel(task, next) {
-        expect(task.name).toBe('cancelledBackgroundSaga');
+        expect(task.meta.name).toBe('cancelledBackgroundSaga');
         return next();
       },
     })
@@ -231,7 +231,7 @@ test('providers receive task with name referring to parallel forked saga', () =>
   return expectSaga(saga)
     .provide({
       cancel(task, next) {
-        expect(task.name).toBe('cancelledBackgroundSaga');
+        expect(task.meta.name).toBe('cancelledBackgroundSaga');
         return next();
       },
     })
@@ -245,7 +245,7 @@ test('providers receive task with name referring to `all` forked saga', () => {
   return expectSaga(saga)
     .provide({
       cancel(task, next) {
-        expect(task.name).toBe('cancelledBackgroundSaga');
+        expect(task.meta.name).toBe('cancelledBackgroundSaga');
         return next();
       },
     })
@@ -259,7 +259,7 @@ test('providers receive task with name referring to parallel spawned saga', () =
   return expectSaga(saga)
     .provide({
       cancel(task, next) {
-        expect(task.name).toBe('cancelledBackgroundSaga');
+        expect(task.meta.name).toBe('cancelledBackgroundSaga');
         return next();
       },
     })
@@ -273,7 +273,7 @@ test('providers receive task with name referring to `all` spawned saga', () => {
   return expectSaga(saga)
     .provide({
       cancel(task, next) {
-        expect(task.name).toBe('cancelledBackgroundSaga');
+        expect(task.meta.name).toBe('cancelledBackgroundSaga');
         return next();
       },
     })
@@ -303,7 +303,7 @@ test('providers receive task with name referring to race forked saga', () => {
   return expectSaga(saga)
     .provide({
       cancel(task, next) {
-        expect(task.name).toBe('cancelledBackgroundSaga');
+        expect(task.meta.name).toBe('cancelledBackgroundSaga');
         return next();
       },
     })
@@ -317,7 +317,7 @@ test('providers receive task with name referring to race spawned saga', () => {
   return expectSaga(saga)
     .provide({
       cancel(task, next) {
-        expect(task.name).toBe('cancelledBackgroundSaga');
+        expect(task.meta.name).toBe('cancelledBackgroundSaga');
         return next();
       },
     })

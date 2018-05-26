@@ -20,7 +20,7 @@ test('canceling one task', () => {
 
   const cancelSpy = jest.fn((task, next) => {
     expect(is.task(task)).toBe(true);
-    expect(task.name).toBe('backgroundSaga');
+    expect(task.meta.name).toBe('backgroundSaga');
     return next();
   });
 
@@ -62,12 +62,12 @@ test('canceling multiple tasks', () => {
     .fn()
     .mockImplementationOnce((task, next) => {
       expect(is.task(task)).toBe(true);
-      expect(task.name).toBe('backgroundOneSaga');
+      expect(task.meta.name).toBe('backgroundOneSaga');
       return next();
     })
     .mockImplementationOnce((task, next) => {
       expect(is.task(task)).toBe(true);
-      expect(task.name).toBe('backgroundTwoSaga');
+      expect(task.meta.name).toBe('backgroundTwoSaga');
       return next();
     });
 
