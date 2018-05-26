@@ -140,7 +140,7 @@ type TimeoutConfig = {
   timeout?: Timeout,
 };
 
-type Task = { done: Promise<*> };
+type Task = { toPromise: () => Promise<*> };
 
 type ProviderNext = Object;
 type ProviderNextF = () => ProviderNext;

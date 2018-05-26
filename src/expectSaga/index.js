@@ -1,6 +1,6 @@
 // @flow
 /* eslint-disable no-underscore-dangle */
-import { effects, runSaga, utils } from 'redux-saga';
+import { effects, runSaga, stdChannel, utils } from 'redux-saga';
 import { call, fork, race, spawn } from 'redux-saga/effects';
 import {
   takeEveryHelper,
@@ -110,8 +110,8 @@ export default function expectSaga(
   };
 
   const expectations: Array<Expectation> = [];
+  const ioChannel = stdChannel();
   const queuedActions = [];
-  const listeners = [];
   const forkedTasks = [];
   const outstandingForkEffects = new Map();
   const outstandingActionChannelEffects = new Map();
@@ -276,16 +276,15 @@ export default function expectSaga(
 
   function getAllPromises(): Promise<*> {
     return new Promise(resolve => {
-      Promise.all([
-        ...forkedTasks.map(task => task.done),
-        mainTaskPromise,
-      ]).then(() => {
-        if (stopDirty) {
-          stopDirty = false;
-          resolve(getAllPromises());
-        }
-        resolve();
-      });
+      Promise.all([...forkedTasks.map(taskPromise), mainTaskPromise]).then(
+        () => {
+          if (stopDirty) {
+            stopDirty = false;
+            resolve(getAllPromises());
+          }
+          resolve();
+        },
+      );
     });
   }
 
@@ -339,9 +338,7 @@ export default function expectSaga(
   }
 
   function notifyListeners(action: Action): void {
-    listeners.forEach(listener => {
-      listener(action);
-    });
+    ioChannel.put(action);
   }
 
   function dispatch(action: Action): any {
@@ -430,16 +427,9 @@ export default function expectSaga(
   }
 
   const io = {
-    subscribe(listener: Function): Function {
-      listeners.push(listener);
-
-      return () => {
-        const index = listeners.indexOf(listener);
-        listeners.splice(index, 1);
-      };
-    },
-
     dispatch,
+
+    channel: ioChannel,
 
     getState(): any {
       return storeState;
@@ -638,6 +628,10 @@ export default function expectSaga(
     return api;
   }
 
+  function taskPromise(task: Task): Promise<*> {
+    return task.toPromise();
+  }
+
   function start(): ExpectApi {
     const sagaWrapper = createSagaWrapper(generator.name);
 
@@ -652,7 +646,7 @@ export default function expectSaga(
       setReturnValue,
     );
 
-    mainTaskPromise = mainTask.done
+    mainTaskPromise = taskPromise(mainTask)
       .then(checkExpectations)
       // Pass along the error instead of rethrowing or allowing to
       // bubble up to avoid PromiseRejectionHandledWarning
