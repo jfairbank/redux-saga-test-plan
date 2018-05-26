@@ -5,6 +5,7 @@ import { all, call, fork, race, spawn } from 'redux-saga/effects';
 import {
   takeEveryHelper,
   takeLatestHelper,
+  takeLeadingHelper,
 } from 'redux-saga/lib/internal/sagaHelpers';
 import assign from 'object-assign';
 import { splitAt } from '../utils/array';
@@ -53,7 +54,11 @@ function extractState(reducer: Reducer, initialState?: any): any {
 }
 
 function isHelper(fn: Function): boolean {
-  return fn === takeEveryHelper || fn === takeLatestHelper;
+  return (
+    fn === takeEveryHelper ||
+    fn === takeLatestHelper ||
+    fn === takeLeadingHelper
+  );
 }
 
 function toJSON(object: mixed): mixed {
