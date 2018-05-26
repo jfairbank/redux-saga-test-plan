@@ -1,5 +1,6 @@
 import { call, fork, put, take } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
+import isEqual from 'lodash.isequal';
 import identity from 'utils/identity';
 
 test('exposes the effects in the promise result', async () => {
@@ -14,9 +15,13 @@ test('exposes the effects in the promise result', async () => {
   expect(effects.call).toHaveLength(1);
   expect(effects.put).toHaveLength(2);
 
-  expect(effects.call[0]).toEqual(call(identity, 42));
-  expect(effects.put[0]).toEqual(put({ type: 'FOO' }));
-  expect(effects.put[1]).toEqual(put({ type: 'BAR', payload: 'hello' }));
+  // Jest Symbol comparison seems to be intermittently broken, so using isEqual
+  // https://github.com/facebook/jest/issues/4592
+  expect(isEqual(effects.call[0], call(identity, 42))).toBe(true);
+  expect(isEqual(effects.put[0], put({ type: 'FOO' }))).toBe(true);
+  expect(isEqual(effects.put[1], put({ type: 'BAR', payload: 'hello' }))).toBe(
+    true,
+  );
 
   expect(toJSON()).toMatchSnapshot();
 });
@@ -42,9 +47,15 @@ test('exposes the effects from forked sagas in the promise result', async () => 
   expect(effects.put).toHaveLength(2);
   expect(effects.take).toHaveLength(1);
 
-  expect(effects.call[0]).toEqual(call(identity, 42));
-  expect(effects.put).toContainEqual(put({ type: 'FOO' }));
-  expect(effects.put).toContainEqual(put({ type: 'BAR', payload: 'world' }));
+  // Jest Symbol comparison seems to be intermittently broken, so using isEqual
+  // https://github.com/facebook/jest/issues/4592
+  expect(isEqual(effects.call[0], call(identity, 42))).toBe(true);
+  expect(effects.put.some(effect => isEqual(effect, put({ type: 'FOO' }))));
+  expect(
+    effects.put.some(effect =>
+      isEqual(effect, put({ type: 'BAR', payload: 'world' })),
+    ),
+  );
 
   expect(toJSON()).toMatchSnapshot();
 });
@@ -91,9 +102,11 @@ test('exposes all yielded effects in order', () => {
   return expectSaga(saga)
     .run()
     .then(result => {
-      expect(result.allEffects).toEqual([
-        call(identity, 42),
-        put({ type: 'HELLO' }),
-      ]);
+      expect(result.allEffects).toHaveLength(2);
+
+      // Jest Symbol comparison seems to be intermittently broken, so using isEqual
+      // https://github.com/facebook/jest/issues/4592
+      expect(isEqual(result.allEffects[0], call(identity, 42))).toBe(true);
+      expect(isEqual(result.allEffects[1], put({ type: 'HELLO' }))).toBe(true);
     });
 });
