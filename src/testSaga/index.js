@@ -2,13 +2,7 @@
 import isEqual from 'lodash.isequal';
 import assign from 'object-assign';
 
-import {
-  effects,
-  eventChannel,
-  takeEvery,
-  takeLatest,
-  throttle,
-} from 'redux-saga';
+import { effects, eventChannel } from 'redux-saga';
 
 import { ARGUMENT, ERROR, NONE, FINISH, FINISH_ARGUMENT } from './historyTypes';
 
@@ -33,8 +27,6 @@ import {
 import SagaTestError from '../shared/SagaTestError';
 import createErrorMessage from './createErrorMessage';
 import assertSameEffect from './assertSameEffect';
-import validateTakeHelper from './validateTakeHelper';
-import validateThrottleHelper from './validateThrottleHelper';
 
 export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
   const api = {
@@ -45,9 +37,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     save,
     restore,
     throw: throwError,
-    takeEvery: createTakeHelperProgresser('takeEvery', takeEvery),
-    takeLatest: createTakeHelperProgresser('takeLatest', takeLatest),
-    throttle: createThrottleHelperProgresser('throttle'),
   };
 
   const savePoints: SavePoints = {};
@@ -109,13 +98,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     return createEffectTester(name, key, effects[name]);
   }
 
-  function createEffectHelperTester(
-    name: string,
-    helperCreator: Function,
-  ): EffectTesterCreator {
-    return createEffectTester(name, undefined, helperCreator);
-  }
-
   function createEffectTesterFromHelperEffect(
     name: string,
   ): EffectTesterCreator {
@@ -144,12 +126,9 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     spawn: createEffectTesterFromEffects('spawn', FORK),
     take: createEffectTesterFromEffects('take', TAKE),
     takem: createEffectTesterFromEffects('takem', TAKE),
-    takeEveryFork: createEffectHelperTester('takeEvery', takeEvery),
-    takeLatestFork: createEffectHelperTester('takeLatest', takeLatest),
-    throttleFork: createEffectHelperTester('throttle', throttle),
-    takeEveryEffect: createEffectTesterFromHelperEffect('takeEvery'),
-    takeLatestEffect: createEffectTesterFromHelperEffect('takeLatest'),
-    throttleEffect: createEffectTesterFromHelperEffect('throttle'),
+    takeEvery: createEffectTesterFromHelperEffect('takeEvery'),
+    takeLatest: createEffectTesterFromHelperEffect('takeLatest'),
+    throttle: createEffectTesterFromHelperEffect('throttle'),
 
     isDone: done => () => {
       if (!done) {
@@ -238,12 +217,9 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       spawn: effectsTestersCreators.spawn(value),
       take: effectsTestersCreators.take(value),
       takem: effectsTestersCreators.takem(value),
-      takeEveryFork: effectsTestersCreators.takeEveryFork(value),
-      takeLatestFork: effectsTestersCreators.takeLatestFork(value),
-      throttleFork: effectsTestersCreators.throttleFork(value),
-      takeEveryEffect: effectsTestersCreators.takeEveryEffect(value),
-      takeLatestEffect: effectsTestersCreators.takeLatestEffect(value),
-      throttleEffect: effectsTestersCreators.throttleEffect(value),
+      takeEvery: effectsTestersCreators.takeEvery(value),
+      takeLatest: effectsTestersCreators.takeLatest(value),
+      throttle: effectsTestersCreators.throttle(value),
       is: effectsTestersCreators.is(value),
       inspect: effectsTestersCreators.inspect(value),
       isDone: effectsTestersCreators.isDone(done),
@@ -336,58 +312,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
   function save(name: string): Api {
     savePoints[name] = history.slice(0);
     return api;
-  }
-
-  function createTakeHelperProgresser(helperName: string, helper: Function) {
-    return function takeHelperProgresser(
-      pattern: TakePattern,
-      otherSaga: Function,
-      ...args: Array<mixed>
-    ): Api {
-      const errorMessage = validateTakeHelper(
-        helperName,
-        iterator, // this will be mutated (i.e. 2 steps will be taken)
-        helper(pattern, otherSaga, ...args),
-        history.length + 1,
-      );
-
-      history.push(({ type: NONE }: HistoryItemNone));
-      history.push(({ type: NONE }: HistoryItemNone));
-
-      if (errorMessage) {
-        throw new SagaTestError(errorMessage);
-      }
-
-      return api;
-    };
-  }
-
-  function createThrottleHelperProgresser(helperName: string) {
-    return function throttleHelperProgresser(
-      delayTime: number,
-      pattern: TakePattern,
-      otherSaga: Function,
-      ...args: Array<mixed>
-    ): Api {
-      const errorMessage = validateThrottleHelper(
-        eventChannel,
-        helperName,
-        iterator, // this will be mutated (i.e. 4 steps will be taken)
-        throttle(delayTime, pattern, otherSaga, ...args),
-        history.length + 1,
-      );
-
-      history.push(({ type: NONE }: HistoryItemNone));
-      history.push(({ type: NONE }: HistoryItemNone));
-      history.push(({ type: NONE }: HistoryItemNone));
-      history.push(({ type: NONE }: HistoryItemNone));
-
-      if (errorMessage) {
-        throw new SagaTestError(errorMessage);
-      }
-
-      return api;
-    };
   }
 
   function applyHistory(): Api {

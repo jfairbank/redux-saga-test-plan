@@ -1,10 +1,6 @@
 // @flow
 import isEqual from 'lodash.isequal';
 import createErrorMessage from './createErrorMessage';
-import validateHelperNamesMatch from './validateHelperNamesMatch';
-import validateTakeHelper from './validateTakeHelper';
-import validateThrottleHelper from './validateThrottleHelper';
-import isHelper from './isHelper';
 
 export default function validateEffects(
   eventChannel: Function,
@@ -15,16 +11,9 @@ export default function validateEffects(
   expected: Object | Array<Object>,
   stepNumber: number,
 ): ?string {
-  const expectedIsHelper = isHelper(expected);
-  const actualIsHelper = isHelper(actual);
-
-  const finalEffectName = expectedIsHelper
-    ? `${effectName} helper`
-    : effectName;
-
   if (actual == null) {
     return createErrorMessage(
-      `expected ${finalEffectName} effect, but the saga yielded nothing`,
+      `expected ${effectName} effect, but the saga yielded nothing`,
       stepNumber,
       actual,
       expected,
@@ -32,38 +21,9 @@ export default function validateEffects(
     );
   }
 
-  if (
-    !Array.isArray(actual) &&
-    actualIsHelper &&
-    !Array.isArray(expected) &&
-    expectedIsHelper
-  ) {
-    const errorMessage = validateHelperNamesMatch(
-      effectName,
-      actual,
-      stepNumber,
-    );
-
-    if (errorMessage) {
-      return errorMessage;
-    }
-
-    if (effectName === 'throttle') {
-      return validateThrottleHelper(
-        eventChannel,
-        effectName,
-        actual,
-        expected,
-        stepNumber,
-      );
-    }
-
-    return validateTakeHelper(effectName, actual, expected, stepNumber);
-  }
-
   if (Array.isArray(actual) && !Array.isArray(expected)) {
     return createErrorMessage(
-      `expected ${finalEffectName} effect, but the saga yielded parallel effects`,
+      `expected ${effectName} effect, but the saga yielded parallel effects`,
       stepNumber,
       actual,
       expected,
@@ -91,7 +51,7 @@ export default function validateEffects(
 
   if (effectsDifferent) {
     return createErrorMessage(
-      `expected ${finalEffectName} effect, but the saga yielded a different effect`,
+      `expected ${effectName} effect, but the saga yielded a different effect`,
       stepNumber,
       actual,
       expected,
@@ -100,7 +60,7 @@ export default function validateEffects(
 
   if (!bothEqual) {
     return createErrorMessage(
-      `${finalEffectName} effects do not match`,
+      `${effectName} effects do not match`,
       stepNumber,
       actual,
       expected,
