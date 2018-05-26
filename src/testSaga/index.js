@@ -120,6 +120,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     getContext: createEffectTesterFromEffects('getContext', GET_CONTEXT),
     join: createEffectTesterFromEffects('join', JOIN),
     put: createEffectTesterFromEffects('put', PUT),
+    putResolve: createEffectTesterFromEffects('putResolve', PUT),
     race: createEffectTesterFromEffects('race', RACE),
     select: createEffectTesterFromEffects('select', SELECT),
     setContext: createEffectTesterFromEffects('setContext', SET_CONTEXT),
@@ -184,12 +185,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     effects.take.maybe,
   );
 
-  effectsTestersCreators.put.resolve = createEffectTester(
-    'put.resolve',
-    PUT,
-    effects.put.resolve,
-  );
-
   function createIterator(): Generator<*, *, *> {
     return saga(...finalSagaArgs);
   }
@@ -211,6 +206,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       getContext: effectsTestersCreators.getContext(value),
       join: effectsTestersCreators.join(value),
       put: effectsTestersCreators.put(value),
+      putResolve: effectsTestersCreators.putResolve(value),
       race: effectsTestersCreators.race(value),
       select: effectsTestersCreators.select(value),
       setContext: effectsTestersCreators.setContext(value),
@@ -227,7 +223,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     });
 
     newApi.take.maybe = effectsTestersCreators.take.maybe(value);
-    newApi.put.resolve = effectsTestersCreators.put.resolve(value);
 
     return newApi;
   }
