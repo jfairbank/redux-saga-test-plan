@@ -7,8 +7,8 @@ export default function validateEffects(
   effectName: string,
   effectKey: ?string,
   isHelperEffect: boolean,
-  actual: ?Object | ?Array<Object>,
-  expected: Object | Array<Object>,
+  actual: ?Object,
+  expected: Object,
   stepNumber: number,
 ): ?string {
   if (actual == null) {
@@ -21,33 +21,11 @@ export default function validateEffects(
     );
   }
 
-  if (Array.isArray(actual) && !Array.isArray(expected)) {
-    return createErrorMessage(
-      `expected ${effectName} effect, but the saga yielded parallel effects`,
-      stepNumber,
-      actual,
-      expected,
-      effectKey,
-    );
-  }
-
-  if (!Array.isArray(actual) && Array.isArray(expected)) {
-    return createErrorMessage(
-      'expected parallel effects, but the saga yielded a single effect',
-      stepNumber,
-      actual,
-      expected,
-      effectKey,
-    );
-  }
-
   const bothEqual = isEqual(actual, expected);
 
   const effectsDifferent =
     (isHelperEffect && !bothEqual) ||
-    (!isHelperEffect &&
-      ((!Array.isArray(actual) && !actual[effectKey]) ||
-        (!Array.isArray(expected) && !expected[effectKey])));
+    (!isHelperEffect && (!actual[effectKey] || !expected[effectKey]));
 
   if (effectsDifferent) {
     return createErrorMessage(

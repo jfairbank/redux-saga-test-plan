@@ -44,32 +44,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
   let finalSagaArgs = sagaArgs;
   let iterator = createIterator();
 
-  const allEffectTester = yieldedValue => expectedEffects => {
-    if (Array.isArray(yieldedValue)) {
-      assertSameEffect(
-        eventChannel,
-        'parallel',
-        undefined,
-        false,
-        yieldedValue,
-        expectedEffects,
-        history.length,
-      );
-    } else {
-      assertSameEffect(
-        eventChannel,
-        'all',
-        ALL,
-        false,
-        yieldedValue,
-        effects.all(expectedEffects),
-        history.length,
-      );
-    }
-
-    return api;
-  };
-
   function createEffectTester(
     name: string,
     key?: string,
@@ -109,7 +83,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       'actionChannel',
       ACTION_CHANNEL,
     ),
-    all: allEffectTester,
+    all: createEffectTesterFromEffects('all', ALL),
     apply: createEffectTesterFromEffects('apply', CALL),
     call: createEffectTesterFromEffects('call', CALL),
     cancel: createEffectTesterFromEffects('cancel', CANCEL),

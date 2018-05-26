@@ -30,31 +30,3 @@ describe('with `all`', () => {
     }).toThrow();
   });
 });
-
-describe('with array', () => {
-  function* mainSaga() {
-    yield [call(identity), put({ type: 'FOO' })];
-  }
-
-  it('handles all', () => {
-    testSaga(mainSaga)
-      .next()
-      .all([call(identity), put({ type: 'FOO' })]);
-  });
-
-  it('throws if call wrong', () => {
-    expect(_ => {
-      testSaga(mainSaga)
-        .next()
-        .all([call(() => {}), put({ type: 'FOO' })]);
-    }).toThrow();
-  });
-
-  it('throws if put wrong', () => {
-    expect(_ => {
-      testSaga(mainSaga)
-        .next()
-        .all([call(identity), put({ type: 'BAR' })]);
-    }).toThrow();
-  });
-});
