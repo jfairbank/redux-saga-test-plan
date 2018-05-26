@@ -494,6 +494,7 @@ export default function expectSaga(
       asEffect.getContext,
     ),
     put: createEffectTesterFromEffects('put', PUT, asEffect.put),
+    putResolve: createEffectTesterFromEffects('putResolve', PUT, asEffect.put),
     race: createEffectTesterFromEffects('race', RACE, asEffect.race),
     select: createEffectTesterFromEffects('select', SELECT, asEffect.select),
     spawn: createEffectTesterFromEffects('spawn', FORK, asEffect.fork),
@@ -505,12 +506,6 @@ export default function expectSaga(
     take: createEffectTesterFromEffects('take', TAKE, asEffect.take),
   };
 
-  api.put.resolve = createEffectTester(
-    'put.resolve',
-    PUT,
-    effects.put.resolve,
-    asEffect.put,
-  );
   api.take.maybe = createEffectTester(
     'take.maybe',
     TAKE,
@@ -572,15 +567,14 @@ export default function expectSaga(
   );
   api.put.actionType = type => api.put.like({ action: { type } });
 
-  api.put.resolve.like = createEffectTester(
-    'put',
+  api.putResolve.like = createEffectTester(
+    'putResolve',
     PUT,
-    effects.put,
+    effects.putResolve,
     asEffect.put,
     true,
   );
-  api.put.resolve.actionType = type =>
-    api.put.resolve.like({ action: { type } });
+  api.putResolve.actionType = type => api.putResolve.like({ action: { type } });
 
   api.select.like = createEffectTester(
     'select',

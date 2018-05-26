@@ -13,13 +13,13 @@ export const getContext = wrapEffectCreator(effects.getContext);
 export const fork = wrapEffectCreator(effects.fork);
 export const join = wrapEffectCreator(effects.join);
 export const put = wrapEffectCreator(effects.put);
+export const putResolve = wrapEffectCreator(effects.putResolve);
 export const race = wrapEffectCreator(effects.race);
 export const select = wrapEffectCreator(effects.select);
 export const setContext = wrapEffectCreator(effects.setContext);
 export const spawn = wrapEffectCreator(effects.spawn);
 export const take = wrapEffectCreator(effects.take);
 
-put.resolve = wrapEffectCreator(effects.put.resolve);
 take.maybe = wrapEffectCreator(effects.take.maybe);
 
 actionChannel.like = like('actionChannel');
@@ -40,8 +40,8 @@ fork.fn = fn => fork.like({ fn });
 put.like = like('put');
 put.actionType = type => put.like({ action: { type } });
 
-put.resolve.like = like('put', { resolve: true });
-put.resolve.actionType = type => put.resolve.like({ action: { type } });
+putResolve.like = like('put', { resolve: true });
+putResolve.actionType = type => putResolve.like({ action: { type } });
 
 select.like = like('select');
 select.selector = selector => select.like({ selector });
