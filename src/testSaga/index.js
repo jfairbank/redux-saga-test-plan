@@ -126,7 +126,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     setContext: createEffectTesterFromEffects('setContext', SET_CONTEXT),
     spawn: createEffectTesterFromEffects('spawn', FORK),
     take: createEffectTesterFromEffects('take', TAKE),
-    takem: createEffectTesterFromEffects('takem', TAKE),
+    takeMaybe: createEffectTesterFromEffects('takeMaybe', TAKE),
     takeEvery: createEffectTesterFromHelperEffect('takeEvery'),
     takeLatest: createEffectTesterFromHelperEffect('takeLatest'),
     throttle: createEffectTesterFromHelperEffect('throttle'),
@@ -179,12 +179,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     },
   };
 
-  effectsTestersCreators.take.maybe = createEffectTester(
-    'take.maybe',
-    TAKE,
-    effects.take.maybe,
-  );
-
   function createIterator(): Generator<*, *, *> {
     return saga(...finalSagaArgs);
   }
@@ -212,7 +206,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       setContext: effectsTestersCreators.setContext(value),
       spawn: effectsTestersCreators.spawn(value),
       take: effectsTestersCreators.take(value),
-      takem: effectsTestersCreators.takem(value),
+      takeMaybe: effectsTestersCreators.takeMaybe(value),
       takeEvery: effectsTestersCreators.takeEvery(value),
       takeLatest: effectsTestersCreators.takeLatest(value),
       throttle: effectsTestersCreators.throttle(value),
@@ -221,8 +215,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       isDone: effectsTestersCreators.isDone(done),
       returns: effectsTestersCreators.returns(value, done),
     });
-
-    newApi.take.maybe = effectsTestersCreators.take.maybe(value);
 
     return newApi;
   }

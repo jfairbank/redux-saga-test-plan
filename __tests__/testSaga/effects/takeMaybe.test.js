@@ -1,21 +1,21 @@
 // @flow
-import { take } from 'redux-saga/effects';
+import { takeMaybe } from 'redux-saga/effects';
 import testSaga from 'testSaga';
 
 function* mainSaga() {
-  yield take.maybe('FOO');
+  yield takeMaybe('FOO');
 }
 
-test('handles take.maybe', () => {
+test('handles takeMaybe', () => {
   testSaga(mainSaga)
     .next()
-    .take.maybe('FOO');
+    .takeMaybe('FOO');
 });
 
 test('throws if pattern wrong', () => {
   expect(_ => {
     testSaga(mainSaga)
       .next()
-      .take.maybe('BAR');
+      .takeMaybe('BAR');
   }).toThrow();
 });
