@@ -4,7 +4,6 @@ exports[`exposes the effects from forked sagas in the promise result 1`] = `
 Object {
   "call": Array [
     Object {
-      "@@redux-saga/IO": true,
       "CALL": Object {
         "args": Array [
           42,
@@ -16,7 +15,6 @@ Object {
   ],
   "fork": Array [
     Object {
-      "@@redux-saga/IO": true,
       "FORK": Object {
         "args": Array [],
         "context": null,
@@ -26,7 +24,6 @@ Object {
   ],
   "put": Array [
     Object {
-      "@@redux-saga/IO": true,
       "PUT": Object {
         "action": Object {
           "type": "FOO",
@@ -35,7 +32,6 @@ Object {
       },
     },
     Object {
-      "@@redux-saga/IO": true,
       "PUT": Object {
         "action": Object {
           "payload": "world",
@@ -47,7 +43,6 @@ Object {
   ],
   "take": Array [
     Object {
-      "@@redux-saga/IO": true,
       "TAKE": Object {
         "pattern": "HELLO",
       },
@@ -60,7 +55,6 @@ exports[`exposes the effects in the promise result 1`] = `
 Object {
   "call": Array [
     Object {
-      "@@redux-saga/IO": true,
       "CALL": Object {
         "args": Array [
           42,
@@ -72,7 +66,6 @@ Object {
   ],
   "put": Array [
     Object {
-      "@@redux-saga/IO": true,
       "PUT": Object {
         "action": Object {
           "type": "FOO",
@@ -81,7 +74,6 @@ Object {
       },
     },
     Object {
-      "@@redux-saga/IO": true,
       "PUT": Object {
         "action": Object {
           "payload": "hello",
@@ -98,7 +90,6 @@ exports[`test coverage for snapshot testing call of anonymous function 1`] = `
 Object {
   "call": Array [
     Object {
-      "@@redux-saga/IO": true,
       "CALL": Object {
         "args": Array [],
         "context": null,
