@@ -103,6 +103,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     take: createEffectTesterFromEffects('take', TAKE),
     takeEvery: createEffectTesterFromHelperEffect('takeEvery'),
     takeLatest: createEffectTesterFromHelperEffect('takeLatest'),
+    takeLeading: createEffectTesterFromHelperEffect('takeLeading'),
     takeMaybe: createEffectTesterFromEffects('takeMaybe', TAKE),
     throttle: createEffectTesterFromHelperEffect('throttle'),
 
@@ -184,6 +185,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       take: effectsTestersCreators.take(value),
       takeEvery: effectsTestersCreators.takeEvery(value),
       takeLatest: effectsTestersCreators.takeLatest(value),
+      takeLeading: effectsTestersCreators.takeLeading(value),
       takeMaybe: effectsTestersCreators.takeMaybe(value),
       throttle: effectsTestersCreators.throttle(value),
       is: effectsTestersCreators.is(value),
