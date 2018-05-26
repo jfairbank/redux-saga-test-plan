@@ -24,15 +24,13 @@ special string key. This depends on the function's having a name, but will
 default to `<anonymous>` for the function name if it's missing.
 
 ```js
-exports[`snapshot testing 1`] = `
+exports[`can be used with snapshot testing 1`] = `
 Object {
   "put": Array [
     Object {
-      "@@redux-saga/IO": true,
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "@@redux-saga/IO": true,
             "CALL": Object {
               "args": Array [
                 42,

@@ -61,14 +61,14 @@ creators in Redux Saga's docs
 - `getContext(prop)`
 - `join(task)`
 - `put(action)`
-- `put.resolve(action)`
+- `putResolve(action)`
 - `race(effects)`
 - `select(selector, ...args)`
 - `setContext(props)`
 - `spawn([context, fn], ...args)`
 - `spawn(fn, ...args)`
 - `take(pattern)`
-- `take.maybe(pattern)`
+- `takeMaybe(pattern)`
 
 ## Partial Matchers
 
@@ -278,40 +278,6 @@ it('provides values for effects inside arrays', () => {
 });
 ```
 
-### Parallel Effects via an Array
-
-Providers work on effects yielded inside an array too. **NOTE:** yielding an
-array is deprecated in Redux Saga, so this functionality will be removed when
-Redux Saga removes support for yielded arrays.
-
-```js
-import { put, select } from 'redux-saga/effects';
-import { expectSaga } from 'redux-saga-test-plan';
-import { selectors } from 'my-selectors';
-
-function* saga() {
-  const [name, age] = yield [
-    select(selectors.getName),
-    select(selectors.getAge),
-  ];
-
-  yield put({ type: 'USER', payload: { name, age } });
-}
-
-it('provides values for effects inside arrays', () => {
-  return expectSaga(saga)
-    .provide([
-      [select(selectors.getName), 'Tucker'],
-      [select(selectors.getAge), 11],
-    ])
-    .put({
-      type: 'USER',
-      payload: { name: 'Tucker', age: 11 },
-    })
-    .run();
-});
-```
-
 ### Providing in Forked/Spawned Sagas
 
 Providers work for effects in forked/spawned sagas too.
@@ -364,7 +330,7 @@ For some more contrived examples of providers, look in the
 For providers to work, `expectSaga` will necessarily wrap forked/spawned sagas
 with an intermediary generator called `sagaWrapper` in order to intercept
 effects. To ensure that your saga receives back a task object with a correct
-`name` property, Redux Saga Test Plan will attempt to rename the `sagaWrapper`
+`meta.name` property, Redux Saga Test Plan will attempt to rename the `sagaWrapper`
 function to the name of a forked saga. This works in almost all JavaScript
 environments but will fail in PhantomJS. Therefore, you **can't** depend on the
-task `name` property being correct in PhantomJS.
+task `meta.name` property being correct in PhantomJS.

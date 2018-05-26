@@ -51,11 +51,11 @@ it('provides a value for the API call', () => {
 ## Effect Creators
 
 Even though you'll probably never need them all, you can supply a provider for
-almost every effect creator\*:
+almost every effect creator:
 
-- `all` \*\*
+- `all`
 - `actionChannel`
-- `call`
+- `call` \*
 - `cancel`
 - `cancelled`
 - `cps`
@@ -63,25 +63,20 @@ almost every effect creator\*:
 - `fork`
 - `getContext`
 - `join`
-- `put`
+- `put` \*\*
 - `race`
 - `select`
 - `setContext`
 - `spawn`
-- `take`
+- `take` \*\*
 
 
 \*Because there is no way to distinguish the `apply` and `call` effects, you
 must handle `apply` effects with the `call` provider function.
 
-\*To handle `take.maybe` and `put.resolve`, use the `take` and `put` providers,
+\*\*To handle `takeMaybe` and `putResolve`, use the `take` and `put` providers,
 respectively. You can inspect `take` effects for the `maybe` property and `put`
 effects for the `resolve` property.
-
-\*\* `all` will provide values for a yielded `all` effect as well as a yielded
-array. **NOTE:** yielding an array is deprecated in Redux Saga, so this
-functionality will be removed when Redux Saga removes support for yielded
-arrays.
 
 ## Other Examples
 
@@ -172,83 +167,10 @@ import { expectSaga } from 'redux-saga-test-plan';
 import { selectors } from 'my-selectors';
 
 function* saga() {
-  const [name, age] = yield [
+  const [name, age] = yield all([
     select(selectors.getName),
     select(selectors.getAge),
-  ];
-
-  yield put({ type: 'USER', payload: { name, age } });
-}
-
-it('provides a value for the entire array', () => {
-  return expectSaga(saga)
-    .provide({
-      all: () => ['Tucker', 11],
-    })
-    .put({
-      type: 'USER',
-      payload: { name: 'Tucker', age: 11 },
-    })
-    .run();
-});
-```
-
-### Parallel Effects via an Array
-
-Providers work on effects yielded inside an array. **NOTE:** yielding an array
-is deprecated in Redux Saga, so this functionality will be removed when Redux
-Saga removes support for yielded arrays.
-
-```js
-import { put, select } from 'redux-saga/effects';
-import { expectSaga } from 'redux-saga-test-plan';
-import { selectors } from 'my-selectors';
-
-function* saga() {
-  const [name, age] = yield [
-    select(selectors.getName),
-    select(selectors.getAge),
-  ];
-
-  yield put({ type: 'USER', payload: { name, age } });
-}
-
-it('provides values for effects inside arrays', () => {
-  return expectSaga(saga)
-    .provide({
-      select({ selector }, next) {
-        if (selector === selectors.getName) {
-          return 'Tucker';
-        }
-
-        if (selector === selectors.getAge) {
-          return 11;
-        }
-
-        return next();
-      },
-    })
-    .put({
-      type: 'USER',
-      payload: { name: 'Tucker', age: 11 },
-    })
-    .run();
-});
-```
-
-Or you can provide a value for the entire array of effects via the `all`
-provider:
-
-```js
-import { put, select } from 'redux-saga/effects';
-import { expectSaga } from 'redux-saga-test-plan';
-import { selectors } from 'my-selectors';
-
-function* saga() {
-  const [name, age] = yield [
-    select(selectors.getName),
-    select(selectors.getAge),
-  ];
+  ]);
 
   yield put({ type: 'USER', payload: { name, age } });
 }
@@ -408,8 +330,8 @@ it('provides values in spawned sagas', () => {
 
 ## Multiple Providers
 
-You can supply multiple object providers via a couple methods. The easiest way
-is to pass in an array of object providers to the `provide` method. Provider
+You can supply multiple object providers via a couple of methods. The easiest
+way is to pass in an array of object providers to the `provide` method. Provider
 functions will be composed according to the effect type, meaning the provider
 functions in the first object will be called before subsequent provider
 functions in the array.
@@ -513,7 +435,7 @@ For some more contrived examples of providers, look in the
 For providers to work, `expectSaga` will necessarily wrap forked/spawned sagas
 with an intermediary generator called `sagaWrapper` in order to intercept
 effects. To ensure that your saga receives back a task object with a correct
-`name` property, Redux Saga Test Plan will attempt to rename the `sagaWrapper`
+`meta.name` property, Redux Saga Test Plan will attempt to rename the `sagaWrapper`
 function to the name of a forked saga. This works in almost all JavaScript
 environments but will fail in PhantomJS. Therefore, you **can't** depend on the
-task `name` property being correct in PhantomJS.
+task `meta.name` property being correct in PhantomJS.
