@@ -100,9 +100,9 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     setContext: createEffectTesterFromEffects('setContext', SET_CONTEXT),
     spawn: createEffectTesterFromEffects('spawn', FORK),
     take: createEffectTesterFromEffects('take', TAKE),
-    takeMaybe: createEffectTesterFromEffects('takeMaybe', TAKE),
     takeEvery: createEffectTesterFromHelperEffect('takeEvery'),
     takeLatest: createEffectTesterFromHelperEffect('takeLatest'),
+    takeMaybe: createEffectTesterFromEffects('takeMaybe', TAKE),
     throttle: createEffectTesterFromHelperEffect('throttle'),
 
     isDone: done => () => {
@@ -180,9 +180,9 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       setContext: effectsTestersCreators.setContext(value),
       spawn: effectsTestersCreators.spawn(value),
       take: effectsTestersCreators.take(value),
-      takeMaybe: effectsTestersCreators.takeMaybe(value),
       takeEvery: effectsTestersCreators.takeEvery(value),
       takeLatest: effectsTestersCreators.takeLatest(value),
+      takeMaybe: effectsTestersCreators.takeMaybe(value),
       throttle: effectsTestersCreators.throttle(value),
       is: effectsTestersCreators.is(value),
       inspect: effectsTestersCreators.inspect(value),
