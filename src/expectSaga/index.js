@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable no-underscore-dangle */
 import { effects, runSaga, stdChannel, utils } from 'redux-saga';
-import { call, fork, race, spawn } from 'redux-saga/effects';
+import { all, call, fork, race, spawn } from 'redux-saga/effects';
 import {
   takeEveryHelper,
   takeLatestHelper,
@@ -177,7 +177,7 @@ export default function expectSaga(
         return race(parsedEffect.mapEffects(refineYieldedValue));
 
       case type === ALL && !localProviders.all:
-        return parsedEffect.mapEffects(refineYieldedValue);
+        return all(parsedEffect.mapEffects(refineYieldedValue));
 
       case type === FORK: {
         const { args, detached, context, fn } = effect;
