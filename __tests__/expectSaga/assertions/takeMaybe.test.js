@@ -1,35 +1,35 @@
-import { take } from 'redux-saga/effects';
+import { takeMaybe } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 import { errorRegex, unreachableError } from './_helper';
 
 jest.mock('utils/logging');
 
 function* saga() {
-  yield take.maybe('READY');
+  yield takeMaybe('READY');
 }
 
-test('take.maybe assertion passes', () =>
+test('takeMaybe assertion passes', () =>
   expectSaga(saga)
-    .take.maybe('READY')
+    .takeMaybe('READY')
     .run());
 
-test('negative take.maybe assertion passes', () =>
+test('negative takeMaybe assertion passes', () =>
   expectSaga(saga)
-    .not.take.maybe('FOO')
+    .not.takeMaybe('FOO')
     .run());
 
-test('take.maybe assertion fails', () =>
+test('takeMaybe assertion fails', () =>
   expectSaga(saga)
-    .take.maybe('FOO')
+    .takeMaybe('FOO')
     .run()
     .then(unreachableError)
     .catch(e => {
       expect(e.message).toMatch(errorRegex);
     }));
 
-test('negative take.maybe assertion fails', () =>
+test('negative takeMaybe assertion fails', () =>
   expectSaga(saga)
-    .not.take.maybe('READY')
+    .not.takeMaybe('READY')
     .run()
     .then(unreachableError)
     .catch(e => {

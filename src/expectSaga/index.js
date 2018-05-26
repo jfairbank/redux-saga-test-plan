@@ -504,14 +504,8 @@ export default function expectSaga(
       asEffect.setContext,
     ),
     take: createEffectTesterFromEffects('take', TAKE, asEffect.take),
+    takeMaybe: createEffectTesterFromEffects('takeMaybe', TAKE, asEffect.take),
   };
-
-  api.take.maybe = createEffectTester(
-    'take.maybe',
-    TAKE,
-    effects.take.maybe,
-    asEffect.take,
-  );
 
   api.actionChannel.like = createEffectTester(
     'actionChannel',

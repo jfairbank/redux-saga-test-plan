@@ -164,6 +164,7 @@ type Providers = {
   setContext?: Provider,
   spawn?: Provider,
   take?: Provider,
+  takeMaybe?: Provider,
 };
 
 type ExpectApi = {
@@ -188,4 +189,5 @@ type ExpectApi = {
   setContext: Function,
   spawn: Function,
   take: Function,
+  takeMaybe: Function,
 };

@@ -19,8 +19,7 @@ export const select = wrapEffectCreator(effects.select);
 export const setContext = wrapEffectCreator(effects.setContext);
 export const spawn = wrapEffectCreator(effects.spawn);
 export const take = wrapEffectCreator(effects.take);
-
-take.maybe = wrapEffectCreator(effects.take.maybe);
+export const takeMaybe = wrapEffectCreator(effects.takeMaybe);
 
 actionChannel.like = like('actionChannel');
 actionChannel.pattern = pattern => actionChannel.like({ pattern });
