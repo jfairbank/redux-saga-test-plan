@@ -138,9 +138,6 @@ export default function parseEffect(effect: Object): Object {
     case is.notUndef((parsedEffect = asEffect.all(effect))):
       return createAll(parsedEffect);
 
-    case Array.isArray(effect):
-      return createAll(effect);
-
     default:
       return { type: NONE };
   }

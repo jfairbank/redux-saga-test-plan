@@ -8,6 +8,12 @@ import { dynamic } from 'expectSaga/providers';
 
 const apiFunction = () => 0;
 
+function* saga() {
+  const [x, { payload: y }] = yield all([call(apiFunction), take('Y')]);
+
+  yield put({ type: 'DONE', payload: x + y });
+}
+
 function* sagaWithArray() {
   const [x, { payload: y }] = yield all([call(apiFunction), take('Y')]);
 
@@ -23,11 +29,19 @@ function* sagaWithObject() {
   yield put({ type: 'DONE', payload: x + y });
 }
 
+test('uses provided value from `all`', () =>
+  expectSaga(saga)
+    .provide({
+      all: () => [20, { type: 'Y', payload: 22 }],
+    })
+    .put({ type: 'DONE', payload: 42 })
+    .run());
+
 [['array', sagaWithArray], ['object', sagaWithObject]].forEach(
-  ([type, saga]) => {
+  ([type, localSaga]) => {
     describe(`with ${type}`, () => {
       test('inner providers for `all` work', () =>
-        expectSaga(saga)
+        expectSaga(localSaga)
           .provide({
             call: () => 20,
             take: () => ({ type: 'Y', payload: 22 }),
@@ -36,7 +50,7 @@ function* sagaWithObject() {
           .run());
 
       test('inner static providers from redux-saga/effects for `all` work', () =>
-        expectSaga(saga)
+        expectSaga(localSaga)
           .provide([
             [call(apiFunction), 20],
             [take('Y'), { type: 'Y', payload: 22 }],
@@ -45,7 +59,7 @@ function* sagaWithObject() {
           .run());
 
       test('inner static providers from matchers for `all` work', () =>
-        expectSaga(saga)
+        expectSaga(localSaga)
           .provide([
             [m.call(apiFunction), 20],
             [m.take('Y'), { type: 'Y', payload: 22 }],
@@ -54,7 +68,7 @@ function* sagaWithObject() {
           .run());
 
       test('inner static providers use dynamic values for static providers', () =>
-        expectSaga(saga)
+        expectSaga(localSaga)
           .provide([
             [m.call(apiFunction), dynamic(() => 20)],
             [m.take('Y'), dynamic(() => ({ type: 'Y', payload: 22 }))],
@@ -63,7 +77,7 @@ function* sagaWithObject() {
           .run());
 
       test('inner static providers dynamic values have access to effect', () =>
-        expectSaga(saga)
+        expectSaga(localSaga)
           .provide([
             [
               m.call(apiFunction),

@@ -23,12 +23,6 @@ const createRegularSaga = effectCreator =>
     return task.meta.name;
   };
 
-const createParallelSaga = effectCreator =>
-  function* saga() {
-    const [task] = yield [effectCreator(regularBackgroundSaga)];
-    return task.meta.name;
-  };
-
 const createAllSaga = effectCreator =>
   function* saga() {
     const [task] = yield all([effectCreator(regularBackgroundSaga)]);
@@ -58,13 +52,6 @@ function* cancelledBackgroundSaga() {
 const createCancelSaga = effectCreator =>
   function* saga() {
     const task = yield effectCreator(cancelledBackgroundSaga);
-    yield call(delay, 50);
-    yield cancel(task);
-  };
-
-const createCancelParallelSaga = effectCreator =>
-  function* saga() {
-    const [task] = yield [effectCreator(cancelledBackgroundSaga)];
     yield call(delay, 50);
     yield cancel(task);
   };
@@ -101,24 +88,8 @@ test('wrapped sagas return a task with a name referring to the spawned saga', ()
     .run();
 });
 
-test('wrapped sagas return a task with a name referring to the parallel forked saga', () => {
-  const saga = createParallelSaga(fork);
-
-  return expectSaga(saga)
-    .returns('regularBackgroundSaga')
-    .run();
-});
-
 test('wrapped sagas return a task with a name referring to the `all` forked saga', () => {
   const saga = createAllSaga(fork);
-
-  return expectSaga(saga)
-    .returns('regularBackgroundSaga')
-    .run();
-});
-
-test('wrapped sagas return a task with a name referring to the parallel spawned saga', () => {
-  const saga = createParallelSaga(spawn);
 
   return expectSaga(saga)
     .returns('regularBackgroundSaga')
@@ -193,24 +164,8 @@ test('providers receive task with name referring to spawned saga', () => {
     .run();
 });
 
-test('wrapped parallel forked sagas can detect cancellation', () => {
-  const saga = createCancelParallelSaga(fork);
-
-  return expectSaga(saga)
-    .put({ type: 'DONE', payload: 'cancelled' })
-    .run();
-});
-
 test('wrapped `all` forked sagas can detect cancellation', () => {
   const saga = createCancelAllSaga(fork);
-
-  return expectSaga(saga)
-    .put({ type: 'DONE', payload: 'cancelled' })
-    .run();
-});
-
-test('wrapped parallel spawned sagas can detect cancellation', () => {
-  const saga = createCancelParallelSaga(spawn);
 
   return expectSaga(saga)
     .put({ type: 'DONE', payload: 'cancelled' })
@@ -225,36 +180,8 @@ test('wrapped `all` spawned sagas can detect cancellation', () => {
     .run();
 });
 
-test('providers receive task with name referring to parallel forked saga', () => {
-  const saga = createCancelParallelSaga(fork);
-
-  return expectSaga(saga)
-    .provide({
-      cancel(task, next) {
-        expect(task.meta.name).toBe('cancelledBackgroundSaga');
-        return next();
-      },
-    })
-    .put({ type: 'DONE', payload: 'cancelled' })
-    .run();
-});
-
 test('providers receive task with name referring to `all` forked saga', () => {
   const saga = createCancelAllSaga(fork);
-
-  return expectSaga(saga)
-    .provide({
-      cancel(task, next) {
-        expect(task.meta.name).toBe('cancelledBackgroundSaga');
-        return next();
-      },
-    })
-    .put({ type: 'DONE', payload: 'cancelled' })
-    .run();
-});
-
-test('providers receive task with name referring to parallel spawned saga', () => {
-  const saga = createCancelParallelSaga(spawn);
 
   return expectSaga(saga)
     .provide({

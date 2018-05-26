@@ -1,12 +1,13 @@
 /* eslint-disable no-constant-condition */
 import {
+  all,
   call,
-  take,
-  takeEvery,
   fork,
   join,
   put,
   spawn,
+  take,
+  takeEvery,
 } from 'redux-saga/effects';
 import { warn } from 'utils/logging';
 import { delay } from 'utils/async';
@@ -248,7 +249,7 @@ test('times out even if promises keep getting added', async () => {
   }
 
   function* sagas() {
-    yield [fork(saga), fork(otherSaga)];
+    yield all([fork(saga), fork(otherSaga)]);
   }
 
   const promise = Promise.race([

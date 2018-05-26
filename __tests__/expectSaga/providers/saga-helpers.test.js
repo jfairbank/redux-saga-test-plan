@@ -115,10 +115,10 @@ test('provides values in parallel takeEvery workers', () => {
   }
 
   function* saga() {
-    yield [
+    yield all([
       takeEvery('REQUEST_USER', fooSaga, 42, 'hello'),
       takeLatest('REQUEST_OTHER', otherSaga, 13, 'world'),
-    ];
+    ]);
   }
 
   return expectSaga(saga)
