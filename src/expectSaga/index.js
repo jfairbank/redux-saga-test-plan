@@ -258,6 +258,11 @@ export default function expectSaga(
         return result;
       }
 
+      // Ensure we wrap yielded iterators (i.e. `yield someInnerSaga()`) for
+      // providers to work.
+      case is.iterator(value):
+        return useProvidedValue(defaultSagaWrapper(value, refineYieldedValue));
+
       default:
         return useProvidedValue(value);
     }
