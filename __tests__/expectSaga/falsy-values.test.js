@@ -25,25 +25,6 @@ test('can receive falsy values from calls', () => {
     .run();
 });
 
-test('can receive falsy values from calls in parallel', () => {
-  function* saga() {
-    yield [
-      call(returnFalse),
-      call(returnNull),
-      call(returnUndefined),
-      call(returnEmptyString),
-      call(return0),
-      call(returnNaN),
-    ];
-
-    yield put({ type: 'DONE' });
-  }
-
-  return expectSaga(saga)
-    .put({ type: 'DONE' })
-    .run();
-});
-
 test('can receive falsy values from calls in `all`', () => {
   function* saga() {
     yield all([call(returnFalse), call(returnNull), call(returnUndefined)]);
@@ -98,33 +79,6 @@ test('can receive falsy values from providers', () => {
     yield call(returnEmptyString);
     yield call(return0);
     yield call(returnNaN);
-    yield put({ type: 'DONE' });
-  }
-
-  return expectSaga(saga)
-    .provide([
-      [call(returnFalse), false],
-      [call(returnNull), null],
-      [call(returnUndefined), undefined],
-      [call(returnEmptyString), ''],
-      [call(return0), 0],
-      [call(returnNaN), NaN],
-    ])
-    .put({ type: 'DONE' })
-    .run();
-});
-
-test('can receive falsy values from providers in parallel', () => {
-  function* saga() {
-    yield [
-      call(returnFalse),
-      call(returnNull),
-      call(returnUndefined),
-      call(returnEmptyString),
-      call(return0),
-      call(returnNaN),
-    ];
-
     yield put({ type: 'DONE' });
   }
 

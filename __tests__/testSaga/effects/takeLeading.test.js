@@ -1,5 +1,5 @@
 // @flow
-import { call, takeLatest } from 'redux-saga/effects';
+import { call, takeLeading } from 'redux-saga/effects';
 import testSaga from 'testSaga';
 
 function identity(value) {
@@ -19,20 +19,20 @@ function* otherSaga() {
 }
 
 function* mainSaga() {
-  yield takeLatest('FOO', backgroundSaga, 42);
+  yield takeLeading('FOO', backgroundSaga, 42);
 }
 
-test('handles takeLatest effect', () => {
+test('handles takeLeading effect', () => {
   testSaga(mainSaga)
     .next()
-    .takeLatest('FOO', backgroundSaga, 42);
+    .takeLeading('FOO', backgroundSaga, 42);
 });
 
 test('throws if wrong pattern', () => {
   expect(_ => {
     testSaga(mainSaga)
       .next()
-      .takeLatest('BAR', backgroundSaga, 42);
+      .takeLeading('BAR', backgroundSaga, 42);
   }).toThrow();
 });
 
@@ -40,7 +40,7 @@ test('throws if wrong saga', () => {
   expect(_ => {
     testSaga(mainSaga)
       .next()
-      .takeLatest('FOO', otherBackgroundSaga, 42);
+      .takeLeading('FOO', otherBackgroundSaga, 42);
   }).toThrow();
 });
 
@@ -48,7 +48,7 @@ test('throws if args are wrong', () => {
   expect(_ => {
     testSaga(mainSaga)
       .next()
-      .takeLatest('FOO', backgroundSaga, 43);
+      .takeLeading('FOO', backgroundSaga, 43);
   }).toThrow();
 });
 
@@ -56,6 +56,6 @@ test('throws if different effect', () => {
   expect(_ => {
     testSaga(otherSaga)
       .next()
-      .takeLatest('FOO', backgroundSaga, 42);
+      .takeLeading('FOO', backgroundSaga, 42);
   }).toThrow();
 });

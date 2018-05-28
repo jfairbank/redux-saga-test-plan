@@ -1,21 +1,21 @@
 // @flow
-import { put } from 'redux-saga/effects';
+import { putResolve } from 'redux-saga/effects';
 import testSaga from 'testSaga';
 
 function* mainSaga() {
-  yield put.resolve({ type: 'FOO' });
+  yield putResolve({ type: 'FOO' });
 }
 
-test('handles put.resolve', () => {
+test('handles putResolve', () => {
   testSaga(mainSaga)
     .next()
-    .put.resolve({ type: 'FOO' });
+    .putResolve({ type: 'FOO' });
 });
 
 test('throws if arg wrong', () => {
   expect(_ => {
     testSaga(mainSaga)
       .next()
-      .put.resolve({ type: 'BAR' });
+      .putResolve({ type: 'BAR' });
   }).toThrow();
 });

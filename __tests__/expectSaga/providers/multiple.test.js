@@ -33,20 +33,6 @@ function* saga() {
   });
 }
 
-function* parallelSaga() {
-  const [user, dog, greeting, otherData] = yield [
-    call(findUser, 1),
-    call(findDog),
-    call(findGreeting),
-    select(getOtherData),
-  ];
-
-  yield put({
-    type: 'DONE',
-    payload: { user, dog, greeting, otherData },
-  });
-}
-
 function* allSaga() {
   const [user, dog] = yield all([call(findUser, 1), call(findDog)]);
 
@@ -116,24 +102,6 @@ test('takes static providers from redux-saga/effects or matchers', () =>
 
 test('takes static and dynamics providers', () =>
   expectSaga(saga)
-    .provide([
-      [call(findUser, 1), fakeUser],
-      { call: provideDog },
-      [m.select(getOtherData), fakeOtherData],
-    ])
-    .put({
-      type: 'DONE',
-      payload: {
-        user: fakeUser,
-        dog: fakeDog,
-        greeting: 'hello',
-        otherData: fakeOtherData,
-      },
-    })
-    .run());
-
-test('provides for effects yielded in parallel', () =>
-  expectSaga(parallelSaga)
     .provide([
       [call(findUser, 1), fakeUser],
       { call: provideDog },

@@ -5,11 +5,11 @@ Saga. You can reference them in Redux Saga's docs
 [here](http://redux-saga.github.io/redux-saga/docs/api/index.html#effect-creators).
 
 - `take(pattern)`
-- `take.maybe(pattern)`
+- `takeMaybe(pattern)`
 - `take(channel)`
-- `take.maybe(channel)`
+- `takeMaybe(channel)`
 - `put(action)`
-- `put.resolve(action)`
+- `putResolve(action)`
 - `put(channel, action)`
 - `call(fn, ...args)`
 - `call([context, fn], ...args)`
@@ -30,5 +30,4 @@ Saga. You can reference them in Redux Saga's docs
 - `race(effects)`
 - `setContext(props)`
 - `getContext(prop)`
-- `takem(pattern)` **DEPRECATED:** Use `take.maybe`
-- `takem(channel)` **DEPRECATED:** Use `take.maybe`
+- `delay(time)`

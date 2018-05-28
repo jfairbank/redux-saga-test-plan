@@ -1,3 +1,51 @@
+## v4.0.0-beta.1
+
+### Support for redux-saga v1.0.0-beta.1 :tada:
+
+This beta release adds support for redux-saga v1.0.0-beta.1.
+
+The changes in redux-saga weren't too drastic, but they did warrant some
+internal changes inside redux-saga-test-plan. So there might be unanticipated
+bugs in redux-saga-test-plan. Please report any bugs with detailed information
+to the [issues page](https://github.com/jfairbank/redux-saga-test-plan/issues).
+
+Overall, certain deprecated APIs have been removed and support for new effects
+have been added. This release won't work with previous versions (v0.x.x) of
+redux-saga. The full list of changes to `expectSaga` and `testSaga` are below.
+
+### `expectSaga` - Breaking Changes
+
+* Renamed `put.resolve` assertion and matcher to `putResolve` to mirror redux-saga.
+* Renamed `take.maybe` assertion and matcher to `takeMaybe` to mirror redux-saga.
+* Removed support for yielding parallel effects via arrays.
+
+### `testSaga` - New Additions
+
+* Added `delay` assertion for the new `delay` effect.
+* Added `takeLeading` assertion for the new `takeLeading` effect.
+
+### `testSaga` - Breaking Changes
+
+* Removed deprecated `takeEvery`, `takeLatest`, `throttle`, `takeEveryFork`,
+  `takeLatestFork`, and `throttleFork` assertions because redux-saga removed
+  support for yielding/delegating to saga helpers in favor of yielding effect
+  creators instead.
+* Renamed `takeEveryEffect` to `takeEvery` to support the `takeEvery` effect.
+* Renamed `takeLatestEffect` to `takeLatest` to support the `takeLatest` effect.
+* Renamed `throttleEffect` to `throttle` to support the `throttle` effect.
+* Removed deprecated `takem`.
+* Renamed `put.resolve` assertion to `putResolve` to mirror redux-saga.
+* Renamed `take.maybe` assertion to `takeMaybe` to mirror redux-saga.
+* Removed support for asserting parallel effects via yielded arrays.
+
+### Unimplemented Changes
+
+* The TypeScript typings have not been updated, mainly due to my lack of
+  experience with TypeScript. If you'd like to help update the typings, please
+  comment on FORTHCOMING ISSUE PLACEHOLDER.
+
+---
+
 ## v3.7.0
 
 ### NEW - Support providers in yielded iterators (#199)

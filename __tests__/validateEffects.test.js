@@ -19,19 +19,3 @@ test('returns error message for missing actual value', () => {
 
   expect(result).toMatch(/expected call effect, but the saga yielded nothing/);
 });
-
-test('returns error message if expected parallel but actual is not array', () => {
-  const result = validateEffects(
-    eventChannel,
-    'parallel',
-    undefined,
-    false,
-    call(identity),
-    [call(identity)],
-    1,
-  );
-
-  expect(result).toMatch(
-    /expected parallel effects, but the saga yielded a single effect/,
-  );
-});

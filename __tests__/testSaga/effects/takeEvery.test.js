@@ -25,14 +25,14 @@ function* mainSaga() {
 test('handles takeEvery effect', () => {
   testSaga(mainSaga)
     .next()
-    .takeEveryEffect('FOO', backgroundSaga, 42);
+    .takeEvery('FOO', backgroundSaga, 42);
 });
 
 test('throws if wrong pattern', () => {
   expect(_ => {
     testSaga(mainSaga)
       .next()
-      .takeEveryEffect('BAR', backgroundSaga, 42);
+      .takeEvery('BAR', backgroundSaga, 42);
   }).toThrow();
 });
 
@@ -40,7 +40,7 @@ test('throws if wrong saga', () => {
   expect(_ => {
     testSaga(mainSaga)
       .next()
-      .takeEveryEffect('FOO', otherBackgroundSaga, 42);
+      .takeEvery('FOO', otherBackgroundSaga, 42);
   }).toThrow();
 });
 
@@ -48,7 +48,7 @@ test('throws if args are wrong', () => {
   expect(_ => {
     testSaga(mainSaga)
       .next()
-      .takeEveryEffect('FOO', backgroundSaga, 43);
+      .takeEvery('FOO', backgroundSaga, 43);
   }).toThrow();
 });
 
@@ -56,6 +56,6 @@ test('throws if different effect', () => {
   expect(_ => {
     testSaga(otherSaga)
       .next()
-      .takeEveryEffect('FOO', backgroundSaga, 42);
+      .takeEvery('FOO', backgroundSaga, 42);
   }).toThrow();
 });

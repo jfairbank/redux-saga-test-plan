@@ -1,6 +1,6 @@
 // @flow
 /* eslint-disable no-constant-condition */
-import { call, fork, put, take } from 'redux-saga/effects';
+import { all, call, fork, put, take } from 'redux-saga/effects';
 import testSaga from 'testSaga';
 
 const identity = value => value;
@@ -16,7 +16,7 @@ function* mainSaga(x, y, z) {
     yield put({ type: 'ADD', payload: x + y });
     yield call(identity, action);
 
-    yield [call(identity, 'parallel call'), put({ type: 'PARALLEL_PUT' })];
+    yield all([call(identity, 'parallel call'), put({ type: 'PARALLEL_PUT' })]);
 
     yield fork(otherSaga, z);
   } catch (e) {

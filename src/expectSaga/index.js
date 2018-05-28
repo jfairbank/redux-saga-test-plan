@@ -1,10 +1,11 @@
 // @flow
 /* eslint-disable no-underscore-dangle */
-import { effects, runSaga, utils } from 'redux-saga';
-import { call, fork, race, spawn } from 'redux-saga/effects';
+import { effects, runSaga, stdChannel, utils } from 'redux-saga';
+import { all, call, fork, race, spawn } from 'redux-saga/effects';
 import {
   takeEveryHelper,
   takeLatestHelper,
+  takeLeadingHelper,
 } from 'redux-saga/lib/internal/sagaHelpers';
 import assign from 'object-assign';
 import { splitAt } from '../utils/array';
@@ -53,7 +54,11 @@ function extractState(reducer: Reducer, initialState?: any): any {
 }
 
 function isHelper(fn: Function): boolean {
-  return fn === takeEveryHelper || fn === takeLatestHelper;
+  return (
+    fn === takeEveryHelper ||
+    fn === takeLatestHelper ||
+    fn === takeLeadingHelper
+  );
 }
 
 function toJSON(object: mixed): mixed {
@@ -110,8 +115,8 @@ export default function expectSaga(
   };
 
   const expectations: Array<Expectation> = [];
+  const ioChannel = stdChannel();
   const queuedActions = [];
-  const listeners = [];
   const forkedTasks = [];
   const outstandingForkEffects = new Map();
   const outstandingActionChannelEffects = new Map();
@@ -177,7 +182,7 @@ export default function expectSaga(
         return race(parsedEffect.mapEffects(refineYieldedValue));
 
       case type === ALL && !localProviders.all:
-        return parsedEffect.mapEffects(refineYieldedValue);
+        return all(parsedEffect.mapEffects(refineYieldedValue));
 
       case type === FORK: {
         const { args, detached, context, fn } = effect;
@@ -276,16 +281,15 @@ export default function expectSaga(
 
   function getAllPromises(): Promise<*> {
     return new Promise(resolve => {
-      Promise.all([
-        ...forkedTasks.map(task => task.done),
-        mainTaskPromise,
-      ]).then(() => {
-        if (stopDirty) {
-          stopDirty = false;
-          resolve(getAllPromises());
-        }
-        resolve();
-      });
+      Promise.all([...forkedTasks.map(taskPromise), mainTaskPromise]).then(
+        () => {
+          if (stopDirty) {
+            stopDirty = false;
+            resolve(getAllPromises());
+          }
+          resolve();
+        },
+      );
     });
   }
 
@@ -339,9 +343,7 @@ export default function expectSaga(
   }
 
   function notifyListeners(action: Action): void {
-    listeners.forEach(listener => {
-      listener(action);
-    });
+    ioChannel.put(action);
   }
 
   function dispatch(action: Action): any {
@@ -430,16 +432,9 @@ export default function expectSaga(
   }
 
   const io = {
-    subscribe(listener: Function): Function {
-      listeners.push(listener);
-
-      return () => {
-        const index = listeners.indexOf(listener);
-        listeners.splice(index, 1);
-      };
-    },
-
     dispatch,
+
+    channel: ioChannel,
 
     getState(): any {
       return storeState;
@@ -504,6 +499,7 @@ export default function expectSaga(
       asEffect.getContext,
     ),
     put: createEffectTesterFromEffects('put', PUT, asEffect.put),
+    putResolve: createEffectTesterFromEffects('putResolve', PUT, asEffect.put),
     race: createEffectTesterFromEffects('race', RACE, asEffect.race),
     select: createEffectTesterFromEffects('select', SELECT, asEffect.select),
     spawn: createEffectTesterFromEffects('spawn', FORK, asEffect.fork),
@@ -513,20 +509,8 @@ export default function expectSaga(
       asEffect.setContext,
     ),
     take: createEffectTesterFromEffects('take', TAKE, asEffect.take),
+    takeMaybe: createEffectTesterFromEffects('takeMaybe', TAKE, asEffect.take),
   };
-
-  api.put.resolve = createEffectTester(
-    'put.resolve',
-    PUT,
-    effects.put.resolve,
-    asEffect.put,
-  );
-  api.take.maybe = createEffectTester(
-    'take.maybe',
-    TAKE,
-    effects.take.maybe,
-    asEffect.take,
-  );
 
   api.actionChannel.like = createEffectTester(
     'actionChannel',
@@ -582,15 +566,14 @@ export default function expectSaga(
   );
   api.put.actionType = type => api.put.like({ action: { type } });
 
-  api.put.resolve.like = createEffectTester(
-    'put',
+  api.putResolve.like = createEffectTester(
+    'putResolve',
     PUT,
-    effects.put,
+    effects.putResolve,
     asEffect.put,
     true,
   );
-  api.put.resolve.actionType = type =>
-    api.put.resolve.like({ action: { type } });
+  api.putResolve.actionType = type => api.putResolve.like({ action: { type } });
 
   api.select.like = createEffectTester(
     'select',
@@ -638,6 +621,10 @@ export default function expectSaga(
     return api;
   }
 
+  function taskPromise(task: Task): Promise<*> {
+    return task.toPromise();
+  }
+
   function start(): ExpectApi {
     const sagaWrapper = createSagaWrapper(generator.name);
 
@@ -652,7 +639,7 @@ export default function expectSaga(
       setReturnValue,
     );
 
-    mainTaskPromise = mainTask.done
+    mainTaskPromise = taskPromise(mainTask)
       .then(checkExpectations)
       // Pass along the error instead of rethrowing or allowing to
       // bubble up to avoid PromiseRejectionHandledWarning

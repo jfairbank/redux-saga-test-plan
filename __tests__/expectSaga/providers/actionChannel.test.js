@@ -1,5 +1,5 @@
 // @flow
-import { actionChannel, put, take } from 'redux-saga/effects';
+import { actionChannel, all, put, take } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 import * as m from 'expectSaga/matchers';
 import { dynamic } from 'expectSaga/providers';
@@ -13,7 +13,7 @@ function* saga() {
   const channel = yield actionChannel('FOO');
   const otherChannel = yield actionChannel('BAR');
 
-  const [action, otherAction] = yield [take(channel), take(otherChannel)];
+  const [action, otherAction] = yield all([take(channel), take(otherChannel)]);
 
   const payload = action.payload + otherAction.payload;
 

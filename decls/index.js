@@ -9,9 +9,6 @@ declare type Api = {
   restore: SaveRestore,
   restart: Restart,
   throw: ThrowError,
-  takeEvery: TakeHelperProgresser,
-  takeLatest: TakeHelperProgresser,
-  throttle: ThrottleHelperProgresser,
 };
 
 declare type ApiWithEffectsTesters = Api & {
@@ -22,23 +19,23 @@ declare type ApiWithEffectsTesters = Api & {
   cancel: EffectTester,
   cancelled: EffectTester,
   cps: EffectTester,
+  delay: EffectTester,
   flush: EffectTester,
   fork: EffectTester,
   getContext: EffectTester,
   join: EffectTester,
   put: EffectTester,
+  putResolve: EffectTester,
   race: EffectTester,
   select: EffectTester,
   setContext: EffectTester,
   spawn: EffectTester,
   take: EffectTester,
-  takem: EffectTester,
-  takeEveryFork: EffectTester,
-  takeLatestFork: EffectTester,
-  throttleFork: EffectTester,
-  takeEveryEffect: EffectTester,
-  takeLatestEffect: EffectTester,
-  throttleEffect: EffectTester,
+  takeEvery: EffectTester,
+  takeLatest: EffectTester,
+  takeLeading: EffectTester,
+  takeMaybe: EffectTester,
+  throttle: EffectTester,
   is: EffectTester,
   inspect: EffectTester,
   isDone: EffectTester,
@@ -52,19 +49,6 @@ declare type Back = (n?: number) => Api;
 declare type SaveRestore = (s: string) => Api;
 declare type Restart = () => Api;
 declare type ThrowError = (error: Error) => ApiWithEffectsTesters;
-
-declare type TakeHelperProgresser = (
-  pattern: TakePattern,
-  saga: Function,
-  ...args: Array<mixed>
-) => Api;
-
-declare type ThrottleHelperProgresser = (
-  delayTime: number,
-  pattern: TakePattern,
-  saga: Function,
-  ...args: Array<mixed>
-) => Api;
 
 declare type HistoryTypeArgument = 'ARGUMENT';
 declare type HistoryTypeError = 'ERROR';
@@ -113,23 +97,23 @@ declare type EffectTestersCreator = {
   cancel: EffectTesterCreator,
   cancelled: EffectTesterCreator,
   cps: EffectTesterCreator,
+  delay: EffectTesterCreator,
   flush: EffectTesterCreator,
   fork: EffectTesterCreator,
   getContext: EffectTesterCreator,
   join: EffectTesterCreator,
   put: EffectTesterCreator,
+  putResolve: EffectTesterCreator,
   race: EffectTesterCreator,
   select: EffectTesterCreator,
   setContext: EffectTesterCreator,
   spawn: EffectTesterCreator,
   take: EffectTesterCreator,
-  takem: EffectTesterCreator,
-  takeEveryFork: EffectTesterCreator,
-  takeLatestFork: EffectTesterCreator,
-  throttleFork: EffectTesterCreator,
-  takeEveryEffect: EffectTesterCreator,
-  takeLatestEffect: EffectTesterCreator,
-  throttleEffect: EffectTesterCreator,
+  takeEvery: EffectTesterCreator,
+  takeLatest: EffectTesterCreator,
+  takeLeading: EffectTesterCreator,
+  takeMaybe: EffectTesterCreator,
+  throttle: EffectTesterCreator,
   is: EffectTesterCreator,
   inspect: EffectTesterCreator,
   isDone: EffectTesterCreator,
@@ -137,68 +121,6 @@ declare type EffectTestersCreator = {
 };
 
 declare type TakePattern = string | Array<string> | Function;
-
-declare type Effect = {
-  '@@redux-saga/IO': true,
-};
-
-declare type TakePatternEffect = Effect & {
-  TAKE: {
-    pattern: TakePattern,
-  },
-};
-
-declare type ForkEffect = Effect & {
-  FORK: {
-    context: ?mixed,
-    fn: Function,
-    args: Array<mixed>,
-  },
-};
-
-declare type ActionChannelEffect = Effect & {
-  ACTION_CHANNEL: {
-    pattern: TakePattern,
-    buffer: Object,
-  },
-};
-
-declare type TakeChannelEffect = Effect & {
-  TAKE: {
-    channel: Object,
-  },
-};
-
-declare type ThrottleCallEffect = Effect & {
-  CALL: {
-    context: ?mixed,
-    fn: Function,
-    args: Array<number>,
-  },
-};
-
-// These are hacks to get validateTakeHelperEffects and
-// validateThrottleHelperEffects to typecheck
-declare type TakeHelperEffect = TakePatternEffect & ForkEffect;
-
-declare type ThrottleHelperEffect = ActionChannelEffect &
-  TakeChannelEffect &
-  ForkEffect &
-  ThrottleCallEffect;
-
-declare type TakeHelperGenerator = Generator<?TakeHelperEffect, void, void> & {
-  name?: string,
-  '@@redux-saga/HELPER'?: true,
-};
-
-declare type ThrottleHelperGenerator = Generator<
-  ?ThrottleHelperEffect,
-  void,
-  void,
-> & {
-  name?: string,
-  '@@redux-saga/HELPER'?: true,
-};
 
 // expectSaga
 
@@ -218,7 +140,7 @@ type TimeoutConfig = {
   timeout?: Timeout,
 };
 
-type Task = { done: Promise<*> };
+type Task = { toPromise: () => Promise<*> };
 
 type ProviderNext = Object;
 type ProviderNextF = () => ProviderNext;
@@ -236,11 +158,13 @@ type Providers = {
   getContext?: Provider,
   join?: Provider,
   put?: Provider,
+  putResolve?: Provider,
   race?: Provider,
   select?: Provider,
   setContext?: Provider,
   spawn?: Provider,
   take?: Provider,
+  takeMaybe?: Provider,
 };
 
 type ExpectApi = {
@@ -258,10 +182,12 @@ type ExpectApi = {
   getContext: Function,
   hasFinalState: Function,
   put: Function,
+  putResolve: Function,
   race: Function,
   returns: Function,
   select: Function,
   setContext: Function,
   spawn: Function,
   take: Function,
+  takeMaybe: Function,
 };

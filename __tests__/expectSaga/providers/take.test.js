@@ -1,5 +1,5 @@
 // @flow
-import { put, take } from 'redux-saga/effects';
+import { put, take, takeMaybe } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 import * as m from 'expectSaga/matchers';
 import { dynamic } from 'expectSaga/providers';
@@ -13,8 +13,8 @@ function* takeSaga() {
 }
 
 function* takeMaybeSaga() {
-  const action = yield take.maybe('HELLO');
-  const otherAction = yield take.maybe('WORLD');
+  const action = yield takeMaybe('HELLO');
+  const otherAction = yield takeMaybe('WORLD');
   const payload = action.payload + otherAction.payload;
 
   yield put({ payload, type: 'DONE' });
@@ -73,7 +73,7 @@ test('`take` dynamic values have access to effect', () =>
     .dispatch({ type: 'WORLD', payload: 1 })
     .run());
 
-test('provides actions for `take.maybe`', () =>
+test('provides actions for `takeMaybe`', () =>
   expectSaga(takeMaybeSaga)
     .provide({
       take({ maybe, pattern }, next) {
@@ -88,34 +88,34 @@ test('provides actions for `take.maybe`', () =>
     .dispatch({ type: 'WORLD', payload: 1 })
     .run());
 
-test('`take.maybe` uses static provided values from redux-saga/effects', () =>
+test('`takeMaybe` uses static provided values from redux-saga/effects', () =>
   expectSaga(takeMaybeSaga)
-    .provide([[take.maybe('HELLO'), { type: 'HELLO', payload: 42 }]])
+    .provide([[takeMaybe('HELLO'), { type: 'HELLO', payload: 42 }]])
     .put({ type: 'DONE', payload: 43 })
     .dispatch({ type: 'WORLD', payload: 1 })
     .run());
 
-test('`take.maybe` uses static provided values from matchers', () =>
+test('`takeMaybe` uses static provided values from matchers', () =>
   expectSaga(takeMaybeSaga)
-    .provide([[m.take.maybe('HELLO'), { type: 'HELLO', payload: 42 }]])
+    .provide([[m.takeMaybe('HELLO'), { type: 'HELLO', payload: 42 }]])
     .put({ type: 'DONE', payload: 43 })
     .dispatch({ type: 'WORLD', payload: 1 })
     .run());
 
-test('`take.maybe` uses dynamic values for static providers', () =>
+test('`takeMaybe` uses dynamic values for static providers', () =>
   expectSaga(takeMaybeSaga)
     .provide([
-      [m.take.maybe('HELLO'), dynamic(() => ({ type: 'HELLO', payload: 42 }))],
+      [m.takeMaybe('HELLO'), dynamic(() => ({ type: 'HELLO', payload: 42 }))],
     ])
     .put({ type: 'DONE', payload: 43 })
     .dispatch({ type: 'WORLD', payload: 1 })
     .run());
 
-test('`take.maybe` dynamic values have access to effect', () =>
+test('`takeMaybe` dynamic values have access to effect', () =>
   expectSaga(takeMaybeSaga)
     .provide([
       [
-        m.take.maybe('HELLO'),
+        m.takeMaybe('HELLO'),
         dynamic(({ pattern }) => {
           expect(pattern).toBe('HELLO');
           return { type: 'HELLO', payload: 42 };

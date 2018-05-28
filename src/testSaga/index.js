@@ -2,13 +2,7 @@
 import isEqual from 'lodash.isequal';
 import assign from 'object-assign';
 
-import {
-  effects,
-  eventChannel,
-  takeEvery,
-  takeLatest,
-  throttle,
-} from 'redux-saga';
+import { effects, eventChannel } from 'redux-saga';
 
 import { ARGUMENT, ERROR, NONE, FINISH, FINISH_ARGUMENT } from './historyTypes';
 
@@ -33,8 +27,6 @@ import {
 import SagaTestError from '../shared/SagaTestError';
 import createErrorMessage from './createErrorMessage';
 import assertSameEffect from './assertSameEffect';
-import validateTakeHelper from './validateTakeHelper';
-import validateThrottleHelper from './validateThrottleHelper';
 
 export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
   const api = {
@@ -45,41 +37,12 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     save,
     restore,
     throw: throwError,
-    takeEvery: createTakeHelperProgresser('takeEvery', takeEvery),
-    takeLatest: createTakeHelperProgresser('takeLatest', takeLatest),
-    throttle: createThrottleHelperProgresser('throttle'),
   };
 
   const savePoints: SavePoints = {};
   let history: Array<HistoryItem> = [];
   let finalSagaArgs = sagaArgs;
   let iterator = createIterator();
-
-  const allEffectTester = yieldedValue => expectedEffects => {
-    if (Array.isArray(yieldedValue)) {
-      assertSameEffect(
-        eventChannel,
-        'parallel',
-        undefined,
-        false,
-        yieldedValue,
-        expectedEffects,
-        history.length,
-      );
-    } else {
-      assertSameEffect(
-        eventChannel,
-        'all',
-        ALL,
-        false,
-        yieldedValue,
-        effects.all(expectedEffects),
-        history.length,
-      );
-    }
-
-    return api;
-  };
 
   function createEffectTester(
     name: string,
@@ -109,13 +72,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     return createEffectTester(name, key, effects[name]);
   }
 
-  function createEffectHelperTester(
-    name: string,
-    helperCreator: Function,
-  ): EffectTesterCreator {
-    return createEffectTester(name, undefined, helperCreator);
-  }
-
   function createEffectTesterFromHelperEffect(
     name: string,
   ): EffectTesterCreator {
@@ -127,29 +83,29 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       'actionChannel',
       ACTION_CHANNEL,
     ),
-    all: allEffectTester,
+    all: createEffectTesterFromEffects('all', ALL),
     apply: createEffectTesterFromEffects('apply', CALL),
     call: createEffectTesterFromEffects('call', CALL),
     cancel: createEffectTesterFromEffects('cancel', CANCEL),
     cancelled: createEffectTesterFromEffects('cancelled', CANCELLED),
     cps: createEffectTesterFromEffects('cps', CPS),
+    delay: createEffectTesterFromEffects('delay', CALL),
     flush: createEffectTesterFromEffects('flush', FLUSH),
     fork: createEffectTesterFromEffects('fork', FORK),
     getContext: createEffectTesterFromEffects('getContext', GET_CONTEXT),
     join: createEffectTesterFromEffects('join', JOIN),
     put: createEffectTesterFromEffects('put', PUT),
+    putResolve: createEffectTesterFromEffects('putResolve', PUT),
     race: createEffectTesterFromEffects('race', RACE),
     select: createEffectTesterFromEffects('select', SELECT),
     setContext: createEffectTesterFromEffects('setContext', SET_CONTEXT),
     spawn: createEffectTesterFromEffects('spawn', FORK),
     take: createEffectTesterFromEffects('take', TAKE),
-    takem: createEffectTesterFromEffects('takem', TAKE),
-    takeEveryFork: createEffectHelperTester('takeEvery', takeEvery),
-    takeLatestFork: createEffectHelperTester('takeLatest', takeLatest),
-    throttleFork: createEffectHelperTester('throttle', throttle),
-    takeEveryEffect: createEffectTesterFromHelperEffect('takeEvery'),
-    takeLatestEffect: createEffectTesterFromHelperEffect('takeLatest'),
-    throttleEffect: createEffectTesterFromHelperEffect('throttle'),
+    takeEvery: createEffectTesterFromHelperEffect('takeEvery'),
+    takeLatest: createEffectTesterFromHelperEffect('takeLatest'),
+    takeLeading: createEffectTesterFromHelperEffect('takeLeading'),
+    takeMaybe: createEffectTesterFromEffects('takeMaybe', TAKE),
+    throttle: createEffectTesterFromHelperEffect('throttle'),
 
     isDone: done => () => {
       if (!done) {
@@ -199,18 +155,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     },
   };
 
-  effectsTestersCreators.take.maybe = createEffectTester(
-    'take.maybe',
-    TAKE,
-    effects.take.maybe,
-  );
-
-  effectsTestersCreators.put.resolve = createEffectTester(
-    'put.resolve',
-    PUT,
-    effects.put.resolve,
-  );
-
   function createIterator(): Generator<*, *, *> {
     return saga(...finalSagaArgs);
   }
@@ -227,31 +171,28 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       cancel: effectsTestersCreators.cancel(value),
       cancelled: effectsTestersCreators.cancelled(value),
       cps: effectsTestersCreators.cps(value),
+      delay: effectsTestersCreators.delay(value),
       flush: effectsTestersCreators.flush(value),
       fork: effectsTestersCreators.fork(value),
       getContext: effectsTestersCreators.getContext(value),
       join: effectsTestersCreators.join(value),
       put: effectsTestersCreators.put(value),
+      putResolve: effectsTestersCreators.putResolve(value),
       race: effectsTestersCreators.race(value),
       select: effectsTestersCreators.select(value),
       setContext: effectsTestersCreators.setContext(value),
       spawn: effectsTestersCreators.spawn(value),
       take: effectsTestersCreators.take(value),
-      takem: effectsTestersCreators.takem(value),
-      takeEveryFork: effectsTestersCreators.takeEveryFork(value),
-      takeLatestFork: effectsTestersCreators.takeLatestFork(value),
-      throttleFork: effectsTestersCreators.throttleFork(value),
-      takeEveryEffect: effectsTestersCreators.takeEveryEffect(value),
-      takeLatestEffect: effectsTestersCreators.takeLatestEffect(value),
-      throttleEffect: effectsTestersCreators.throttleEffect(value),
+      takeEvery: effectsTestersCreators.takeEvery(value),
+      takeLatest: effectsTestersCreators.takeLatest(value),
+      takeLeading: effectsTestersCreators.takeLeading(value),
+      takeMaybe: effectsTestersCreators.takeMaybe(value),
+      throttle: effectsTestersCreators.throttle(value),
       is: effectsTestersCreators.is(value),
       inspect: effectsTestersCreators.inspect(value),
       isDone: effectsTestersCreators.isDone(done),
       returns: effectsTestersCreators.returns(value, done),
     });
-
-    newApi.take.maybe = effectsTestersCreators.take.maybe(value);
-    newApi.put.resolve = effectsTestersCreators.put.resolve(value);
 
     return newApi;
   }
@@ -336,58 +277,6 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
   function save(name: string): Api {
     savePoints[name] = history.slice(0);
     return api;
-  }
-
-  function createTakeHelperProgresser(helperName: string, helper: Function) {
-    return function takeHelperProgresser(
-      pattern: TakePattern,
-      otherSaga: Function,
-      ...args: Array<mixed>
-    ): Api {
-      const errorMessage = validateTakeHelper(
-        helperName,
-        iterator, // this will be mutated (i.e. 2 steps will be taken)
-        helper(pattern, otherSaga, ...args),
-        history.length + 1,
-      );
-
-      history.push(({ type: NONE }: HistoryItemNone));
-      history.push(({ type: NONE }: HistoryItemNone));
-
-      if (errorMessage) {
-        throw new SagaTestError(errorMessage);
-      }
-
-      return api;
-    };
-  }
-
-  function createThrottleHelperProgresser(helperName: string) {
-    return function throttleHelperProgresser(
-      delayTime: number,
-      pattern: TakePattern,
-      otherSaga: Function,
-      ...args: Array<mixed>
-    ): Api {
-      const errorMessage = validateThrottleHelper(
-        eventChannel,
-        helperName,
-        iterator, // this will be mutated (i.e. 4 steps will be taken)
-        throttle(delayTime, pattern, otherSaga, ...args),
-        history.length + 1,
-      );
-
-      history.push(({ type: NONE }: HistoryItemNone));
-      history.push(({ type: NONE }: HistoryItemNone));
-      history.push(({ type: NONE }: HistoryItemNone));
-      history.push(({ type: NONE }: HistoryItemNone));
-
-      if (errorMessage) {
-        throw new SagaTestError(errorMessage);
-      }
-
-      return api;
-    };
   }
 
   function applyHistory(): Api {

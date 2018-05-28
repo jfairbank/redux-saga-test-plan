@@ -1,5 +1,5 @@
 // @flow
-import { put } from 'redux-saga/effects';
+import { put, putResolve } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 import * as m from 'expectSaga/matchers';
 import { dynamic } from 'expectSaga/providers';
@@ -10,7 +10,7 @@ function* putSaga() {
 }
 
 function* putResolveSaga() {
-  const result = yield put.resolve({ type: 'HELLO' });
+  const result = yield putResolve({ type: 'HELLO' });
   yield put({ type: 'WORLD', payload: result });
 }
 
@@ -69,7 +69,7 @@ test('`put` dynamic values have access to effect', () =>
     })
     .run());
 
-test('uses provided value for `put.resolve`', () =>
+test('uses provided value for `putResolve`', () =>
   expectSaga(putResolveSaga)
     .provide({
       put({ resolve, action }, next) {
@@ -83,35 +83,35 @@ test('uses provided value for `put.resolve`', () =>
     .put({ type: 'WORLD', payload: 42 })
     .run());
 
-test('`put.resolve` uses static provided values from redux-saga/effects', () =>
+test('`putResolve` uses static provided values from redux-saga/effects', () =>
   expectSaga(putResolveSaga)
-    .provide([[put.resolve({ type: 'HELLO' }), 42]])
+    .provide([[putResolve({ type: 'HELLO' }), 42]])
     .put({ type: 'WORLD', payload: 42 })
     .run());
 
-test('`put.resolve` uses static provided values from matchers', () =>
+test('`putResolve` uses static provided values from matchers', () =>
   expectSaga(putResolveSaga)
-    .provide([[m.put.resolve({ type: 'HELLO' }), 42]])
+    .provide([[m.putResolve({ type: 'HELLO' }), 42]])
     .put({ type: 'WORLD', payload: 42 })
     .run());
 
-test('`put.resolve` uses partial static provided values from matchers', () =>
+test('`putResolve` uses partial static provided values from matchers', () =>
   expectSaga(putResolveSaga)
-    .provide([[m.put.resolve.actionType('HELLO'), 42]])
+    .provide([[m.putResolve.actionType('HELLO'), 42]])
     .put({ type: 'WORLD', payload: 42 })
     .run());
 
-test('`put.resolve` uses dynamic values for static providers', () =>
+test('`putResolve` uses dynamic values for static providers', () =>
   expectSaga(putResolveSaga)
-    .provide([[m.put.resolve.actionType('HELLO'), dynamic(() => 42)]])
+    .provide([[m.putResolve.actionType('HELLO'), dynamic(() => 42)]])
     .put({ type: 'WORLD', payload: 42 })
     .run());
 
-test('`put.resolve` dynamic values have access to effect', () =>
+test('`putResolve` dynamic values have access to effect', () =>
   expectSaga(putResolveSaga)
     .provide([
       [
-        m.put.resolve.actionType('HELLO'),
+        m.putResolve.actionType('HELLO'),
         dynamic(effect => ({
           type: effect.action.type,
           payload: 42,

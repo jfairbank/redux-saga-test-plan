@@ -4,8 +4,8 @@ import serializeEffect from '../shared/serializeEffect';
 export default function createErrorMessage(
   header: string,
   stepNumber: number,
-  actual?: mixed | Array<mixed>,
-  expected?: mixed | Array<mixed>,
+  actual?: mixed,
+  expected?: mixed,
   effectKey?: ?string,
 ): string {
   let errorMessage = `\nAssertion ${stepNumber} failed: ${header}\n`;
