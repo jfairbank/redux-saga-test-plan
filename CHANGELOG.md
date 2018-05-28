@@ -1,3 +1,42 @@
+## v3.7.0
+
+### NEW - Support providers in yielded iterators (#199)
+
+If you yield an iterator inside of a saga, then Redux Saga Test Plan will now
+ensure that provided values works inside the yielded iterator. See the example
+below.
+
+```js
+import { put, select } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
+
+const selector = state => state.test;
+
+function* mainSaga() {
+  function* innerSaga() {
+    const result = yield select(selector);
+    return !!result;
+  }
+
+  const result = yield innerSaga();
+
+  if (result) {
+    yield put({ type: 'DATA', payload: 42 });
+  }
+}
+
+test('provides value for yielded iterators', () => {
+  return expectSaga(mainSaga)
+    .provide([
+      [select(selector), true]
+    ])
+    .put({ type: 'DATA', payload: 42 })
+    .run();
+});
+```
+
+---
+
 ## v3.6.0
 
 ### NEW - Support `getContext` and `setContext` (#154)
