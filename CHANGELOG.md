@@ -42,7 +42,7 @@ redux-saga. The full list of changes to `expectSaga` and `testSaga` are below.
 
 * The TypeScript typings have not been updated, mainly due to my lack of
   experience with TypeScript. If you'd like to help update the typings, please
-  comment on FORTHCOMING ISSUE PLACEHOLDER.
+  comment on #201.
 
 ---
 
