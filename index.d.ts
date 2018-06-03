@@ -53,14 +53,14 @@ export interface ExpectApi extends ExpectApiEffects {
 }
 
 export type TakeHelperProgresser = (
-    pattern: E.Pattern,
+    pattern: E.Pattern<any>,
     saga: Function,
     ...args: any[]
 ) => TestApi;
 
 export type ThrottleHelperProgresser = (
     delayTime: number,
-    pattern: E.Pattern,
+    pattern: E.Pattern<any>,
     saga: Function,
     ...args: any[]
 ) => TestApi;
@@ -86,14 +86,14 @@ export interface TestApi {
 
 export type TestApiWithEffectsTesters = TestApi & TestApiEffects & {
     /** deprecated */
-    takeEveryFork(action: E.Pattern, fn: Function, ...args: any[]): TestApi;
+    takeEveryFork(action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
     /** deprecated */
-    takeLatestFork(action: E.Pattern, fn: Function, ...args: any[]): TestApi;
+    takeLatestFork(action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
     /** deprecated */
-    throttleFork(ms: number, action: E.Pattern, fn: Function, ...args: any[]): TestApi;
-    takeEveryEffect(action: E.Pattern, fn: Function, ...args: any[]): TestApi;
-    takeLatestEffect(action: E.Pattern, fn: Function, ...args: any[]): TestApi;
-    throttleEffect(ms: number, action: E.Pattern, fn: Function, ...args: any[]): TestApi;
+    throttleFork(ms: number, action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
+    takeEveryEffect(action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
+    takeLatestEffect(action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
+    throttleEffect(ms: number, action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
     is<V>(expectation: V): TestApi;
     inspect<V>(expectation: (yieldedValue: V) => void): TestApi;
     isDone(): TestApi;
