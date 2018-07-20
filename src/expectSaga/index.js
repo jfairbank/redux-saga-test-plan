@@ -643,7 +643,7 @@ export default function expectSaga(
       .then(checkExpectations)
       // Pass along the error instead of rethrowing or allowing to
       // bubble up to avoid PromiseRejectionHandledWarning
-      .catch(identity);
+      .catch(e => checkExpectations() || e);
 
     return api;
   }
