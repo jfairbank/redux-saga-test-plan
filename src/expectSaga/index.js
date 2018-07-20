@@ -465,6 +465,9 @@ export default function expectSaga(
       effectRejected() {},
       effectCancelled() {},
     },
+
+    // Suppresses redux-saga console.error on unhandled exception
+    logger: () => {},
   };
 
   const api = {
