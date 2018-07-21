@@ -47,6 +47,7 @@ export interface ExpectApi extends ExpectApiEffects {
     withReducer<S>(newReducer: Reducer<S>, initialState?: S): ExpectApi;
     hasFinalState<S>(state: S): ExpectApi;
     returns(value: any): ExpectApi;
+    throws(type: any): ExpectApi;
     delay(time: number): ExpectApi;
     dispatch<A extends Action>(action: A): ExpectApi;
     not: ExpectApi;

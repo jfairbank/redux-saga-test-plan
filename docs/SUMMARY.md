@@ -15,6 +15,7 @@
   - [Exposed Effects](/integration-testing/exposed-effects.md)
   - [Snapshot Testing](/integration-testing/snapshot-testing.md)
   - [Return Value](/integration-testing/return-value.md)
+  - [Thrown Errors](/integration-testing/thrown-errors.md)
   - [Forked Sagas](/integration-testing/forked-sagas.md)
 - [Unit Testing](/unit-testing/README.md)
   - [Error Messages](/unit-testing/error-messages.md)
