@@ -1,9 +1,6 @@
 /* eslint-disable require-yield */
-import { put, call } from 'redux-saga/effects';
+import { put } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
-
-import * as matchers from '../../../matchers';
-import { throwError } from '../../../providers';
 
 class CustomError {}
 

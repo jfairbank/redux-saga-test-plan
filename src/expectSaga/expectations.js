@@ -151,8 +151,13 @@ export function createErrorExpectation({
   expected,
 }: ErrorExpectationArgs): Expectation {
   return ({ errorValue }: ExpectationThunkArgs) => {
-    const serializedExpected =
-      typeof type === 'object' ? inspect(type, { depth: 3 }) : type.name;
+    let serializedExpected = typeof type;
+
+    if (typeof type === 'object') {
+      serializedExpected = inspect(type, { depth: 3 });
+    } else if (typeof type === 'function') {
+      serializedExpected = type.name;
+    }
 
     const matches = () =>
       (typeof type === 'object' && isEqual(type, errorValue)) ||
@@ -187,7 +192,11 @@ But instead threw:
 ${serializedActual}
 `);
     } else if (typeof type === 'function' && !matches()) {
-      const serializedActual = errorValue.constructor.name;
+      const serializedActual =
+        typeof errorValue === 'function'
+          ? errorValue.constructor.name
+          : typeof errorValue;
+
       throw new SagaTestError(`
 Expected to throw error of type:
 --------------------------------
