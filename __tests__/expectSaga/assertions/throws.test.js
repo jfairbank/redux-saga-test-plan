@@ -45,9 +45,18 @@ test('fails when no error thrown', done =>
       done();
     }));
 
-test('fails when non-matching error thrown', done =>
+test('fails when non-matching error type thrown', done =>
   expectSaga(errorSaga, new Error())
     .throws(CustomError)
+    .run()
+    .catch(e => {
+      expect(e.message).toMatch(/but instead threw/i);
+      done();
+    }));
+
+test('fails when non-matching error value thrown', done =>
+  expectSaga(errorSaga, { message: 'Error 1' })
+    .throws({ message: 'Error 2' })
     .run()
     .catch(e => {
       expect(e.message).toMatch(/but instead threw/i);

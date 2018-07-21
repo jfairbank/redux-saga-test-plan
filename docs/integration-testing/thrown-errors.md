@@ -29,7 +29,6 @@ it('throws a plain object error', () => {
 ```
 
 Other assertions are also checked when an error is thrown. This can be used to verify cleanup code etc:
-
 ```js
 function* saga() {
   yield put({ type: 'API_STARTED' });
