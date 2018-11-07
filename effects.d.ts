@@ -17,6 +17,22 @@ interface PutEffectApi<R> {
     <A extends Action>(action: A): R;
 }
 
+type Func0 = () => any;
+type Func1<T1> = (arg1: T1) => any;
+type Func2<T1, T2> = (arg1: T1, arg2: T2) => any;
+type Func3<T1, T2, T3> = (arg1: T1, arg2: T2, arg3: T3) => any;
+type Func4<T1, T2, T3, T4> = (arg1: T1, arg2: T2, arg3: T3, arg4: T4) => any;
+type Func5<T1, T2, T3, T4, T5> = (arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5) => any;
+type Func6Rest<T1, T2, T3, T4, T5, T6> = (
+  arg1: T1,
+  arg2: T2,
+  arg3: T3,
+  arg4: T4,
+  arg5: T5,
+  arg6: T6,
+  ...rest: any[]
+) => any;
+
 /**
  * Contains effect functions with variable return type.
  * Method arguments should be same as in Redux-Saga.
@@ -35,7 +51,20 @@ interface EffectApi<R> {
     };
     race(effects: { [key: string]: E.Effect }): R;
     race(effects: E.Effect[]): R;
-    select<S>(selector?: (state: S) => any, ...args: any[]): R;
+    select<S>(selector: Func1<S>): R;
+    select<S, T1>(selector: Func1<S, T1>, arg1: T1): R;
+    select<S, T1, T2>(selector: Func3<S, T1, T2>,
+        arg1: T1, arg2: T2): R;
+    select<S, T1, T2, T3>(
+        selector: Func4<S, T1, T2, T3>,
+        arg1: T1, arg2: T2, arg3: T3): R;
+    select<S, T1, T2, T3, T4>(
+        selector: Func5<S, T1, T2, T3, T4>,
+        arg1: T1, arg2: T2, arg3: T3, arg4: T4): R;
+    select<S, T1, T2, T3, T4, T5>(
+        selector: Func6Rest<S, T1, T2, T3, T4, T5>,
+        arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5,
+        ...rest: any[]): R;
     call<T>(fn: [T, Function], ...args: any[]): R;
     call<T, K extends keyof T>(fn: [T, K], ...args: any[]): R;
     call(fn: Function, ...args: any[]): R;
