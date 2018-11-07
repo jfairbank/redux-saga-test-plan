@@ -53,18 +53,24 @@ interface EffectApi<R> {
     race(effects: E.Effect[]): R;
     select<S>(selector: Func1<S>): R;
     select<S, T1>(selector: Func1<S, T1>, arg1: T1): R;
-    select<S, T1, T2>(selector: Func3<S, T1, T2>,
-        arg1: T1, arg2: T2): R;
-    select<S, T1, T2, T3>(
-        selector: Func4<S, T1, T2, T3>,
-        arg1: T1, arg2: T2, arg3: T3): R;
+    select<S, T1, T2>(selector: Func3<S, T1, T2>, arg1: T1, arg2: T2): R;
+    select<S, T1, T2, T3>(selector: Func4<S, T1, T2, T3>, arg1: T1, arg2: T2, arg3: T3): R;
     select<S, T1, T2, T3, T4>(
         selector: Func5<S, T1, T2, T3, T4>,
-        arg1: T1, arg2: T2, arg3: T3, arg4: T4): R;
+        arg1: T1,
+        arg2: T2,
+        arg3: T3,
+        arg4: T4,
+      ): R;
     select<S, T1, T2, T3, T4, T5>(
         selector: Func6Rest<S, T1, T2, T3, T4, T5>,
-        arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5,
-        ...rest: any[]): R;
+        arg1: T1,
+        arg2: T2,
+        arg3: T3,
+        arg4: T4,
+        arg5: T5,
+        ...rest: any[]
+      ): R;
     call<T>(fn: [T, Function], ...args: any[]): R;
     call<T, K extends keyof T>(fn: [T, K], ...args: any[]): R;
     call(fn: Function, ...args: any[]): R;
