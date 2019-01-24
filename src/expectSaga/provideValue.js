@@ -1,5 +1,4 @@
 // @flow
-import { utils } from 'redux-saga';
 import parseEffect from './parseEffect';
 
 import {
@@ -20,7 +19,7 @@ import {
   TAKE,
 } from '../shared/keys';
 
-const { asEffect } = utils;
+import { asEffect } from '../utils/asEffect';
 
 export const NEXT = Object.create(null);
 export const next = () => NEXT;

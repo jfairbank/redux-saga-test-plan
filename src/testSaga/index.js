@@ -2,7 +2,9 @@
 import isEqual from 'lodash.isequal';
 import assign from 'object-assign';
 
-import { effects, eventChannel } from 'redux-saga';
+import * as effects from 'redux-saga/effects';
+
+import { eventChannel } from 'redux-saga';
 
 import { ARGUMENT, ERROR, NONE, FINISH, FINISH_ARGUMENT } from './historyTypes';
 

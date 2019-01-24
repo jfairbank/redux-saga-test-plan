@@ -1,4 +1,4 @@
-import { is } from 'redux-saga/utils';
+import * as is from '@redux-saga/is';
 import { cancel, cancelled, fork, put } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 

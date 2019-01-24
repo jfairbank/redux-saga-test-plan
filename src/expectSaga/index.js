@@ -1,12 +1,14 @@
 // @flow
 /* eslint-disable no-underscore-dangle */
-import { effects, runSaga, stdChannel, utils } from 'redux-saga';
+import { runSaga, stdChannel } from 'redux-saga';
+import * as is from '@redux-saga/is';
+import * as effects from 'redux-saga/effects';
 import { all, call, fork, race, spawn } from 'redux-saga/effects';
-import {
-  takeEveryHelper,
-  takeLatestHelper,
-  takeLeadingHelper,
-} from 'redux-saga/lib/internal/sagaHelpers';
+// import {
+//   takeEveryHelper,
+//   takeLatestHelper,
+//   takeLeadingHelper,
+// } from 'redux-saga/lib/internal/sagaHelpers';
 import assign from 'object-assign';
 import { splitAt } from '../utils/array';
 import Map from '../utils/Map';
@@ -21,6 +23,7 @@ import findDispatchableActionIndex from './findDispatchableActionIndex';
 import createSagaWrapper, { isSagaWrapper } from './sagaWrapper';
 import sagaIdFactory from './sagaIdFactory';
 import { coalesceProviders } from './providers/helpers';
+import { asEffect } from '../utils/asEffect';
 
 import type { Expectation } from './expectations';
 
@@ -44,7 +47,7 @@ import {
   TAKE,
 } from '../shared/keys';
 
-const { asEffect, is } = utils;
+// const { asEffect, is } = utils;
 
 const INIT_ACTION = { type: '@@redux-saga-test-plan/INIT' };
 const defaultSagaWrapper = createSagaWrapper();
@@ -53,13 +56,13 @@ function extractState(reducer: Reducer, initialState?: any): any {
   return initialState || reducer(undefined, INIT_ACTION);
 }
 
-function isHelper(fn: Function): boolean {
-  return (
-    fn === takeEveryHelper ||
-    fn === takeLatestHelper ||
-    fn === takeLeadingHelper
-  );
-}
+// function isHelper(fn: Function): boolean {
+//   return (
+//     fn === takeEveryHelper ||
+//     fn === takeLatestHelper ||
+//     fn === takeLeadingHelper
+//   );
+// }
 
 function toJSON(object: mixed): mixed {
   if (Array.isArray(object)) {
@@ -186,7 +189,7 @@ export default function expectSaga(
 
       case type === FORK: {
         const { args, detached, context, fn } = effect;
-        const yieldedHelperEffect = isHelper(fn);
+        // const yieldedHelperEffect = isHelper(fn);
 
         const providedValue = useProvidedValue(value);
         const isProvided = providedValue !== value;
@@ -199,20 +202,20 @@ export default function expectSaga(
             effect: value,
           });
 
-          let finalArgs = args;
+          const finalArgs = args;
 
-          if (yieldedHelperEffect) {
-            const [patternOrChannel, worker, ...restArgs] = args;
+          // if (yieldedHelperEffect) {
+          //   const [patternOrChannel, worker, ...restArgs] = args;
 
-            finalArgs = [
-              patternOrChannel,
-              action =>
-                defaultSagaWrapper(
-                  worker(...restArgs, action),
-                  refineYieldedValue,
-                ),
-            ];
-          }
+          //   finalArgs = [
+          //     patternOrChannel,
+          //     action =>
+          //       defaultSagaWrapper(
+          //         worker(...restArgs, action),
+          //         refineYieldedValue,
+          //       ),
+          //   ];
+          // }
 
           return fork(
             createSagaWrapper(fn.name),
