@@ -1,8 +1,13 @@
 import { effectTypes } from 'redux-saga/effects';
 import { IO } from '@redux-saga/symbols';
 
-const createAsEffectType = type => effect =>
-  effect && effect[IO] && effect.type === type && effect.payload;
+const createAsEffectType = type => effect => {
+  if (effect && effect[IO] && effect.type === type) {
+    return effect.payload;
+  }
+
+  return undefined;
+};
 
 // eslint-disable-next-line import/prefer-default-export
 export const asEffect = {

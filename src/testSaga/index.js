@@ -4,7 +4,7 @@ import assign from 'object-assign';
 
 import * as effects from 'redux-saga/effects';
 
-import { eventChannel } from 'redux-saga';
+// import { eventChannel } from 'redux-saga';
 
 import { ARGUMENT, ERROR, NONE, FINISH, FINISH_ARGUMENT } from './historyTypes';
 
@@ -29,6 +29,8 @@ import {
 import SagaTestError from '../shared/SagaTestError';
 import createErrorMessage from './createErrorMessage';
 import assertSameEffect from './assertSameEffect';
+
+const { eventChannel } = effects;
 
 export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
   const api = {

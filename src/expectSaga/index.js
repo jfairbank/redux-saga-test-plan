@@ -3,7 +3,7 @@
 import { runSaga, stdChannel } from 'redux-saga';
 import * as is from '@redux-saga/is';
 import * as effects from 'redux-saga/effects';
-import { all, call, fork, race, spawn } from 'redux-saga/effects';
+
 // import {
 //   takeEveryHelper,
 //   takeLatestHelper,
@@ -48,6 +48,7 @@ import {
 } from '../shared/keys';
 
 // const { asEffect, is } = utils;
+const { all, call, fork, race, spawn, put } = effects;
 
 const INIT_ACTION = { type: '@@redux-saga-test-plan/INIT' };
 const defaultSagaWrapper = createSagaWrapper();
@@ -563,7 +564,8 @@ export default function expectSaga(
   api.put.like = createEffectTester(
     'put',
     PUT,
-    effects.put,
+    // effects.put,
+    put,
     asEffect.put,
     true,
   );
@@ -789,4 +791,4 @@ export default function expectSaga(
   return api;
 }
 
-expectSaga.DEFAULT_TIMEOUT = 250;
+expectSaga.DEFAULT_TIMEOUT = 2500000000;
