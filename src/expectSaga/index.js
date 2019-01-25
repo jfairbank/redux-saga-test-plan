@@ -791,4 +791,4 @@ export default function expectSaga(
   return api;
 }
 
-expectSaga.DEFAULT_TIMEOUT = 2500000000;
+expectSaga.DEFAULT_TIMEOUT = 250;
