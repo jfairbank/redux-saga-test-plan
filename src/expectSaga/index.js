@@ -41,8 +41,7 @@ import {
   TAKE,
 } from '../shared/keys';
 
-// const { asEffect, is } = utils;
-const { all, call, fork, race, spawn, put } = effects;
+const { all, call, fork, race, spawn } = effects;
 
 const INIT_ACTION = { type: '@@redux-saga-test-plan/INIT' };
 const defaultSagaWrapper = createSagaWrapper();
@@ -536,8 +535,7 @@ export default function expectSaga(
   api.put.like = createEffectTester(
     'put',
     PUT,
-    // effects.put,
-    put,
+    effects.put,
     asEffect.put,
     true,
   );
