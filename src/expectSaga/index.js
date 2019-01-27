@@ -3,12 +3,6 @@
 import { runSaga, stdChannel } from 'redux-saga';
 import * as is from '@redux-saga/is';
 import * as effects from 'redux-saga/effects';
-
-// import {
-//   takeEveryHelper,
-//   takeLatestHelper,
-//   takeLeadingHelper,
-// } from 'redux-saga/lib/internal/sagaHelpers';
 import assign from 'object-assign';
 import { splitAt } from '../utils/array';
 import Map from '../utils/Map';
@@ -56,14 +50,6 @@ const defaultSagaWrapper = createSagaWrapper();
 function extractState(reducer: Reducer, initialState?: any): any {
   return initialState || reducer(undefined, INIT_ACTION);
 }
-
-// function isHelper(fn: Function): boolean {
-//   return (
-//     fn === takeEveryHelper ||
-//     fn === takeLatestHelper ||
-//     fn === takeLeadingHelper
-//   );
-// }
 
 function toJSON(object: mixed): mixed {
   if (Array.isArray(object)) {
@@ -190,7 +176,6 @@ export default function expectSaga(
 
       case type === FORK: {
         const { args, detached, context, fn } = effect;
-        // const yieldedHelperEffect = isHelper(fn);
 
         const providedValue = useProvidedValue(value);
         const isProvided = providedValue !== value;
@@ -204,19 +189,6 @@ export default function expectSaga(
           });
 
           const finalArgs = args;
-
-          // if (yieldedHelperEffect) {
-          //   const [patternOrChannel, worker, ...restArgs] = args;
-
-          //   finalArgs = [
-          //     patternOrChannel,
-          //     action =>
-          //       defaultSagaWrapper(
-          //         worker(...restArgs, action),
-          //         refineYieldedValue,
-          //       ),
-          //   ];
-          // }
 
           return fork(
             createSagaWrapper(fn.name),
