@@ -1,8 +1,9 @@
 ## v4.0.0-beta.1
 
-### Support for redux-saga v1.0.0-beta.1 :tada:
+### Support for redux-saga v1.0.0 :tada:
 
-This beta release adds support for redux-saga v1.0.0-beta.1.
+~~This beta release adds support for redux-saga v1.0.0-beta.1.~~
+This beta release adds support for redux-saga v1.0.0
 
 The changes in redux-saga weren't too drastic, but they did warrant some
 internal changes inside redux-saga-test-plan. So there might be unanticipated
