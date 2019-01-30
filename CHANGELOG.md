@@ -1,4 +1,4 @@
-## v4.0.0-beta.1
+## v4.0.0-beta.2
 
 ### Support for redux-saga v1.0.0 :tada:
 
