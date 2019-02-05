@@ -1,3 +1,27 @@
+## v4.0.0-beta.2
+
+### Support for redux-saga v1.0.1 :tada:
+
+This beta release adds support for redux-saga v1.0.1
+
+This release doesn't include any testing API changes. Only fixing the compatibility with redux-saga v1.0.1.
+
+Please report any bugs with detailed information to the [issues page](https://github.com/jfairbank/redux-saga-test-plan/issues).
+
+---
+
+## v4.0.0-beta.2
+
+### Support for redux-saga v1.0.0 :tada:
+
+This beta release adds support for redux-saga v1.0.0
+
+This release doesn't include any testing API changes. Only fixing the compatibility with redux-saga v1.0.0.
+
+Please report any bugs with detailed information to the [issues page](https://github.com/jfairbank/redux-saga-test-plan/issues).
+
+---
+
 ## v4.0.0-beta.1
 
 ### Support for redux-saga v1.0.0-beta.1 :tada:

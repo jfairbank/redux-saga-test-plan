@@ -1,7 +1,6 @@
-// @flow
 /* eslint-disable no-cond-assign */
-import { utils } from 'redux-saga';
-
+// @flow
+import * as is from '@redux-saga/is';
 import {
   ACTION_CHANNEL,
   ALL,
@@ -22,8 +21,7 @@ import {
 } from '../shared/keys';
 
 import { mapValues } from '../utils/object';
-
-const { asEffect, is } = utils;
+import { asEffect } from '../utils/asEffect';
 
 const createEffectWithNestedEffects = type => (effect, extra) => ({
   type,

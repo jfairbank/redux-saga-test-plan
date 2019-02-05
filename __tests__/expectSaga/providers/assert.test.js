@@ -1,6 +1,6 @@
 // @flow
 import { call, fork, put, select } from 'redux-saga/effects';
-import { createMockTask } from 'redux-saga/utils';
+import { createMockTask } from '@redux-saga/testing-utils';
 import expectSaga from 'expectSaga';
 
 const fakeUser = {

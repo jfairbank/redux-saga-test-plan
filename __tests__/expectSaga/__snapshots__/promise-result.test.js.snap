@@ -4,48 +4,63 @@ exports[`exposes the effects from forked sagas in the promise result 1`] = `
 Object {
   "call": Array [
     Object {
-      "CALL": Object {
+      "@@redux-saga/IO": true,
+      "combinator": false,
+      "payload": Object {
         "args": Array [
           42,
         ],
         "context": null,
         "fn": "@@redux-saga-test-plan/json/function/identity",
       },
+      "type": "CALL",
     },
   ],
   "fork": Array [
     Object {
-      "FORK": Object {
+      "@@redux-saga/IO": true,
+      "combinator": false,
+      "payload": Object {
         "args": Array [],
         "context": null,
         "fn": "@@redux-saga-test-plan/json/function/backgroundSaga",
       },
+      "type": "FORK",
     },
   ],
   "put": Array [
     Object {
-      "PUT": Object {
+      "@@redux-saga/IO": true,
+      "combinator": false,
+      "payload": Object {
         "action": Object {
           "type": "FOO",
         },
-        "channel": null,
+        "channel": undefined,
       },
+      "type": "PUT",
     },
     Object {
-      "PUT": Object {
+      "@@redux-saga/IO": true,
+      "combinator": false,
+      "payload": Object {
         "action": Object {
           "payload": "world",
           "type": "BAR",
         },
-        "channel": null,
+        "channel": undefined,
       },
+      "type": "PUT",
     },
   ],
   "take": Array [
     Object {
-      "TAKE": Object {
+      "@@redux-saga/IO": true,
+      "combinator": false,
+      "payload": Object {
         "pattern": "HELLO",
       },
+      "type": "TAKE",
     },
   ],
 }
@@ -55,32 +70,41 @@ exports[`exposes the effects in the promise result 1`] = `
 Object {
   "call": Array [
     Object {
-      "CALL": Object {
+      "@@redux-saga/IO": true,
+      "combinator": false,
+      "payload": Object {
         "args": Array [
           42,
         ],
         "context": null,
         "fn": "@@redux-saga-test-plan/json/function/identity",
       },
+      "type": "CALL",
     },
   ],
   "put": Array [
     Object {
-      "PUT": Object {
+      "@@redux-saga/IO": true,
+      "combinator": false,
+      "payload": Object {
         "action": Object {
           "type": "FOO",
         },
-        "channel": null,
+        "channel": undefined,
       },
+      "type": "PUT",
     },
     Object {
-      "PUT": Object {
+      "@@redux-saga/IO": true,
+      "combinator": false,
+      "payload": Object {
         "action": Object {
           "payload": "hello",
           "type": "BAR",
         },
-        "channel": null,
+        "channel": undefined,
       },
+      "type": "PUT",
     },
   ],
 }
@@ -90,11 +114,14 @@ exports[`test coverage for snapshot testing call of anonymous function 1`] = `
 Object {
   "call": Array [
     Object {
-      "CALL": Object {
+      "@@redux-saga/IO": true,
+      "combinator": false,
+      "payload": Object {
         "args": Array [],
         "context": null,
         "fn": "@@redux-saga-test-plan/json/function/<anonymous>",
       },
+      "type": "CALL",
     },
   ],
 }

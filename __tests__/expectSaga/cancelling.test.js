@@ -1,4 +1,4 @@
-import { is } from 'redux-saga/utils';
+import * as is from '@redux-saga/is';
 import { cancel, cancelled, fork, put } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
 
@@ -55,19 +55,19 @@ test('canceling multiple tasks', () => {
     const task1 = yield fork(backgroundOneSaga);
     const task2 = yield fork(backgroundTwoSaga);
 
-    yield cancel(task1, task2);
+    yield cancel([task1, task2]);
   }
 
   const cancelSpy = jest
     .fn()
     .mockImplementationOnce((task, next) => {
-      expect(is.task(task)).toBe(true);
-      expect(task.meta.name).toBe('backgroundOneSaga');
+      expect(is.task(task[0])).toBe(true);
+      expect(task[0].meta.name).toBe('backgroundOneSaga');
       return next();
     })
     .mockImplementationOnce((task, next) => {
-      expect(is.task(task)).toBe(true);
-      expect(task.meta.name).toBe('backgroundTwoSaga');
+      expect(is.task(task[1])).toBe(true);
+      expect(task[1].meta.name).toBe('backgroundTwoSaga');
       return next();
     });
 
