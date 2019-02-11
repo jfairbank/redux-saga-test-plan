@@ -36,7 +36,7 @@ approaches to make testing your sagas easy.
 One downside to unit testing sagas is that it couples your test to your
 implementation. Simple reordering of yielded effects in your saga could break
 your tests even if the functionality stays the same. If you're not concerned
-with the order or exact effects your saga yields, then you can take a
+with the order or exact effects your saga yields, then you can take an
 integrative approach, testing the behavior of your saga when run by Redux Saga.
 Then, you can simply test that a particular effect was yielded during the saga
 run. For this, use the `expectSaga` test function.
