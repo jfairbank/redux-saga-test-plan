@@ -1,5 +1,5 @@
 /**
- * Common effects apis. Only used to reduce repetition. 
+ * Common effects apis. Only used to reduce repetition.
  * There is no js module backing this up.
  */
 import { Action } from 'redux';
@@ -10,7 +10,7 @@ import * as E from 'redux-saga/effects';
 type FieldType<T, K extends keyof T> = T[K];
 
 interface TakeEffectApi<R> {
-    (pattern?: E.Pattern): R;
+    <T>(pattern?: E.Pattern<T>): R;
     <T>(channel: Channel<T>): R;
 }
 interface PutEffectApi<R> {
@@ -24,7 +24,7 @@ interface PutEffectApi<R> {
  * with method chaining.
  */
 interface EffectApi<R> {
-    actionChannel(pattern: E.Pattern, buffer?: Buffer<any>): R;
+    actionChannel(pattern: E.Pattern<any>, buffer?: Buffer<any>): R;
     apply<T, K extends keyof T>(context: T, fnName: K, ...args: any[]): R;
     apply(context: any, fn: Function, ...args: any[]): R;
     cps(fn: Function, ...args: any[]): R;
@@ -64,10 +64,10 @@ interface EffectApi<R> {
  */
 type ExtendedEffectApi<KEff extends keyof EffectApi<R>, Desc, KDesc extends keyof Desc, R> =
     FieldType<EffectApi<R>, KEff>
-    & {[Key in KDesc]: (param: Desc[KDesc]) => R; }
+    & { [Key in KDesc]: (param: Desc[KDesc]) => R; }
     & { like(effect: Partial<Desc>): R; };
 
-// Can't use 'ExtendedEffectApi here because 'actionType' is used 
+// Can't use 'ExtendedEffectApi here because 'actionType' is used
 // instead of 'action' (differs from saga implementation).
 type PutEffectEx<R> =
     FieldType<EffectApi<R>, 'put'>
@@ -79,7 +79,7 @@ type PutEffectEx<R> =
     };
 
 /**
- * Certain effects are extended with: 
+ * Certain effects are extended with:
  * - 'like' method that takes partial descriptor
  * - Shortcut for EffectDescriptor properties (like fn in CallEffectDescriptor)
  */
