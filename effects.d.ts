@@ -50,6 +50,7 @@ interface EffectApi<R> {
     cancelled(): R;
     flush(channel: Channel<any>): R;
     join(...tasks: Task[]): R;
+    delay(ms: number, val?: any): R;
 }
 
 
