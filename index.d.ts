@@ -69,7 +69,7 @@ export type ThrottleHelperProgresser = (
 export type TestApiEffects = Pick<
     EffectApi<TestApi>,
     'actionChannel' | 'apply' | 'cps' | 'getContext' | 'put' | 'race' | 'select' | 'call' | 'fork'
-    | 'setContext' | 'spawn' | 'take' | 'all' | 'cancel' | 'cancelled' | 'flush' | 'join'>;
+    | 'setContext' | 'spawn' | 'take' | 'all' | 'cancel' | 'cancelled' | 'flush' | 'join' | 'delay'>;
 
 export interface TestApi {
     next(...args: any[]): TestApiWithEffectsTesters;
