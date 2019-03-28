@@ -10,6 +10,7 @@ import reportActualEffects from './reportActualEffects';
 type ExpectationThunkArgs = {
   storeState: mixed,
   returnValue: mixed,
+  errorValue: mixed,
 };
 
 export type Expectation = ExpectationThunkArgs => void;
@@ -136,6 +137,75 @@ ${serializedExpected}
 `;
 
       throw new SagaTestError(errorMessage);
+    }
+  };
+}
+
+type ErrorExpectationArgs = {
+  type: mixed,
+  expected: boolean,
+};
+
+export function createErrorExpectation({
+  type,
+  expected,
+}: ErrorExpectationArgs): Expectation {
+  return ({ errorValue }: ExpectationThunkArgs) => {
+    let serializedExpected = typeof type;
+
+    if (typeof type === 'object') {
+      serializedExpected = inspect(type, { depth: 3 });
+    } else if (typeof type === 'function') {
+      serializedExpected = type.name;
+    }
+
+    const matches = () =>
+      (typeof type === 'object' && isEqual(type, errorValue)) ||
+      (typeof type === 'function' && errorValue instanceof type);
+
+    if (!expected) {
+      if (typeof errorValue === 'undefined' || !matches()) return;
+
+      throw new SagaTestError(`
+Expected not to throw:
+----------------------
+${serializedExpected}
+`);
+    } else if (typeof errorValue === 'undefined') {
+      throw new SagaTestError(`
+Expected to thow:
+-------------------
+${serializedExpected}
+
+But no error thrown
+---------------------
+`);
+    } else if (typeof type === 'object' && !matches()) {
+      const serializedActual = inspect(errorValue, { depth: 3 });
+      throw new SagaTestError(`
+Expected to throw:
+-------------------
+${serializedExpected}
+
+But instead threw:
+---------------------
+${serializedActual}
+`);
+    } else if (typeof type === 'function' && !matches()) {
+      const serializedActual =
+        typeof errorValue === 'function'
+          ? errorValue.constructor.name
+          : typeof errorValue;
+
+      throw new SagaTestError(`
+Expected to throw error of type:
+--------------------------------
+${serializedExpected}
+
+But instead threw:
+--------------------------------
+${serializedActual}
+`);
     }
   };
 }
