@@ -82,6 +82,7 @@ export interface TestApi {
     throw(error: Error): TestApiWithEffectsTesters;
     takeEvery: TakeHelperProgresser;
     takeLatest: TakeHelperProgresser;
+    takeLeading: TakeHelperProgresser;
     throttle: ThrottleHelperProgresser;
 }
 
@@ -94,6 +95,7 @@ export type TestApiWithEffectsTesters = TestApi & TestApiEffects & {
     throttleFork(ms: number, action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
     takeEveryEffect(action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
     takeLatestEffect(action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
+    takeLeadingEffect(action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
     throttleEffect(ms: number, action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
     is<V>(expectation: V): TestApi;
     inspect<V>(expectation: (yieldedValue: V) => void): TestApi;
