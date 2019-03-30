@@ -2,6 +2,7 @@
 import fsmIterator from 'fsm-iterator';
 
 const INIT = 'INIT';
+const REFINE = 'REFINE';
 const NEXT = 'NEXT';
 const LOOP = 'LOOP';
 
@@ -38,8 +39,20 @@ export default function createSagaWrapper(
     wrappedIterator: Generator<*, *, *>,
     refineYieldedValue: Function,
     onReturn: ?Function,
+    onError: ?Function,
   ): Generator<*, *, *> {
-    let result = wrappedIterator.next();
+    let result;
+
+    function getNext(...args) {
+      try {
+        return wrappedIterator.next(...args);
+      } catch (e) {
+        if (typeof onError === 'function') {
+          onError(e);
+        }
+        throw e;
+      }
+    }
 
     function complete() {
       if (typeof onReturn === 'function') {
@@ -54,6 +67,11 @@ export default function createSagaWrapper(
 
     return fsmIterator(INIT, {
       [INIT](_, fsm) {
+        result = getNext();
+        return fsm[REFINE](undefined, fsm);
+      },
+
+      [REFINE](_, fsm) {
         try {
           if (result.done) {
             return complete();
@@ -79,7 +97,7 @@ export default function createSagaWrapper(
           ? response.map(unwrapFalsy)
           : unwrapFalsy(response);
 
-        result = wrappedIterator.next(finalResponse);
+        result = getNext(finalResponse);
         return fsm[LOOP](undefined, fsm);
       },
 
@@ -88,7 +106,7 @@ export default function createSagaWrapper(
           return complete();
         }
 
-        return fsm[INIT](undefined, fsm);
+        return fsm[REFINE](undefined, fsm);
       },
 
       return(value, fsm) {

@@ -24,7 +24,7 @@ interface RunResult {
     effects: {
         take: E.TakeEffect[];
         put: E.PutEffect<any>[];
-        race: E.RaceEffect[];
+        race: E.RaceEffect<any>[];
         call: E.CallEffect[];
         cps: E.CpsEffect[];
         fork: E.ForkEffect[];
@@ -47,6 +47,7 @@ export interface ExpectApi extends ExpectApiEffects {
     withReducer<S>(newReducer: Reducer<S>, initialState?: S): ExpectApi;
     hasFinalState<S>(state: S): ExpectApi;
     returns(value: any): ExpectApi;
+    throws(type: any): ExpectApi;
     delay(time: number): ExpectApi;
     dispatch<A extends Action>(action: A): ExpectApi;
     not: ExpectApi;
@@ -69,7 +70,7 @@ export type ThrottleHelperProgresser = (
 export type TestApiEffects = Pick<
     EffectApi<TestApi>,
     'actionChannel' | 'apply' | 'cps' | 'getContext' | 'put' | 'race' | 'select' | 'call' | 'fork'
-    | 'setContext' | 'spawn' | 'take' | 'all' | 'cancel' | 'cancelled' | 'flush' | 'join'>;
+    | 'setContext' | 'spawn' | 'take' | 'all' | 'cancel' | 'cancelled' | 'flush' | 'join' | 'delay'>;
 
 export interface TestApi {
     next(...args: any[]): TestApiWithEffectsTesters;

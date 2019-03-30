@@ -25,6 +25,7 @@ import {
   createEffectExpectation,
   createReturnExpectation,
   createStoreStateExpectation,
+  createErrorExpectation,
 } from './expectations';
 
 import {
@@ -124,11 +125,17 @@ export default function expectSaga(
   let providers;
 
   let returnValue;
+  let errorValue;
+  let expectError = false;
 
   let storeState: any;
 
   function setReturnValue(value: any): void {
     returnValue = value;
+  }
+
+  function setErrorValue(value: any): void {
+    errorValue = value;
   }
 
   function useProvidedValue(value) {
@@ -440,6 +447,8 @@ export default function expectSaga(
       effectRejected() {},
       effectCancelled() {},
     },
+
+    logger: () => {},
   };
 
   const api = {
@@ -449,6 +458,7 @@ export default function expectSaga(
     withReducer,
     provide,
     returns,
+    throws,
     hasFinalState,
     dispatch: apiDispatch,
     delay: apiDelay,
@@ -570,7 +580,7 @@ export default function expectSaga(
 
   function checkExpectations(): void {
     expectations.forEach(expectation => {
-      expectation({ storeState, returnValue });
+      expectation({ storeState, returnValue, errorValue });
     });
   }
 
@@ -612,10 +622,11 @@ export default function expectSaga(
       iterator,
       refineYieldedValue,
       setReturnValue,
+      setErrorValue,
     );
 
     mainTaskPromise = taskPromise(mainTask)
-      .then(checkExpectations)
+      .then(checkExpectations, e => (!expectError && e) || checkExpectations())
       // Pass along the error instead of rethrowing or allowing to
       // bubble up to avoid PromiseRejectionHandledWarning
       .catch(identity);
@@ -694,6 +705,19 @@ export default function expectSaga(
     addExpectation(
       createReturnExpectation({
         value,
+        expected: !negateNextAssertion,
+      }),
+    );
+
+    return api;
+  }
+
+  function throws(type: any): ExpectApi {
+    expectError = true;
+
+    addExpectation(
+      createErrorExpectation({
+        type,
         expected: !negateNextAssertion,
       }),
     );

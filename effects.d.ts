@@ -35,7 +35,7 @@ interface EffectApi<R> {
     };
     race(effects: { [key: string]: E.Effect }): R;
     race(effects: E.Effect[]): R;
-    select<S>(selector?: (state: S) => any, ...args: any[]): R;
+    select<S>(selector?: (state: S, ...args: any[]) => any, ...args: any[]): R;
     call<T>(fn: [T, Function], ...args: any[]): R;
     call<T, K extends keyof T>(fn: [T, K], ...args: any[]): R;
     call(fn: Function, ...args: any[]): R;
@@ -50,6 +50,7 @@ interface EffectApi<R> {
     cancelled(): R;
     flush(channel: Channel<any>): R;
     join(...tasks: Task[]): R;
+    delay(ms: number, val?: any): R;
 }
 
 

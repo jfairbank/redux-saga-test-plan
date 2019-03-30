@@ -1,7 +1,19 @@
 // @flow
+const getGlob = () => {
+  if (
+    typeof window !== 'undefined' &&
+    window.setImmediate &&
+    window.setTimeout &&
+    window.setTimeout.apply
+  ) {
+    return window;
+  }
+  return global;
+};
+
 const setImmediate = (glob =>
   glob.setImmediate || ((fn, ...args) => glob.setTimeout(fn, 0, ...args)))(
-  typeof window !== 'undefined' ? window : global,
+  getGlob(),
 );
 
 export function schedule(fn: Function, args?: any[] = []): Promise<any> {
