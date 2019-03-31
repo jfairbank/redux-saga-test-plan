@@ -1,3 +1,11 @@
+## v4.0.0-beta.3
+
+### Fix typescript issue in terms of 
+
+[#264](https://github.com/jfairbank/redux-saga-test-plan/issues/264)
+[#246](https://github.com/jfairbank/redux-saga-test-plan/issues/246)
+
+
 ## v4.0.0-beta.2
 
 ### Support for redux-saga v1.0.1 :tada:
