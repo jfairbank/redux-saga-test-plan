@@ -1,5 +1,5 @@
 // @flow
-import { warn } from '../utils/logging';
+import { warn } from './logging';
 
 export default function deprecate(fn: Function, message: string): Function {
   let printed = false;
