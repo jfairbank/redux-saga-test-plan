@@ -1,5 +1,6 @@
 [ignore]
 .*/node_modules/config-chain/.*
+.*/node_modules/chalk/.*
 .*/npm/test/fixtures/config/package\.json
 .*/read-package-tree/.*
 
