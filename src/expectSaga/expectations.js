@@ -173,7 +173,7 @@ ${serializedExpected}
 `);
     } else if (typeof errorValue === 'undefined') {
       throw new SagaTestError(`
-Expected to thow:
+Expected to throw:
 -------------------
 ${serializedExpected}
 
