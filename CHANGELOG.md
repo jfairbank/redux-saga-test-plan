@@ -1,3 +1,12 @@
+## v4.0.0-beta.4
+
+### Fix typescript issue in terms of 
+
+* Fix typo by https://github.com/jfairbank/redux-saga-test-plan/pull/287
+  Many thanks to @torpeyp
+* fix: typesafe testSaga & expectSaga by https://github.com/jfairbank/redux-saga-test-plan/pull/270
+  Many thanks to @TheryFouchter
+
 ## v4.0.0-beta.3
 
 ### Fix typescript issue in terms of 
