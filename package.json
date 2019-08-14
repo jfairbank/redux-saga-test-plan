@@ -78,7 +78,7 @@
     "@redux-saga/is": "^1.0.1",
     "@redux-saga/testing-utils": "^1.0.1",
     "@redux-saga/symbols": "^1.0.1",
-    "rimraf": "^2.5.4"
+    "rimraf": "^2.7.1"
   },
   "dependencies": {
     "core-js": "^2.4.1",
