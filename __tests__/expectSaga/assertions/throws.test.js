@@ -1,8 +1,11 @@
 /* eslint-disable require-yield */
-import { put } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
 import expectSaga from 'expectSaga';
+import { throwError } from 'expectSaga/providers';
 
 class CustomError {}
+
+function myFunction() {}
 
 function* noErrorSaga() {
   yield put({ type: 'TEST_1' });
@@ -11,6 +14,14 @@ function* noErrorSaga() {
 
 function* errorSaga(errorToThrow) {
   throw errorToThrow;
+}
+
+function* throwInCatch() {
+  try {
+    yield call(myFunction);
+  } catch (e) {
+    throw e;
+  }
 }
 
 test('matches based on error type', () =>
@@ -91,6 +102,42 @@ test('exception bubbles up when no error expected', done => {
     .run()
     .catch(e => {
       expect(e).toBe(errorValue);
+      done();
+    });
+});
+
+test('matches exception when thrown in catch', () => {
+  const error = { message: 'test error' };
+
+  return expectSaga(throwInCatch)
+    .provide([[call(myFunction), throwError(error)]])
+    .throws(error)
+    .run();
+});
+
+test('fails when non-matching exception is thrown in catch', done => {
+  const error = { message: 'test error' };
+  const differentError = { message: 'test error 2' };
+
+  return expectSaga(throwInCatch)
+    .provide([[call(myFunction), throwError(differentError)]])
+    .throws(error)
+    .run()
+    .catch(e => {
+      expect(e.message).toMatch(/but instead threw/i);
+      done();
+    });
+});
+
+test('negative assertion fails when matching exception is thrown in catch', done => {
+  const error = { message: 'test error' };
+
+  return expectSaga(throwInCatch)
+    .provide([[call(myFunction), throwError(error)]])
+    .not.throws(error)
+    .run()
+    .catch(e => {
+      expect(e.message).toMatch(/expected not to throw/i);
       done();
     });
 });
