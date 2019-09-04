@@ -115,7 +115,14 @@ export default function createSagaWrapper(
       },
 
       throw(e, fsm) {
-        result = wrappedIterator.throw(e);
+        try {
+          result = wrappedIterator.throw(e);
+        } catch (innerError) {
+          if (typeof onError === 'function') {
+            onError(innerError);
+          }
+          throw innerError;
+        }
         return fsm[LOOP](undefined, fsm);
       },
     });
