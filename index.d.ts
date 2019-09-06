@@ -14,8 +14,8 @@ type TimeoutConfig = {
 };
 
 export type ExpectApiEffects
-    = Pick<EffectApi<ExpectApi>, 'getContext' | 'setContext' | 'race' | 'take'>
-    & Pick<EffectApiEx<ExpectApi>, 'actionChannel' | 'apply' | 'call' | 'cps' | 'fork' | 'put' | 'select' | 'spawn'>;
+    = Pick<EffectApi<ExpectApi>, 'getContext' | 'setContext' | 'race' | 'take' | 'takeMaybe'>
+    & Pick<EffectApiEx<ExpectApi>, 'actionChannel' | 'apply' | 'call' | 'cps' | 'fork' | 'put' | 'putResolve' | 'select' | 'spawn'>;
 
 interface RunResult {
     storeState: any;
@@ -23,7 +23,9 @@ interface RunResult {
     allEffects: E.Effect[];
     effects: {
         take: E.TakeEffect[];
+        takeMaybe: E.TakeEffect[];
         put: E.PutEffect<any>[];
+        putResolve: E.PutEffect<any>[];
         race: E.RaceEffect<any>[];
         call: E.CallEffect[];
         cps: E.CpsEffect[];
@@ -69,8 +71,8 @@ export type ThrottleHelperProgresser = (
 
 export type TestApiEffects = Pick<
     EffectApi<TestApi>,
-    'actionChannel' | 'apply' | 'cps' | 'getContext' | 'put' | 'race' | 'select' | 'call' | 'fork'
-    | 'setContext' | 'spawn' | 'take' | 'all' | 'cancel' | 'cancelled' | 'flush' | 'join' | 'delay'>;
+    'actionChannel' | 'apply' | 'cps' | 'getContext' | 'put' | 'putResolve' | 'race' | 'select' | 'call' | 'fork'
+    | 'setContext' | 'spawn' | 'take' | 'takeMaybe' | 'all' | 'cancel' | 'cancelled' | 'flush' | 'join' | 'delay'>;
 
 export interface TestApi {
     next(...args: any[]): TestApiWithEffectsTesters;
