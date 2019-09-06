@@ -30,9 +30,8 @@ interface EffectApi<R> {
     cps(fn: Function, ...args: any[]): R;
     getContext(key: string): R;
     setContext(prop: { [key: string]: any }): R;
-    put: PutEffectApi<R> & {
-        resolve: PutEffectApi<R>
-    };
+    put: PutEffectApi<R>;
+    putResolve: PutEffectApi<R>;
     race(effects: { [key: string]: E.Effect }): R;
     race(effects: E.Effect[]): R;
     select<S>(selector?: (state: S, ...args: any[]) => any, ...args: any[]): R;
@@ -41,9 +40,8 @@ interface EffectApi<R> {
     call(fn: Function, ...args: any[]): R;
     fork(fn: Function, ...args: any[]): R;
     spawn(fn: Function, ...args: any[]): R;
-    take: TakeEffectApi<R> & {
-        maybe: TakeEffectApi<R>
-    };
+    take: TakeEffectApi<R>;
+    takeMaybe: TakeEffectApi<R>;
     all(effects: { [key: string]: E.Effect }): R;
     all(effects: E.Effect[]): R;
     cancel(task: Task): R;
@@ -72,6 +70,7 @@ type ExtendedEffectApi<KEff extends keyof EffectApi<R>, Desc, KDesc extends keyo
 // instead of 'action' (differs from saga implementation).
 type PutEffectEx<R> =
     FieldType<EffectApi<R>, 'put'>
+    & FieldType<EffectApi<R>, 'putResolve'>
     & {
         like(effect: Partial<E.PutEffectDescriptor<any>>): R;
         actionType(action: string): R;
@@ -93,4 +92,5 @@ interface EffectApiEx<R> {
     fork: ExtendedEffectApi<'fork', E.CallEffectDescriptor, 'fn', R>;
     spawn: ExtendedEffectApi<'spawn', E.CallEffectDescriptor, 'fn', R>;
     put: PutEffectEx<R>;
+    putResolve: PutEffectEx<R>;
 }
