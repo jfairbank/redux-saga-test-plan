@@ -8,7 +8,7 @@ order it takes them. Internally, `expectSaga` will queue the actions and
 dispatch them on your behalf as needed.
 
 ```js
-import { put } from 'redux-saga/effects';
+import { take, put } from 'redux-saga/effects';
 import { expectSaga } from 'redux-saga-test-plan';
 
 function* mainSaga(x, y) {
