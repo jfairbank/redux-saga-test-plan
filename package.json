@@ -74,10 +74,10 @@
     "jest": "^21.1.0",
     "prettier": "1.11.0",
     "redux": "^4.0.0",
-    "redux-saga": "^1.0.1",
-    "@redux-saga/is": "^1.0.1",
-    "@redux-saga/testing-utils": "^1.0.1",
-    "@redux-saga/symbols": "^1.0.1",
+    "redux-saga": "^1.1.1",
+    "@redux-saga/is": "^1.1.0",
+    "@redux-saga/testing-utils": "^1.1.1",
+    "@redux-saga/symbols": "^1.1.0",
     "rimraf": "^2.5.4"
   },
   "dependencies": {

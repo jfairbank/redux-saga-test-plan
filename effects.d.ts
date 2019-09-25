@@ -55,7 +55,7 @@ interface EffectApi<R> {
 /**
  * Extends a method from EffectApi with
  * - like(param: Partial<EffectDescriptor>)
- * - methods named same as a EffectDescriptor property (example: fn in CallEffectDescriptor)
+ * - methods named same as a EffectDescriptor property (example: fn in CallEffectDescriptor<any>)
  * @template KEff Key (fieldName) in EffectApi<R>
  * @template Desc EffectDescriptor
  * @template KDesc Key in EffectDescriptor that will be its own method (example :fn)
@@ -81,16 +81,16 @@ type PutEffectEx<R> =
 /**
  * Certain effects are extended with:
  * - 'like' method that takes partial descriptor
- * - Shortcut for EffectDescriptor properties (like fn in CallEffectDescriptor)
+ * - Shortcut for EffectDescriptor properties (like fn in CallEffectDescriptor<any>)
  */
 interface EffectApiEx<R> {
     actionChannel: ExtendedEffectApi<'actionChannel', E.ActionChannelEffectDescriptor, 'pattern', R>;
-    apply: ExtendedEffectApi<'apply', E.CallEffectDescriptor, 'fn', R>;
-    cps: ExtendedEffectApi<'cps', E.CallEffectDescriptor, 'fn', R>;
+    apply: ExtendedEffectApi<'apply', E.CallEffectDescriptor<any>, 'fn', R>;
+    cps: ExtendedEffectApi<'cps', E.CallEffectDescriptor<any>, 'fn', R>;
     select: ExtendedEffectApi<'select', E.SelectEffectDescriptor, 'selector', R>;
-    call: ExtendedEffectApi<'call', E.CallEffectDescriptor, 'fn', R>;
-    fork: ExtendedEffectApi<'fork', E.CallEffectDescriptor, 'fn', R>;
-    spawn: ExtendedEffectApi<'spawn', E.CallEffectDescriptor, 'fn', R>;
+    call: ExtendedEffectApi<'call', E.CallEffectDescriptor<any>, 'fn', R>;
+    fork: ExtendedEffectApi<'fork', E.CallEffectDescriptor<any>, 'fn', R>;
+    spawn: ExtendedEffectApi<'spawn', E.CallEffectDescriptor<any>, 'fn', R>;
     put: PutEffectEx<R>;
     putResolve: PutEffectEx<R>;
 }
