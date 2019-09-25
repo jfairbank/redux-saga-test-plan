@@ -28,7 +28,7 @@ interface RunResult {
         putResolve: E.PutEffect<any>[];
         race: E.RaceEffect<any>[];
         call: E.CallEffect[];
-        cps: E.CpsEffect[];
+        cps: E.CpsEffect<any>[];
         fork: E.ForkEffect[];
         getContext: E.GetContextEffect[];
         select: E.SelectEffect[];
