@@ -3,7 +3,7 @@
  * There is no js module backing this up.
  */
 import { Action } from 'redux';
-import { Task, Channel, Buffer } from 'redux-saga';
+import { Task, TakeableChannel, FlushableChannel Buffer } from 'redux-saga';
 import * as E from 'redux-saga/effects';
 
 // Gives you the type of a field K in type T
@@ -11,7 +11,7 @@ type FieldType<T, K extends keyof T> = T[K];
 
 interface TakeEffectApi<R> {
     <T>(pattern?: E.Pattern<T>): R;
-    <T>(channel: Channel<T>): R;
+    <T>(channel: TakeableChannel<T>): R;
 }
 interface PutEffectApi<R> {
     <A extends Action>(action: A): R;
@@ -46,7 +46,7 @@ interface EffectApi<R> {
     all(effects: E.Effect[]): R;
     cancel(task: Task): R;
     cancelled(): R;
-    flush(channel: Channel<any>): R;
+    flush(channel: FlushableChannel<any>): R;
     join(...tasks: Task[]): R;
     delay(ms: number, val?: any): R;
 }
