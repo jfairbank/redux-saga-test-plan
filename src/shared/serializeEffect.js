@@ -1,7 +1,7 @@
 // @flow
 import inspect from 'util-inspect';
 
-const DEFAULT_OPTIONS = { depth: 3 };
+const DEFAULT_OPTIONS = { depth: 4 };
 
 export default function serializeEffect(
   effect: mixed | Array<mixed>,
