@@ -3,7 +3,7 @@
  * There is no js module backing this up.
  */
 import { Action } from 'redux';
-import { Task, TakeableChannel, FlushableChannel Buffer } from 'redux-saga';
+import { Task, TakeableChannel, FlushableChannel, Buffer } from 'redux-saga';
 import * as E from 'redux-saga/effects';
 
 // Gives you the type of a field K in type T
