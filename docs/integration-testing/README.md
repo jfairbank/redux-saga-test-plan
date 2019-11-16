@@ -28,7 +28,7 @@ import { call, put } from 'redux-saga/effects';
 import { expectSaga } from 'redux-saga-test-plan';
 
 function* mainSaga(x, y) {
-  yield call([console.log, console], 'hello');
+  yield call([console, 'log'], 'hello');
   yield put({ type: 'ADD', payload: x + y });
 }
 
