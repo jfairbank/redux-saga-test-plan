@@ -65,7 +65,7 @@
     "eslint-config-prettier": "^6.3.0",
     "eslint-import-resolver-node": "^0.3.0",
     "eslint-plugin-flowtype": "^3.3.0",
-    "eslint-plugin-import": "^2.1.0",
+    "eslint-plugin-import": "^2.19.0",
     "eslint-plugin-prettier": "^2.6.0",
     "flow-bin": "^0.93.0",
     "gitbook-cli": "^2.3.0",
