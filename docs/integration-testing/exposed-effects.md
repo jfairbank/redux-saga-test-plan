@@ -22,7 +22,7 @@ it('exposes effects', () => {
   const user = { id, petId, name: 'Jeremy' };
   const pet = { name: 'Tucker' };
 
-  return expectSaga(saga, id)
+  return expectSaga(userSaga, id)
     .provide([
       [call(fetchUser, id), user],
       [call(fetchPet, petId), pet],
