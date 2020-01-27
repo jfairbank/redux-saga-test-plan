@@ -67,7 +67,7 @@
     "eslint-plugin-flowtype": "^3.3.0",
     "eslint-plugin-import": "^2.1.0",
     "eslint-plugin-prettier": "^2.6.0",
-    "flow-bin": "^0.93.0",
+    "flow-bin": "^0.117.0",
     "gitbook-cli": "^2.3.0",
     "gitbook-plugin-advanced-emoji": "^0.2.2",
     "gitbook-plugin-github": "^2.0.0",
