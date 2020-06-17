@@ -210,6 +210,7 @@ effect.
 
 ```js
 import { call, put } from 'redux-saga/effects';
+import { expectSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { dynamic } from 'redux-saga-test-plan/providers';
 
@@ -251,7 +252,7 @@ it('works with dynamic static providers', () => {
 Providers work on effects yielded inside an `all` effect:
 
 ```js
-import { put, select } from 'redux-saga/effects';
+import { put, select, all } from 'redux-saga/effects';
 import { expectSaga } from 'redux-saga-test-plan';
 import { selectors } from 'my-selectors';
 
