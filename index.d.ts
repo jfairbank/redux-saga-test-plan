@@ -68,6 +68,13 @@ export type ThrottleHelperProgresser = (
     ...args: any[]
 ) => TestApi;
 
+export type RetryHelperProgresser = (
+  maxTries: number,
+  delayLength: number,
+  fn: Function,
+  ...args: any[]
+) => TestApi;
+
 
 export type TestApiEffects = Pick<
     EffectApi<TestApi>,
@@ -86,6 +93,7 @@ export interface TestApi {
     takeLatest: TakeHelperProgresser;
     takeLeading: TakeHelperProgresser;
     throttle: ThrottleHelperProgresser;
+    retry: RetryHelperProgresser;
 }
 
 export type TestApiWithEffectsTesters = TestApi & TestApiEffects & {
@@ -99,6 +107,7 @@ export type TestApiWithEffectsTesters = TestApi & TestApiEffects & {
     takeLatestEffect(action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
     takeLeadingEffect(action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
     throttleEffect(ms: number, action: E.Pattern<any>, fn: Function, ...args: any[]): TestApi;
+    retryEffect(maxTries: number, delayLength: number, fn: Function, ...args: any[]): TestApi;
     is<V>(expectation: V): TestApi;
     inspect<V>(expectation: (yieldedValue: V) => void): TestApi;
     isDone(): TestApi;
