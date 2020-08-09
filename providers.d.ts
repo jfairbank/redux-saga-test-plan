@@ -31,4 +31,4 @@ export type EffectProviders = {
 
 export const composeProviders: Function;
 export function dynamic<D = any>(effect: EffectProvider<D>): any;
-export function throwError(error: Error): any;
+export function throwError(error?: Error): any;
