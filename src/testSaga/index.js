@@ -109,6 +109,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     takeLeading: createEffectTesterFromHelperEffect('takeLeading'),
     takeMaybe: createEffectTesterFromEffects('takeMaybe', TAKE),
     throttle: createEffectTesterFromHelperEffect('throttle'),
+    retry: createEffectTesterFromHelperEffect('retry'),
 
     isDone: done => () => {
       if (!done) {
@@ -192,6 +193,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
       takeLeading: effectsTestersCreators.takeLeading(value),
       takeMaybe: effectsTestersCreators.takeMaybe(value),
       throttle: effectsTestersCreators.throttle(value),
+      retry: effectsTestersCreators.retry(value),
       is: effectsTestersCreators.is(value),
       inspect: effectsTestersCreators.inspect(value),
       isDone: effectsTestersCreators.isDone(done),

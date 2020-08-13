@@ -1,7 +1,7 @@
 # Saga Helpers
 
 Redux Saga Test Plan also offers assertions for the saga helper effects
-`takeEvery`, `takeLatest`, `takeLeading`, and `throttle`.
+`takeEvery`, `takeLatest`, `takeLeading`, `throttle` and `retry`.
 
 ```js
 import { call, takeEvery } from 'redux-saga/effects';
