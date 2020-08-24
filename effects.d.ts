@@ -3,7 +3,7 @@
  * There is no js module backing this up.
  */
 import { Action } from 'redux';
-import { Task, TakeableChannel, FlushableChannel, Buffer } from 'redux-saga';
+import { Task, TakeableChannel, FlushableChannel, Buffer, PuttableChannel } from 'redux-saga';
 import * as E from 'redux-saga/effects';
 
 // Gives you the type of a field K in type T
@@ -15,6 +15,7 @@ interface TakeEffectApi<R> {
 }
 interface PutEffectApi<R> {
     <A extends Action>(action: A): R;
+    <T>(channel: PuttableChannel<T>, action: T): R;
 }
 
 /**
