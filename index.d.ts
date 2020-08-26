@@ -46,7 +46,7 @@ export interface ExpectApi extends ExpectApiEffects {
     provide(newProviders: EffectProviders): ExpectApi;
     provide(newProviders: (EffectProviders | StaticProvider)[]): ExpectApi;
     withState<S>(state: S): ExpectApi;
-    withReducer<S>(newReducer: Reducer<S>, initialState?: S): ExpectApi;
+    withReducer<S, A extends Action>(newReducer: Reducer<S, A>, initialState?: S): ExpectApi;
     hasFinalState<S>(state: S): ExpectApi;
     returns(value: any): ExpectApi;
     throws(type: any): ExpectApi;
