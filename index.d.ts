@@ -87,7 +87,7 @@ export interface TestApi {
     back(n?: number): TestApi;
     save(s: string): TestApi;
     restore(s: string): TestApi;
-    restart(): TestApi;
+    restart(...args: any[]): TestApi;
     throw(error: Error): TestApiWithEffectsTesters;
     takeEvery: TakeHelperProgresser;
     takeLatest: TakeHelperProgresser;
