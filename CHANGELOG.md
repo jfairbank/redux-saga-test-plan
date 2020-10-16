@@ -1,3 +1,17 @@
+## v4.0.0
+* Retry helper support
+  [#354](https://github.com/jfairbank/redux-saga-test-plan/pull/354)
+* Drop support on Node 8 downward
+* Fix typescript issues 
+  [#357](https://github.com/jfairbank/redux-saga-test-plan/pull/357)
+  [#358](https://github.com/jfairbank/redux-saga-test-plan/pull/358)
+  [#361](https://github.com/jfairbank/redux-saga-test-plan/pull/361)
+  [#354](https://github.com/jfairbank/redux-saga-test-plan/pull/354)
+  [#350](https://github.com/jfairbank/redux-saga-test-plan/pull/350)
+  [#343](https://github.com/jfairbank/redux-saga-test-plan/pull/343)
+  [#313](https://github.com/jfairbank/redux-saga-test-plan/pull/313)
+* Update babel 7  
+
 ## v4.0.0-rc.3
 * Fix typescript issues with redux-saga 1.1.1
 * Fix typescript issue https://github.com/jfairbank/redux-saga-test-plan/pull/308
