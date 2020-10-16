@@ -1,11 +1,19 @@
 {
   "presets": [
-    ["es2015", { "loose": true }]
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
   ],
   "plugins": [
-    "transform-export-extensions",
-    "transform-object-rest-spread",
-    "transform-flow-strip-types",
-    "transform-async-to-generator"
+    ["@babel/plugin-proposal-object-rest-spread", { "loose": true }],
+    "@babel/plugin-transform-flow-strip-types",
+    "@babel/plugin-transform-async-to-generator",
+    "@babel/plugin-proposal-export-default-from",
+    "@babel/plugin-proposal-export-namespace-from"
   ]
 }
