@@ -3,13 +3,29 @@
 You can use completely dynamic providers by passing in an object literal to the
 `provide` method. The object literal argument must contain effect creator names
 as keys and function handlers as values. Each function handler takes two
-arguments, the yielded effect and a `next` callback. You can inspect the effect
-and return a fake value based on the properties in the effect. If you don't want
-to handle the effect yourself, you can pass it on to Redux Saga by invoking the
-`next` callback parameter.
+arguments, the payload of the yielded effect action and a `next` 
+callback.
 
-Here is an example with Jest to show you how to supply a fake value for an API
-call:
+You can inspect the action's payload and choose to return a fake value for the 
+effect. If you don't want to handle the effect yourself, you can pass it on 
+to Redux Saga by invoking the `next` callback parameter.
+
+The `fn` property of redux-saga's `call` payload can be seen in a 
+Node REPL...
+
+```javascript
+> let {call} = require("redux-saga/effects")
+> call(Date)
+{
+  '@@redux-saga/IO': true,
+  combinator: false,
+  type: 'CALL',
+  payload: { context: null, fn: [Function: Date], args: [] }
+}
+```
+
+You can then inspect the `fn` value of the `call` payload in a Jest test,
+and supply a fake return value from an API call:
 
 ```js
 import { call, put, take } from 'redux-saga/effects';
