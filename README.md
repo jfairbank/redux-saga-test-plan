@@ -158,7 +158,7 @@ it('handles errors', () => {
 
   return expectSaga(userSaga, api)
     .provide([
-      [matchers.call.fn(api.fetchUser), throwError(error)],
+      [matchers.call.fn(api.fetchUser), throwError(error)]
     ])
     .put({ type: 'FAIL_USER', error })
     .dispatch({ type: 'REQUEST_USER', payload: 42 })
