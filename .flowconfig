@@ -1,6 +1,8 @@
 [ignore]
 .*/node_modules/config-chain/.*
 .*/node_modules/chalk/.*
+.*/node_modules/@babel/.*
+.*/node_modules/gensync/.*
 .*/npm/test/fixtures/config/package\.json
 .*/read-package-tree/.*
 

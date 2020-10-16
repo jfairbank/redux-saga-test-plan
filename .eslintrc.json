@@ -44,7 +44,13 @@
         "devDependencies": true
       }
     ],
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "no-empty": [
+      "error",
+      {
+        "allowEmptyCatch": true
+      }
+    ]
   },
   "plugins": ["flowtype", "prettier"]
 }
