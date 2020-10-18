@@ -1,3 +1,6 @@
+## v4.0.1
+* Remove package-lock.json
+
 ## v4.0.0
 * Retry helper support
   [#354](https://github.com/jfairbank/redux-saga-test-plan/pull/354)
