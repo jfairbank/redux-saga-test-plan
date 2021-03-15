@@ -82,8 +82,7 @@
     "fsm-iterator": "^1.1.0",
     "lodash.isequal": "^4.5.0",
     "lodash.ismatch": "^4.4.0",
-    "object-assign": "^4.1.0",
-    "util-inspect": "^0.1.8"
+    "object-assign": "^4.1.0"
   },
   "peerDependencies": {
     "redux-saga": "^1.0.1"

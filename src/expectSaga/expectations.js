@@ -1,11 +1,13 @@
 // @flow
-import inspect from 'util-inspect';
+import util from 'util';
 import isMatch from 'lodash.ismatch';
 import isEqual from 'lodash.isequal';
 import SagaTestError from '../shared/SagaTestError';
 import type ArraySet from '../utils/ArraySet';
 import serializeEffect from '../shared/serializeEffect';
 import reportActualEffects from './reportActualEffects';
+
+util.inspect.defaultOptions = { depth: 3 };
 
 type ExpectationThunkArgs = {
   storeState: mixed,
@@ -74,8 +76,8 @@ export function createReturnExpectation({
 }: ReturnExpectationArgs): Expectation {
   return ({ returnValue }: ExpectationThunkArgs) => {
     if (expected && !isEqual(value, returnValue)) {
-      const serializedActual = inspect(returnValue, { depth: 3 });
-      const serializedExpected = inspect(value, { depth: 3 });
+      const serializedActual = util.inspect(returnValue);
+      const serializedExpected = util.inspect(value);
 
       const errorMessage = `
 Expected to return:
@@ -89,7 +91,7 @@ ${serializedActual}
 
       throw new SagaTestError(errorMessage);
     } else if (!expected && isEqual(value, returnValue)) {
-      const serializedExpected = inspect(value, { depth: 3 });
+      const serializedExpected = util.inspect(value);
 
       const errorMessage = `
 Did not expect to return:
@@ -113,8 +115,8 @@ export function createStoreStateExpectation({
 }: StoreStateExpectationArgs): Expectation {
   return ({ storeState }: ExpectationThunkArgs) => {
     if (expected && !isEqual(expectedState, storeState)) {
-      const serializedActual = inspect(storeState, { depth: 3 });
-      const serializedExpected = inspect(expectedState, { depth: 3 });
+      const serializedActual = util.inspect(storeState);
+      const serializedExpected = util.inspect(expectedState);
 
       const errorMessage = `
 Expected to have final store state:
@@ -128,7 +130,7 @@ ${serializedActual}
 
       throw new SagaTestError(errorMessage);
     } else if (!expected && isEqual(expectedState, storeState)) {
-      const serializedExpected = inspect(expectedState, { depth: 3 });
+      const serializedExpected = util.inspect(expectedState);
 
       const errorMessage = `
 Expected to not have final store state:
@@ -154,7 +156,7 @@ export function createErrorExpectation({
     let serializedExpected = typeof type;
 
     if (typeof type === 'object') {
-      serializedExpected = inspect(type, { depth: 3 });
+      serializedExpected = util.inspect(type);
     } else if (typeof type === 'function') {
       serializedExpected = type.name;
     }
@@ -181,7 +183,7 @@ But no error thrown
 ---------------------
 `);
     } else if (typeof type === 'object' && !matches()) {
-      const serializedActual = inspect(errorValue, { depth: 3 });
+      const serializedActual = util.inspect(errorValue);
       throw new SagaTestError(`
 Expected to throw:
 -------------------
