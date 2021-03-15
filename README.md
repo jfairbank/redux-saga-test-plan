@@ -20,6 +20,7 @@ approaches to make testing your sagas easy.
   * [Mocking with Providers](#mocking-with-providers)
   * [Example with Reducer](#example-with-reducer)
 * [Unit Testing](#unit-testing)
+* [Extending inspect options](#extending-inspect-options)
 * [Install](#install)
 
 ## Documentation
@@ -261,6 +262,27 @@ it('works with unit tests', () => {
 
     // assert that the saga is finished
     .isDone();
+});
+```
+
+## Extending inspect options
+To see large effect objects while Expected & Actual result comparison you'll need to extend inspect options. Example:
+```js
+import util from 'util';
+import testSaga from 'redux-saga-test-plan';
+
+import { testableSaga } from '../sagas';
+
+describe('Some sagas to test', () => {
+  util.inspect.defaultOptions.depth = null;
+
+  it('testableSaga', () => {
+    testSaga(testableSaga)
+    .next()
+    .put({ /* large object here */ })
+    .next()
+    .isDone();
+  });
 });
 ```
 
