@@ -85,7 +85,9 @@
     "object-assign": "^4.1.0"
   },
   "peerDependencies": {
-    "redux-saga": "^1.0.1"
+    "redux-saga": "^1.0.1",
+    "@redux-saga/is": "^1.0.1",
+    "@redux-saga/symbols": "1.0.1"
   },
   "jest": {
     "testEnvironment": "node",
