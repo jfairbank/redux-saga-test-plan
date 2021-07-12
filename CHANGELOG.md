@@ -1,3 +1,6 @@
+## v4.0.2
+* Add peer dependencies
+  [#369]https://github.com/jfairbank/redux-saga-test-plan/pull/369
 ## v4.0.1
 * Remove package-lock.json
 
