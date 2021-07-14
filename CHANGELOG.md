@@ -1,3 +1,6 @@
+## v4.0.3
+* Fix peer dependencies
+  [#370]https://github.com/jfairbank/redux-saga-test-plan/pull/370
 ## v4.0.2
 * Add peer dependencies
   [#369]https://github.com/jfairbank/redux-saga-test-plan/pull/369
