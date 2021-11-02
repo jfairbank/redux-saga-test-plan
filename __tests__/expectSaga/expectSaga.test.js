@@ -9,6 +9,7 @@ import {
   take,
   takeEvery,
 } from 'redux-saga/effects';
+import { END } from 'redux-saga';
 import { warn } from 'utils/logging';
 import { delay } from 'utils/async';
 import expectSaga from 'expectSaga';
@@ -301,6 +302,25 @@ test('terminates and does not wait for Call effect Promises', async () => {
   }
 
   await expectSaga(saga).run(false);
+
+  expect(warn).not.toHaveBeenCalled();
+});
+
+test('terminates on END action', async () => {
+  warn.mockClear();
+
+  function* infiniteLoop() {
+    while (true) {
+      // Redux-saga docs:
+      // If you dispatch the END action, then all Sagas blocked on a take Effect
+      // will be terminated regardless of the specified pattern
+      yield take('HELLO_WORLD');
+    }
+  }
+
+  await expectSaga(infiniteLoop)
+    .dispatch(END)
+    .run();
 
   expect(warn).not.toHaveBeenCalled();
 });
