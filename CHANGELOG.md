@@ -1,3 +1,6 @@
+## v4.0.4
+* Fix the issue [#278]https://github.com/jfairbank/redux-saga-test-plan/issues/278
+  [#370]https://github.com/jfairbank/redux-saga-test-plan/pull/377
 ## v4.0.3
 * Fix peer dependencies
   [#370]https://github.com/jfairbank/redux-saga-test-plan/pull/370
