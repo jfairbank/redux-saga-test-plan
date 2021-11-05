@@ -1,4 +1,5 @@
 // @flow
+import { END } from 'redux-saga';
 import { findIndex } from '../utils/array';
 
 export default function findDispatchableActionIndex(
@@ -35,7 +36,7 @@ export default function findDispatchableActionIndex(
     return -1;
   }
 
-  return findIndex(actions, a => a.type === pattern);
+  return findIndex(actions, a => a.type === pattern || a.type === END.type);
 }
 
 function hasOwn(object: Object, key: string): boolean {
