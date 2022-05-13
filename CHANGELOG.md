@@ -1,3 +1,7 @@
+## v4.0.5
+* Fix the typescript 4.* type definition issue 
+  [#387]https://github.com/jfairbank/redux-saga-test-plan/pull/387
+
 ## v4.0.4
 * Fix the issue [#278]https://github.com/jfairbank/redux-saga-test-plan/issues/278
   [#377]https://github.com/jfairbank/redux-saga-test-plan/pull/377
