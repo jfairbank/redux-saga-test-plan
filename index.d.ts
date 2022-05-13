@@ -114,14 +114,14 @@ export type TestApiWithEffectsTesters = TestApi & TestApiEffects & {
     returns<V>(returnValue: V): TestApi;
 };
 
-export type SagaType = (...params: any[]) => SagaIterator | IterableIterator<any>;
+export type SagaType<Args extends any[]> = (...params: Args) => SagaIterator | IterableIterator<any>;
 
-export const expectSaga: (<S extends SagaType>(
-  generator: S,
-  ...sagaArgs: Parameters<S>
+export const expectSaga: (<Args extends any[]>(
+  generator: SagaType<Args>,
+  ...sagaArgs: Args
 ) => ExpectApi) & { DEFAULT_TIMEOUT: number };
 
-export const testSaga: <S extends SagaType>(
-  saga: S,
-  ...params: Parameters<S>
+export const testSaga: <Args extends any[]>(
+  generator: SagaType<Args>,
+  ...sagaArgs: Args
 ) => TestApi;
