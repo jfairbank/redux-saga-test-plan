@@ -1,6 +1,5 @@
 // @flow
 import isEqual from 'lodash.isequal';
-import assign from 'object-assign';
 
 import * as effects from 'redux-saga/effects';
 
@@ -167,7 +166,7 @@ export default function testSaga(saga: Function, ...sagaArgs: Array<any>): Api {
     value,
     done,
   }: IteratorResult<*, *>): ApiWithEffectsTesters {
-    const newApi = assign({}, api, {
+    const newApi = Object.assign({}, api, {
       actionChannel: effectsTestersCreators.actionChannel(value),
       all: effectsTestersCreators.all(value),
       apply: effectsTestersCreators.apply(value),

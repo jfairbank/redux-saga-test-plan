@@ -78,11 +78,9 @@
     "rimraf": "^2.5.4"
   },
   "dependencies": {
-    "core-js": "^2.4.1",
     "fsm-iterator": "^1.1.0",
     "lodash.isequal": "^4.5.0",
-    "lodash.ismatch": "^4.4.0",
-    "object-assign": "^4.1.0"
+    "lodash.ismatch": "^4.4.0"
   },
   "peerDependencies": {
     "redux-saga": "^1.0.1",
