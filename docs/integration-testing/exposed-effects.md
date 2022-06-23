@@ -75,11 +75,9 @@ it('exposes effects using async functions', async () => {
 
 ## Inspect Specific Properties
 
-If you want to inspect specific properties on an effect, you can use the
-`asEffect` util from Redux Saga.
+If you want to inspect specific properties on an effect, you can inspect the returned `effects` object.
 
 ```js
-import { asEffect } from 'redux-saga/utils';
 
 it('can test properties on effects', () => {
   const id = 42;
@@ -97,7 +95,7 @@ it('can test properties on effects', () => {
     .then((result) => {
       const { effects } = result;
 
-      const fetchUserCall = asEffect.call(effects.call[0]);
+      const fetchUserCall = effects.call[0].payload;
 
       expect(fetchUserCall.fn).toBe(fetchUser);
       expect(fetchUserCall.args).toEqual([42]);
