@@ -1,3 +1,7 @@
+## v4.0.6
+* Remove deprecated core-js
+  [#388]https://github.com/jfairbank/redux-saga-test-plan/pull/388
+
 ## v4.0.5
 * Fix the typescript 4.* type definition issue 
   [#387]https://github.com/jfairbank/redux-saga-test-plan/pull/387
