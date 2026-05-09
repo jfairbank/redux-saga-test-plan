@@ -2,6 +2,7 @@
 
 - [Introduction](/README.md)
 - [Getting Started](/getting-started.md)
+- [Testing Framework Examples](/testing-frameworks.md)
 - [Integration Testing](/integration-testing/README.md)
   - [Effect Creator Assertions](/integration-testing/effect-creators.md)
   - [Dispatching](/integration-testing/dispatching.md)
