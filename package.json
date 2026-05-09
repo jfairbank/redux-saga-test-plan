@@ -12,9 +12,10 @@
     "*.d.ts"
   ],
   "scripts": {
-    "build": "babel src --out-dir lib --ignore **/*/__mocks__",
+    "build": "babel src --out-dir lib --ignore **/*/__mocks__ && npm run copy-flow-decls",
     "check": "npm run lint && npm run typecheck && npm test",
     "clean": "rimraf lib",
+    "copy-flow-decls": "node -e \"require('fs').copyFileSync('decls/index.js', 'lib/index.js.flow')\"",
     "format": "prettier --write \"{src,__tests__}/**/*.js\"",
     "lint": "eslint src/ __tests__/",
     "prepublishOnly": "npm run clean && npm run build",
