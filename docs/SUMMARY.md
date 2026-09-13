@@ -2,6 +2,7 @@
 
 - [Introduction](/README.md)
 - [Getting Started](/getting-started.md)
+- [Examples](/examples.md)
 - [Integration Testing](/integration-testing/README.md)
   - [Effect Creator Assertions](/integration-testing/effect-creators.md)
   - [Dispatching](/integration-testing/dispatching.md)
@@ -23,3 +24,4 @@
   - [Saga Helpers](/unit-testing/saga-helpers.md)
   - [General Assertions](/unit-testing/general-assertions.md)
   - [Time Travel](/unit-testing/time-travel.md)
+- [API Reference](/api-reference.md)
