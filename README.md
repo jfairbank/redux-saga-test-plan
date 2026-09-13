@@ -20,6 +20,7 @@ approaches to make testing your sagas easy.
   * [Mocking with Providers](#mocking-with-providers)
   * [Example with Reducer](#example-with-reducer)
 * [Unit Testing](#unit-testing)
+* [Examples](#examples)
 * [Extending inspect options](#extending-inspect-options)
 * [Install](#install)
 
@@ -27,8 +28,10 @@ approaches to make testing your sagas easy.
 
 * [Introduction](http://redux-saga-test-plan.jeremyfairbank.com/)
 * [Getting Started](http://redux-saga-test-plan.jeremyfairbank.com/getting-started.html)
+* [Examples](http://redux-saga-test-plan.jeremyfairbank.com/examples.html)
 * [Integration Testing](http://redux-saga-test-plan.jeremyfairbank.com/integration-testing/)
 * [Unit Testing](http://redux-saga-test-plan.jeremyfairbank.com/unit-testing/)
+* [API Reference](http://redux-saga-test-plan.jeremyfairbank.com/api-reference.html)
 
 ## Integration Testing
 
@@ -264,6 +267,29 @@ it('works with unit tests', () => {
     .isDone();
 });
 ```
+
+## Examples
+
+The [`examples/`](examples/) directory contains a runnable `loadItem` saga
+tested with five different frameworks. Each example covers `expectSaga`,
+`matchers`/`provide`, and `testSaga`:
+
+* [Jest](examples/jest/loadItem.test.js)
+* [Mocha](examples/mocha/loadItem.test.js)
+* [tape](examples/tape/loadItem.test.js)
+* [AVA](examples/ava/loadItem.test.js)
+* [Jasmine](examples/jasmine/loadItem.test.js)
+
+Run them all from the repository root with:
+
+```sh
+npm run build
+npm run test:examples
+```
+
+`test:examples` is a single script that runs all five frameworks in order, so
+it can be dropped straight into any CI provider (Travis, GitHub Actions,
+CircleCI, ...).
 
 ## Extending inspect options
 To see large effect objects while Expected & Actual result comparison you'll need to extend inspect options. Example:

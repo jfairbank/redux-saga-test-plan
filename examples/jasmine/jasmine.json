@@ -1,0 +1,9 @@
+{
+  "spec_dir": "examples/jasmine",
+  "spec_files": ["loadItem.test.js"],
+  "helpers": [],
+  "env": {
+    "stopSpecOnExpectationFailure": false,
+    "random": false
+  }
+}

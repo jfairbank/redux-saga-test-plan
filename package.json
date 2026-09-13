@@ -21,6 +21,7 @@
     "prepublishOnly": "npm run clean && npm run build",
     "test": "jest",
     "test:ci": "jest --runInBand",
+    "test:examples": "jest --config=examples/jest/jest.config.js --runInBand && mocha examples/mocha/loadItem.test.js && tape examples/tape/loadItem.test.js && ava && jasmine --config=examples/jasmine/jasmine.json",
     "watch:test": "npm test -- --watch",
     "typecheck": "flow",
     "docs:clean": "rimraf _book",
@@ -54,12 +55,14 @@
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-export-default-from": "^7.2.0",
     "@babel/plugin-proposal-export-namespace-from": "^7.2.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
     "@babel/plugin-transform-async-to-generator": "^7.4.4",
     "@babel/plugin-transform-flow-strip-types": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@redux-saga/is": "^1.0.1",
     "@redux-saga/symbols": "^1.0.1",
     "@redux-saga/testing-utils": "^1.0.1",
+    "ava": "^3.9.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -72,11 +75,14 @@
     "gitbook-cli": "^2.3.0",
     "gitbook-plugin-advanced-emoji": "^0.2.2",
     "gitbook-plugin-github": "^2.0.0",
+    "jasmine": "^3.5.0",
     "jest": "^24.8.0",
+    "mocha": "^8.4.0",
     "prettier": "1.11.0",
     "redux": "^4.0.0",
     "redux-saga": "^1.0.1",
-    "rimraf": "^2.5.4"
+    "rimraf": "^2.5.4",
+    "tape": "^5.2.2"
   },
   "dependencies": {
     "fsm-iterator": "^1.1.0",
@@ -105,5 +111,10 @@
       "<rootDir/__tests__/"
     ],
     "testRegex": "__tests__/.*\\.test\\.js$"
+  },
+  "ava": {
+    "files": [
+      "examples/ava/loadItem.test.js"
+    ]
   }
 }
